@@ -1,0 +1,31 @@
+package main.net.finmath.antonsporrer.test;
+
+import net.finmath.montecarlo.interestrate.HullWhiteModel;
+import net.finmath.montecarlo.model.AbstractModelInterface;
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.CVA;
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.Correlation;
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.CorrelationInterface;
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.HullWhiteCreationHelper;
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.intensitymodel.CIRModel;
+
+public class CorrelateUnderlyingAndIntensityTestDrive {
+
+	public static void main(String[] args) {
+
+		HullWhiteCreationHelper hullWhiteCreationHelper = new HullWhiteCreationHelper();
+		AbstractModelInterface hullWhiteModel = hullWhiteCreationHelper.createHullWhiteModel(0, 20, 0.5);
+		
+		AbstractModelInterface cirModel = new CIRModel(0, 1, 0.03, 0.12);
+		
+		double[][] interCorrelations = new double[2][1];
+		
+		interCorrelations[0] = new double[] {0.7};
+		interCorrelations[1] = new double[] {0.7};
+		
+		CorrelationInterface correlation = new Correlation(interCorrelations);
+		
+		CVA testCVA = new CVA(hullWhiteModel, cirModel, correlation,50, 3141);
+		
+	}
+
+}
