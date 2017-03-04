@@ -11,6 +11,7 @@ package main.net.finmath.antonsporrer.masterthesis.modifiedFromFinmathLib;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.interestrate.ConditionalBondFormulaModelInterface;
 import net.finmath.exception.CalculationException;
 import net.finmath.marketdata.model.AnalyticModelInterface;
 import net.finmath.marketdata.model.curves.DiscountCurveFromForwardCurve;
@@ -101,7 +102,7 @@ import net.finmath.time.TimeDiscretizationInterface;
  * @author Christian Fries
  * @version 1.4
  */
-public class HullWhiteModel extends AbstractModel implements LIBORModelInterface {
+public class HullWhiteModel extends AbstractModel implements LIBORModelInterface, ConditionalBondFormulaModelInterface {
 
 	private final TimeDiscretizationInterface		liborPeriodDiscretization;
 

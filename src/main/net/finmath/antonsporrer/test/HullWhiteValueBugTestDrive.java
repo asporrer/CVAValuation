@@ -1,6 +1,6 @@
 package main.net.finmath.antonsporrer.test;
 
-import net.finmath.antonsporrer.masterthesis.modifiedFromFinmathLib.HullWhiteModel;
+import main.net.finmath.antonsporrer.masterthesis.modifiedFromFinmathLib.HullWhiteModel;
 import net.finmath.exception.CalculationException;
 import net.finmath.functions.LinearAlgebra;
 import net.finmath.marketdata.model.curves.DiscountCurveFromForwardCurve;

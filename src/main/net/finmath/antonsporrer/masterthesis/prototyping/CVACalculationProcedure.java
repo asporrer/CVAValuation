@@ -1,6 +1,6 @@
 package main.net.finmath.antonsporrer.masterthesis.prototyping;
 
-import net.finmath.antonsporrer.masterthesis.modifiedFromFinmathLib.HullWhiteModel;
+import main.net.finmath.antonsporrer.masterthesis.modifiedFromFinmathLib.HullWhiteModel;
 import net.finmath.montecarlo.assetderivativevaluation.BlackScholesModel;
 import net.finmath.exception.CalculationException;
 import net.finmath.functions.LinearAlgebra;

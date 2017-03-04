@@ -17,8 +17,6 @@ import net.finmath.stochastic.RandomVariableInterface;
  * <br> C<sub>i</sub> (T<sub>i+1</sub> - T<sub>i</sub> ) is payed in T<sub>i+1</sub> 
  * <br> 1 is payed in addition at time T<sub>n</sub> . 
  * 
- * 
- * 
  * @author Anton Sporrer
  */
 
