@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="C:/Users/Anton/workspace/finmath-lib-master/lib/joda-time-2.9.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Anton/workspace/finmath-lib-2.4.2/finmath-lib-2.4.2.jar" sourcepath="C:/Users/Anton/workspace/finmath-lib-2.4.2/finmath-lib-2.4.2-sources.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Anton/workspace/jblas-1.2.4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Anton/workspace/Libs/lpsolve55j.jar" sourcepath="C:/Users/Anton/workspace/Libs/Linear Programming/lp_solve/lp_solve_5.5.2.0_java.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
