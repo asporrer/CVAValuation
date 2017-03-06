@@ -1,4 +1,4 @@
-package main.net.finmath.antonsporrer.masterthesis.prototyping;
+package test.net.finmath.antonsporrer.masterthesis.prototyping;
 
 import main.net.finmath.antonsporrer.masterthesis.modifiedFromFinmathLib.HullWhiteModel;
 import net.finmath.montecarlo.assetderivativevaluation.BlackScholesModel;
@@ -27,7 +27,7 @@ import net.finmath.stochastic.RandomVariableMutableClone;
 import net.finmath.time.TimeDiscretization;
 import net.finmath.time.TimeDiscretizationInterface;
 
-public class CVACalculationProcedure {
+public class CVACalculationExample1 {
 
 	public static void main(String[] args) throws CalculationException {
 		////
@@ -61,8 +61,8 @@ public class CVACalculationProcedure {
 			// Calculating the Factor Loadings. 
 			////
 			
-			double rho0_2 = 0.3;
-			double rho1_2 = -0.3;
+			double rho0_2 = -0.0;
+			double rho1_2 = -0.0;
 			
 			double[][] interCorrelationMatrix = new double[2][1];
 			

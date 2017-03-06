@@ -35,7 +35,7 @@ import net.finmath.stochastic.RandomVariableInterface;
  * @author Anton Sporrer
  */
 
-public class CIRModel extends AbstractModel{
+public class CIRModel extends AbstractModel implements IntensityModelInterface /* Better to extend AbstractIntensityModel than implementing IntensityModelInterface? */{
 
 	// The start value of the intensity model.
 	private double initialValue;
@@ -116,6 +116,11 @@ public class CIRModel extends AbstractModel{
 	public RandomVariableInterface[] getFactorLoading(int timeIndex,
 			int componentIndex, RandomVariableInterface[] realizationAtTimeIndex) {
 		return   new RandomVariableInterface[] { realizationAtTimeIndex[0].abs().sqrt().mult(nu) };
+	}
+	
+	
+	public RandomVariableInterface getIntensity(int timeIndex) throws CalculationException {
+		return this.getProcessValue(timeIndex, 0);
 	}
 	
 	// Not implemented yet. 

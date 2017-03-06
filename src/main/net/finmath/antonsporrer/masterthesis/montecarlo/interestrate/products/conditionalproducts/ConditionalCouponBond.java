@@ -29,7 +29,7 @@ import net.finmath.stochastic.RandomVariableInterface;
  * @author Anton Sporrer
  */
 
-public class ConditionalCouponBond {
+public class ConditionalCouponBond implements ConditionalFairValueProductInterface {
 	
 	// T_2, ... , T_n
 	double[] paymentDates;
@@ -51,7 +51,7 @@ public class ConditionalCouponBond {
 		
 	};
 	
-	public RandomVariableInterface getValue(double evaluationTime,
+	public RandomVariableInterface getFairValue(double evaluationTime,
 			ConditionalBondFormulaModelInterface model)
 			throws CalculationException {
 		

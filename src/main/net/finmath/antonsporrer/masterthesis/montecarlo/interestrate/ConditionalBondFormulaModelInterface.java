@@ -1,6 +1,7 @@
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.interestrate;
 
 import net.finmath.exception.CalculationException;
+import net.finmath.montecarlo.interestrate.LIBORModelInterface;
 import net.finmath.stochastic.RandomVariableInterface;
 
 
@@ -13,7 +14,7 @@ import net.finmath.stochastic.RandomVariableInterface;
  * @author Anton Sporrer
  *
  */
-public interface ConditionalBondFormulaModelInterface {
+public interface ConditionalBondFormulaModelInterface extends LIBORModelInterface {
 	
 	public RandomVariableInterface getZeroCouponBond(double evaluationTime, double maturity ) throws CalculationException;
 	

@@ -71,7 +71,7 @@ public class ConditionalCouponBondTest {
 @Test
 	public void testCIRModel() throws CalculationException {
     	
-		double[] auxiliaryConditionalCouponBondValues = conditionalCouponBond.getValue(evaluationTime, hullWhiteModel).getRealizations();
+		double[] auxiliaryConditionalCouponBondValues = conditionalCouponBond.getFairValue(evaluationTime, hullWhiteModel).getRealizations();
 		
 		System.out.println("Parameters are (evaluation time, payment dates, period factors, coupons ): " + evaluationTime + ", " + Arrays.toString(paymentDates) + ", " + Arrays.toString(periodFactors) + ", " + Arrays.toString(coupons) );
 		System.out.println("Conditional Coupon Bond Values: " + Arrays.toString(auxiliaryConditionalCouponBondValues));
@@ -90,7 +90,7 @@ public class ConditionalCouponBondTest {
 		System.out.println("Calculated From Hand: " + Arrays.toString( runningSum.getRealizations()) );
 		
 		if(evaluationTime <= paymentDates[0]) {
-			for(int index = 0; index < conditionalCouponBond.getValue(evaluationTime, hullWhiteModel).getRealizations().length; index++) {
+			for(int index = 0; index < conditionalCouponBond.getFairValue(evaluationTime, hullWhiteModel).getRealizations().length; index++) {
 				assertEquals( runningSum.getRealizations()[index] , auxiliaryConditionalCouponBondValues[index] , 0.0001);
 			}
 		}	

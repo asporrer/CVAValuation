@@ -102,7 +102,7 @@ import net.finmath.time.TimeDiscretizationInterface;
  * @author Christian Fries
  * @version 1.4
  */
-public class HullWhiteModel extends AbstractModel implements LIBORModelInterface, ConditionalBondFormulaModelInterface {
+public class HullWhiteModel extends AbstractModel implements ConditionalBondFormulaModelInterface {
 
 	private final TimeDiscretizationInterface		liborPeriodDiscretization;
 
