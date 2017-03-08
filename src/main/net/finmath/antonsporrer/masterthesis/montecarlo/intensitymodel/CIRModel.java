@@ -35,7 +35,7 @@ import net.finmath.stochastic.RandomVariableInterface;
  * @author Anton Sporrer
  */
 
-public class CIRModel extends AbstractModel implements IntensityModelInterface /* Better to extend AbstractIntensityModel than implementing IntensityModelInterface? */{
+public class CIRModel extends AbstractIntensityModel  {
 
 	// The start value of the intensity model.
 	private double initialValue;

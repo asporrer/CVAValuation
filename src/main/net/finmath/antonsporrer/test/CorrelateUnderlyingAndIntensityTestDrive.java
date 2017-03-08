@@ -4,9 +4,9 @@ import test.net.finmath.antonsporrer.masterthesis.montecarlo.HullWhiteCreationHe
 import net.finmath.montecarlo.interestrate.HullWhiteModel;
 import net.finmath.montecarlo.model.AbstractModelInterface;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.CVA;
-import main.net.finmath.antonsporrer.masterthesis.montecarlo.Correlation;
-import main.net.finmath.antonsporrer.masterthesis.montecarlo.CorrelationInterface;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.intensitymodel.CIRModel;
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.intermodelbmcorrelation.Correlation;
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.intermodelbmcorrelation.CorrelationInterface;
 
 public class CorrelateUnderlyingAndIntensityTestDrive {
 

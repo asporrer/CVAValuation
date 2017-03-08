@@ -27,7 +27,7 @@ import net.finmath.stochastic.RandomVariableMutableClone;
 import net.finmath.time.TimeDiscretization;
 import net.finmath.time.TimeDiscretizationInterface;
 
-public class CVACalculationExample1 {
+public class CVACalculationBondExample1 {
 
 	public static void main(String[] args) throws CalculationException {
 		////
