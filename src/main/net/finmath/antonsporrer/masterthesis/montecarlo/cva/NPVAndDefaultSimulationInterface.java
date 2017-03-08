@@ -14,7 +14,7 @@ public interface NPVAndDefaultSimulationInterface {
 	 * @param timeIndex
 	 * @return NPV The Net Present Value at the timeIndex discounted back to time zero is returned.
 	 */
-	public RandomVariableInterface getDiscountedNPV(int timeIndex);
+	public RandomVariableInterface getDiscountedNPV(int timeIndex, int discountBackToIndex);
 	
 	/**
 	 * @param timeIndex

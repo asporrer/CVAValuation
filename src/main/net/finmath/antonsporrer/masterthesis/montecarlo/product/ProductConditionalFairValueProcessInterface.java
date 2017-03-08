@@ -1,5 +1,6 @@
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.product;
 
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface;
 import net.finmath.stochastic.RandomVariableInterface;
 
 /**
@@ -11,7 +12,7 @@ import net.finmath.stochastic.RandomVariableInterface;
  * @author Anton Sporrer
  *
  */
-public interface ConditionalValueProductInterface {
+public interface ProductConditionalFairValueProcessInterface<T extends ProductConditionalFairValue_ModelInterface> {
 
 	/**
 	 * 
@@ -34,6 +35,10 @@ public interface ConditionalValueProductInterface {
 	 * @return The underlying with respect to which the product is evaluated is returned.
 	 */
 	public RandomVariableInterface getUnderlying(int timeIndex, int componentIndex);
+	
+	
+	// TODO: Assign clone of the underlying model?
+	public void setUnderlyingModel(T underlyingModel);
 	
 	
 }

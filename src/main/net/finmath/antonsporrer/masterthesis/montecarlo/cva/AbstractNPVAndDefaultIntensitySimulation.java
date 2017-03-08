@@ -1,11 +1,21 @@
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.cva;
 
-import main.net.finmath.antonsporrer.masterthesis.montecarlo.product.ConditionalValueProductInterface;
+import net.finmath.stochastic.RandomVariableInterface;
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface;
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.product.AbstractProductConditionalFairValueProcess;
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.product.ProductConditionalFairValueProcessInterface;
 
-public class AbstractNPVAndDefaultIntensitySimulation<S ,T> {
+public abstract class AbstractNPVAndDefaultIntensitySimulation extends AbstractNPVAndDefaultSimulation {
 
-	//Use S,T for product and model.
-	ConditionalValueProductInterface product;
+	public AbstractNPVAndDefaultIntensitySimulation(
+			ProductConditionalFairValue_ModelInterface underlyingModel,
+			AbstractProductConditionalFairValueProcess productProcess) {
+		super(underlyingModel, productProcess);
+	}
+
+
+
+	
 	
 	
 	
