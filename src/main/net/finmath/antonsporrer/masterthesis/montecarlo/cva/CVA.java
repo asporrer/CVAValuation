@@ -1,4 +1,4 @@
-package main.net.finmath.antonsporrer.masterthesis.montecarlo;
+package main.net.finmath.antonsporrer.masterthesis.montecarlo.cva;
 
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.intermodelbmcorrelation.Correlation;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.intermodelbmcorrelation.CorrelationInterface;

@@ -1,5 +1,6 @@
-package main.net.finmath.antonsporrer.masterthesis.montecarlo.cva;
+package main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.NPVAndDefaultsimulation;
 
+import net.finmath.exception.CalculationException;
 import net.finmath.stochastic.RandomVariableInterface;
 
 /**
@@ -13,8 +14,18 @@ public interface NPVAndDefaultSimulationInterface {
 	/**
 	 * @param timeIndex
 	 * @return NPV The Net Present Value at the timeIndex discounted back to time zero is returned.
+	 * @throws CalculationException 
 	 */
-	public RandomVariableInterface getDiscountedNPV(int timeIndex, int discountBackToIndex);
+	public RandomVariableInterface getDiscountedNPV(int timeIndex, int discountBackToIndex) throws CalculationException;
+	
+	
+	/**
+	 * 
+	 * @param timeIndex
+	 * @return
+	 */
+	public RandomVariableInterface getNumeraire(int timeIndex);
+	
 	
 	/**
 	 * @param timeIndex

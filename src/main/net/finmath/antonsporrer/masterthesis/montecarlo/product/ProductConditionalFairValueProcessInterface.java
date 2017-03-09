@@ -1,7 +1,9 @@
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.product;
 
-import main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface;
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.AbstractProductConditionalFairValue_Model;
+import net.finmath.exception.CalculationException;
 import net.finmath.stochastic.RandomVariableInterface;
+import net.finmath.time.TimeDiscretizationInterface;
 
 /**
  * An interface for a product providing its path-wise conditional fair value 
@@ -12,7 +14,7 @@ import net.finmath.stochastic.RandomVariableInterface;
  * @author Anton Sporrer
  *
  */
-public interface ProductConditionalFairValueProcessInterface<T extends ProductConditionalFairValue_ModelInterface> {
+public interface ProductConditionalFairValueProcessInterface<T extends AbstractProductConditionalFairValue_Model> {
 
 	/**
 	 * 
@@ -25,8 +27,9 @@ public interface ProductConditionalFairValueProcessInterface<T extends ProductCo
 	 * 
 	 * @param timeIndex
 	 * @return The fair values of the product conditioned at the current time with respect to the path-wise current states of the underlying (e.g. in case of a short rate model: for each path &omega;, E[V|r=r(&omega;)]) is returned. Where V is the discounted payoff of the product).
+	 * @throws CalculationException 
 	 */
-	public RandomVariableInterface getFairValue(int timeIndex);
+	public RandomVariableInterface getFairValue(int timeIndex) throws CalculationException;
 	
 	
 	/**
@@ -40,5 +43,11 @@ public interface ProductConditionalFairValueProcessInterface<T extends ProductCo
 	// TODO: Assign clone of the underlying model?
 	public void setUnderlyingModel(T underlyingModel);
 	
+	// TODO: Get a Clone?
+	public T getUnderlyingModel();
+	
+	public int getNumberOfPaths();
+	
+	public TimeDiscretizationInterface getTimeDiscretization();
 	
 }

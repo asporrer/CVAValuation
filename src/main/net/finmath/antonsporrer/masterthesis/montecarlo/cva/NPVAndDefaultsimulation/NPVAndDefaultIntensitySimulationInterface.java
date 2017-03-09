@@ -1,5 +1,6 @@
-package main.net.finmath.antonsporrer.masterthesis.montecarlo.cva;
+package main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.NPVAndDefaultsimulation;
 
+import net.finmath.exception.CalculationException;
 import net.finmath.stochastic.RandomVariableInterface;
 
 /**
@@ -15,16 +16,18 @@ public interface NPVAndDefaultIntensitySimulationInterface extends NPVAndDefault
 	 * 
 	 * @param timeIndex
 	 * @return &lambda; The default intensity at the current time is returned.
+	 * @throws CalculationException 
 	 */
-	public RandomVariableInterface getIntensity(int timeIndex);
+	public RandomVariableInterface getIntensity(int timeIndex) throws CalculationException;
 	
 	
 	/**
 	 * 
 	 * @param timeIndex
 	 * @return The exponential aplied to the integral of lambda from zero to the current time is returned.
+	 * @throws CalculationException 
 	 */
-	public RandomVariableInterface getExpOfIntegratedIntensity(int timeIndex);
+	public RandomVariableInterface getExpOfIntegratedIntensity(int timeIndex) throws CalculationException;
 	
 	
 }
