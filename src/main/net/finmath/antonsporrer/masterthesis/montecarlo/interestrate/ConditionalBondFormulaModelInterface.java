@@ -14,6 +14,7 @@ import net.finmath.stochastic.RandomVariableInterface;
  * @author Anton Sporrer
  *
  */
+@Deprecated
 public interface ConditionalBondFormulaModelInterface extends LIBORModelInterface {
 	
 	public RandomVariableInterface getZeroCouponBond(double evaluationTime, double maturity ) throws CalculationException;

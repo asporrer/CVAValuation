@@ -1,4 +1,4 @@
-package main.net.finmath.antonsporrer.test;
+package test.net.finmath.antonsporrer.masterthesis.prototyping.somesmalltests;
 
 import main.net.finmath.antonsporrer.masterthesis.modifiedFromFinmathLib.HullWhiteModel;
 import net.finmath.exception.CalculationException;

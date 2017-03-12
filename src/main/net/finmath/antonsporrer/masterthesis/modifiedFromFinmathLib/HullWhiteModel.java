@@ -11,7 +11,7 @@ package main.net.finmath.antonsporrer.masterthesis.modifiedFromFinmathLib;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import main.net.finmath.antonsporrer.masterthesis.montecarlo.interestrate.ConditionalBondFormulaModelInterface;
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.ZCBond_ProductConditionalFairValue_ModelInterface;
 import net.finmath.exception.CalculationException;
 import net.finmath.marketdata.model.AnalyticModelInterface;
 import net.finmath.marketdata.model.curves.DiscountCurveFromForwardCurve;
@@ -102,7 +102,7 @@ import net.finmath.time.TimeDiscretizationInterface;
  * @author Christian Fries
  * @version 1.4
  */
-public class HullWhiteModel extends AbstractModel implements ConditionalBondFormulaModelInterface {
+public class HullWhiteModel extends AbstractModel implements ZCBond_ProductConditionalFairValue_ModelInterface  {
 
 	private final TimeDiscretizationInterface		liborPeriodDiscretization;
 
@@ -583,6 +583,11 @@ public class HullWhiteModel extends AbstractModel implements ConditionalBondForm
 
 	public double getIntegratedBondSquaredVolatility(double time, double maturity) {
 		return getShortRateConditionalVariance(0, time) * getB(time,maturity) * getB(time,maturity);
+	}
+
+	public RandomVariableInterface getNumeraire(int timeIndex) throws CalculationException {
+		// TODO Auto-generated method stub
+		return this.getNumeraire(this.getTime(timeIndex));
 	}
 }
 

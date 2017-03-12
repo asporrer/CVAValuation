@@ -32,7 +32,7 @@ import org.junit.runner.RunWith;
 
 import test.net.finmath.antonsporrer.masterthesis.montecarlo.HullWhiteCreationHelper;
 
-
+@Deprecated
 @RunWith(Parameterized.class)
 public class ConditionalCouponBondTest {
 
@@ -46,7 +46,7 @@ public class ConditionalCouponBondTest {
 
    @Before
    public void initialize() {
-	   hullWhiteModel = HullWhiteCreationHelper.createHullWhiteModel(0.0, 30, 0.5);
+	   hullWhiteModel = (ConditionalBondFormulaModelInterface) HullWhiteCreationHelper.createHullWhiteModel(0.0, 30, 0.5);
 	   conditionalCouponBond = new ConditionalCouponBond(paymentDates, periodFactors, coupons);
    }
    

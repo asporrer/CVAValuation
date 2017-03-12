@@ -19,7 +19,7 @@ import net.finmath.stochastic.RandomVariableInterface;
  * 
  * @author Anton Sporrer
  */
-
+@Deprecated
 public class CouponBond extends AbstractLIBORMonteCarloProduct{
 	
 	// T_2, ... , T_n

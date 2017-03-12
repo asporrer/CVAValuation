@@ -1,9 +1,9 @@
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.NPVAndDefaultsimulation;
 
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface;
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.product.ProductConditionalFairValueProcessInterface;
 import net.finmath.exception.CalculationException;
 import net.finmath.stochastic.RandomVariableInterface;
-import main.net.finmath.antonsporrer.masterthesis.montecarlo.AbstractProductConditionalFairValue_Model;
-import main.net.finmath.antonsporrer.masterthesis.montecarlo.product.AbstractProductConditionalFairValueProcess;
 
 
 /**
@@ -13,13 +13,13 @@ import main.net.finmath.antonsporrer.masterthesis.montecarlo.product.AbstractPro
  * @author Anton Sporrer
  *
  */
-public class NPVAndDefaultIntensityFunctionSimulation<T extends AbstractProductConditionalFairValue_Model> extends AbstractNPVAndDefaultIntensitySimulation<T>{
+public class NPVAndDefaultIntensityFunctionSimulation<T extends  ProductConditionalFairValue_ModelInterface> extends AbstractNPVAndDefaultIntensitySimulation<T>{
 
 	//TODO: Create Class Default Intensity Function and add to constructor.
 	
 	public NPVAndDefaultIntensityFunctionSimulation(
 			T underlyingModel,
-			AbstractProductConditionalFairValueProcess<T> productProcess, int seed) {
+			ProductConditionalFairValueProcessInterface<T> productProcess, int seed) {
 		super(underlyingModel, productProcess);
 	}
 
@@ -30,13 +30,7 @@ public class NPVAndDefaultIntensityFunctionSimulation<T extends AbstractProductC
 
 	public RandomVariableInterface getExpOfIntegratedIntensity(int timeIndex) throws CalculationException {
 		// TODO Use if-statement to treat the following case. The intensity model provides a getExpOfIntegratedIntensity function. 
-			
 		return super.getExpOfIntegratedIntensity(timeIndex);
 	}
-
-	
-
-
-	
 	
 }

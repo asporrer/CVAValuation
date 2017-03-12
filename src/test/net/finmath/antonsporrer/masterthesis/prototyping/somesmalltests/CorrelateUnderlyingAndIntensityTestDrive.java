@@ -1,9 +1,9 @@
-package main.net.finmath.antonsporrer.test;
+package test.net.finmath.antonsporrer.masterthesis.prototyping.somesmalltests;
 
 import test.net.finmath.antonsporrer.masterthesis.montecarlo.HullWhiteCreationHelper;
+import test.net.finmath.antonsporrer.masterthesis.prototyping.CVA;
 import net.finmath.montecarlo.interestrate.HullWhiteModel;
 import net.finmath.montecarlo.model.AbstractModelInterface;
-import main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.CVA;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.intensitymodel.CIRModel;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.intermodelbmcorrelation.Correlation;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.intermodelbmcorrelation.CorrelationInterface;

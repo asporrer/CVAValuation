@@ -12,7 +12,7 @@ import main.net.finmath.antonsporrer.masterthesis.montecarlo.interestrate.produc
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.interestrate.products.conditionalproducts.ConditionalFairValueProductInterface;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.intermodelbmcorrelation.Correlation;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.intermodelbmcorrelation.CorrelationInterface;
-
+@Deprecated
 public class CVACalculationIntensityVsWorstCaseTestDrive {
 
 	public static void main(String[] args) throws CalculationException {
@@ -21,7 +21,7 @@ public class CVACalculationIntensityVsWorstCaseTestDrive {
 		double initialTime = 0;
 		int numberOfTimeSteps = 20;
 		double deltaT = 0.5;
-		ConditionalBondFormulaModelInterface bondModel = HullWhiteCreationHelper.createHullWhiteModel(initialTime, numberOfTimeSteps, deltaT);
+		ConditionalBondFormulaModelInterface bondModel = (ConditionalBondFormulaModelInterface) HullWhiteCreationHelper.createHullWhiteModel(initialTime, numberOfTimeSteps, deltaT);
 
 		// Intensity Model parameters.
 		double initialValue = 0;

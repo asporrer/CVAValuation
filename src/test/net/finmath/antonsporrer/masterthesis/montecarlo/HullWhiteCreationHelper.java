@@ -75,7 +75,7 @@ public class HullWhiteCreationHelper {
 		// Declaring the LIBOR discretization.
 		
 		double initialLIBOR = 0.0; 
-		int numberOfTimeStepsLIBOR = 14; 
+		int numberOfTimeStepsLIBOR = 20 /* 14 */; 
 		double deltaTLIBOR = 0.5;
 		
 		TimeDiscretizationInterface liborPeriodDiscretization = new TimeDiscretization(initialLIBOR, numberOfTimeStepsLIBOR, deltaTLIBOR);

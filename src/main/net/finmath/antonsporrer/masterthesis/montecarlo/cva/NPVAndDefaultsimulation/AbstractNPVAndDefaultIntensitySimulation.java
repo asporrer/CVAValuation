@@ -1,19 +1,18 @@
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.NPVAndDefaultsimulation;
 
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface;
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.product.ProductConditionalFairValueProcessInterface;
 import net.finmath.exception.CalculationException;
 import net.finmath.montecarlo.RandomVariable;
 import net.finmath.stochastic.RandomVariableInterface;
-import net.finmath.time.TimeDiscretizationInterface;
-import main.net.finmath.antonsporrer.masterthesis.montecarlo.AbstractProductConditionalFairValue_Model;
-import main.net.finmath.antonsporrer.masterthesis.montecarlo.product.AbstractProductConditionalFairValueProcess;
 
-public abstract class AbstractNPVAndDefaultIntensitySimulation<T extends AbstractProductConditionalFairValue_Model> extends AbstractNPVAndDefaultSimulation<T> implements NPVAndDefaultIntensitySimulationInterface {
+public abstract class AbstractNPVAndDefaultIntensitySimulation<T extends ProductConditionalFairValue_ModelInterface> extends AbstractNPVAndDefaultSimulation<T> implements NPVAndDefaultIntensitySimulationInterface<T> {
 	
 	private RandomVariableInterface[] expOfIntegratedIntensity;
 	
 	public AbstractNPVAndDefaultIntensitySimulation(
 			T underlyingModel,
-			AbstractProductConditionalFairValueProcess<T> productProcess) {
+			ProductConditionalFairValueProcessInterface<T> productProcess) {
 		super(underlyingModel, productProcess);
 	}
 
@@ -61,7 +60,7 @@ public abstract class AbstractNPVAndDefaultIntensitySimulation<T extends Abstrac
 		
 		
 		// TODO: Improve integral approximation scheme. Splines; common distribution of delta lambda  and delta exp( int lambda ).
-		for(int timeIndex = 0; timeIndex < numberOfTimes; timeIndex++) {
+		for(int timeIndex = 0; timeIndex < numberOfTimes - 1; timeIndex++) {
 			
 			currentTime = this.getTimeDiscretization().getTime(timeIndex);
 			

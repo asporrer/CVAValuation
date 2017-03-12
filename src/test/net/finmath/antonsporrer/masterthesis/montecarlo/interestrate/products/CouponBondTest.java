@@ -9,6 +9,7 @@ import main.net.finmath.antonsporrer.masterthesis.montecarlo.interestrate.produc
 import main.net.finmath.antonsporrer.masterthesis.modifiedFromFinmathLib.HullWhiteModel;
 import net.finmath.exception.CalculationException;
 import net.finmath.montecarlo.interestrate.LIBORModelMonteCarloSimulationInterface;
+import net.finmath.montecarlo.interestrate.TermStructureModelInterface;
 import net.finmath.montecarlo.interestrate.TermStructureModelMonteCarloSimulation;
 
 import org.junit.Before;
@@ -17,7 +18,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runner.RunWith;
 
 import test.net.finmath.antonsporrer.masterthesis.montecarlo.HullWhiteCreationHelper;
-
+@Deprecated
 @RunWith(Parameterized.class)
 public class CouponBondTest {
 
@@ -37,7 +38,7 @@ public class CouponBondTest {
 	public void initialize() {
 		this.couponBond = new CouponBond(paymentDates, periodFactors, coupons); 
 		hullWhiteModel = HullWhiteCreationHelper.createHullWhiteModel(0, 20, 0.5);
-		termStructureModelMonteCarloSimulation = new TermStructureModelMonteCarloSimulation(hullWhiteModel);
+		termStructureModelMonteCarloSimulation = new TermStructureModelMonteCarloSimulation((TermStructureModelInterface) hullWhiteModel);
 	}
 	
 	public CouponBondTest(double evaluationTime, double[] paymentDates, double[] periodFactors, double[] coupons) {

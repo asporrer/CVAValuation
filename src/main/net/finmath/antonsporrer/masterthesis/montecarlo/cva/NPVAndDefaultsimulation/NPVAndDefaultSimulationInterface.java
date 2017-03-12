@@ -1,7 +1,10 @@
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.NPVAndDefaultsimulation;
 
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface;
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.product.ProductConditionalFairValueProcessInterface;
 import net.finmath.exception.CalculationException;
 import net.finmath.stochastic.RandomVariableInterface;
+import net.finmath.time.TimeDiscretizationInterface;
 
 /**
  * An interface for the coupling of a fair value process of an underlying product and a its default time. 
@@ -9,7 +12,7 @@ import net.finmath.stochastic.RandomVariableInterface;
  * @author Anton Sporrer
  * 
  */
-public interface NPVAndDefaultSimulationInterface {
+public interface NPVAndDefaultSimulationInterface<T extends ProductConditionalFairValue_ModelInterface> {
 	
 	/**
 	 * @param timeIndex
@@ -23,8 +26,9 @@ public interface NPVAndDefaultSimulationInterface {
 	 * 
 	 * @param timeIndex
 	 * @return
+	 * @throws CalculationException 
 	 */
-	public RandomVariableInterface getNumeraire(int timeIndex);
+	public RandomVariableInterface getNumeraire(int timeIndex) throws CalculationException;
 	
 	
 	/**
@@ -32,5 +36,18 @@ public interface NPVAndDefaultSimulationInterface {
 	 * @return Default Probability of default occuring in the intervall (timeIndex, timeIndex + 1]. If the timeIndex is the last discretization point of the underlying time discretization than the probability of default in (timeIndex, infinity) is returned.
 	 */
 	public double getDefaultProbability(int timeIndex);
+	
+	public TimeDiscretizationInterface getTimeDiscretization();
+	
+	public int getNumberOfPaths();
+	
+	
+	public void setProductProcess(ProductConditionalFairValueProcessInterface<T> productProcess);
+	
+	
+	public ProductConditionalFairValueProcessInterface<T> getProductProcess();
+	
+	
+	
 	
 }

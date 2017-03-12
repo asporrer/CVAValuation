@@ -1,7 +1,7 @@
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.NPVAndDefaultsimulation;
 
-import main.net.finmath.antonsporrer.masterthesis.montecarlo.AbstractProductConditionalFairValue_Model;
-import main.net.finmath.antonsporrer.masterthesis.montecarlo.product.AbstractProductConditionalFairValueProcess;
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface;
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.product.ProductConditionalFairValueProcessInterface;
 import net.finmath.exception.CalculationException;
 import net.finmath.stochastic.RandomVariableInterface;
 import net.finmath.time.TimeDiscretizationInterface;
@@ -14,18 +14,18 @@ import net.finmath.time.TimeDiscretizationInterface;
  *
  */
 
-public abstract class AbstractNPVAndDefaultSimulation<T extends AbstractProductConditionalFairValue_Model> implements NPVAndDefaultSimulationInterface{
-	
-		private AbstractProductConditionalFairValueProcess<T> productProcess;
+public abstract class AbstractNPVAndDefaultSimulation<T extends ProductConditionalFairValue_ModelInterface> implements NPVAndDefaultSimulationInterface<T>{
+		
+		private ProductConditionalFairValueProcessInterface<T> productProcess;
 	
 		private double[] defaultProbability;
 
-		public AbstractNPVAndDefaultSimulation(T underlyingModel, AbstractProductConditionalFairValueProcess<T> productProcess) {
+		public AbstractNPVAndDefaultSimulation(T underlyingModel, ProductConditionalFairValueProcessInterface<T> productProcess) {
 			productProcess.setUnderlyingModel(underlyingModel);
 			this.productProcess = productProcess;
 		}
 		
-		public RandomVariableInterface getNumeraire(int timeIndex) {
+		public RandomVariableInterface getNumeraire(int timeIndex) throws CalculationException {
 			return productProcess.getNumeraire(timeIndex);
 		}
 		
@@ -36,7 +36,8 @@ public abstract class AbstractNPVAndDefaultSimulation<T extends AbstractProductC
 		public double getDefaultProbability(int timeIndex) {
 			return defaultProbability[timeIndex];
 		}
-
+		
+		
 		public TimeDiscretizationInterface getTimeDiscretization() {
 			return this.productProcess.getTimeDiscretization();
 		}
@@ -46,11 +47,11 @@ public abstract class AbstractNPVAndDefaultSimulation<T extends AbstractProductC
 		}
 		
 		
-		public void setProductProcess(AbstractProductConditionalFairValueProcess<T> productProcess) {
+		public void setProductProcess(ProductConditionalFairValueProcessInterface<T> productProcess) {
 			this.productProcess = productProcess;
 		}
 		
-		public AbstractProductConditionalFairValueProcess<T> getProductProcess() {
+		public ProductConditionalFairValueProcessInterface<T> getProductProcess() {
 			return this.productProcess;
 		}
 		

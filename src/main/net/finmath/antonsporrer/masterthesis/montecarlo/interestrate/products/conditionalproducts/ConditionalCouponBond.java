@@ -29,6 +29,7 @@ import net.finmath.stochastic.RandomVariableInterface;
  * @author Anton Sporrer
  */
 
+@Deprecated
 public class ConditionalCouponBond implements ConditionalFairValueProductInterface {
 	
 	// T_2, ... , T_n

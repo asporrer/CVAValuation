@@ -1,11 +1,12 @@
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.product;
 
+import net.finmath.exception.CalculationException;
 import net.finmath.stochastic.RandomVariableInterface;
 import net.finmath.time.TimeDiscretizationInterface;
-import main.net.finmath.antonsporrer.masterthesis.montecarlo.AbstractProductConditionalFairValue_Model;
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface;
 
 
-public abstract class AbstractProductConditionalFairValueProcess<T extends AbstractProductConditionalFairValue_Model> implements ProductConditionalFairValueProcessInterface<T> {
+public abstract class AbstractProductConditionalFairValueProcess<T extends  ProductConditionalFairValue_ModelInterface > implements ProductConditionalFairValueProcessInterface<T> {
 
 	T underlyingModel;
 	
@@ -20,13 +21,14 @@ public abstract class AbstractProductConditionalFairValueProcess<T extends Abstr
 	/**
 	 * 
 	 * @return The specified component of the underlying at the current time is returned.
+	 * @throws CalculationException 
 	 * 
 	 */
-	public RandomVariableInterface getUnderlying(int timeIndex, int componentIndex) {
+	public RandomVariableInterface getUnderlying(int timeIndex, int componentIndex) throws CalculationException {
 		return this.underlyingModel.getProcessValue(timeIndex, componentIndex);
 	}
 	
-	public RandomVariableInterface getNumeraire(int timeIndex) {
+	public RandomVariableInterface getNumeraire(int timeIndex) throws CalculationException {
 		return underlyingModel.getNumeraire(timeIndex);
 	}
 	

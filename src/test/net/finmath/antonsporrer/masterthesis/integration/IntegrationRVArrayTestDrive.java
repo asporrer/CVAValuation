@@ -1,22 +1,25 @@
-package test.net.finmath.antonsporrer.masterthesis.montecarlo.interestrate.products.conditionalproducts;
+package test.net.finmath.antonsporrer.masterthesis.integration;
 
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
-@Deprecated
-public class ConditionalCouponBondTestRunner {
+
+
+public class IntegrationRVArrayTestDrive {
 
 	public static void main(String[] args) {
 		
-		Result result = JUnitCore.runClasses(ConditionalCouponBondTest.class);
+		
+	      Result result = JUnitCore.runClasses(IntegrationRVArrayTest.class);
 
 	      for (Failure failure : result.getFailures()) {
 	         System.out.println(failure.toString());
 	      }
 			
 	      System.out.println(result.wasSuccessful());
-
+	   
+		
 	}
 
 }

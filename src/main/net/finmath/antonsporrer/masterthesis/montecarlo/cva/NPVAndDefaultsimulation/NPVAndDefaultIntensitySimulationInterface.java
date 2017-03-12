@@ -1,5 +1,6 @@
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.NPVAndDefaultsimulation;
 
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface;
 import net.finmath.exception.CalculationException;
 import net.finmath.stochastic.RandomVariableInterface;
 
@@ -10,8 +11,8 @@ import net.finmath.stochastic.RandomVariableInterface;
  * @author Anton Sporrer
  *
  */
-public interface NPVAndDefaultIntensitySimulationInterface extends NPVAndDefaultSimulationInterface {
-
+public interface NPVAndDefaultIntensitySimulationInterface<T extends ProductConditionalFairValue_ModelInterface> extends NPVAndDefaultSimulationInterface<T> {
+	
 	/**
 	 * 
 	 * @param timeIndex

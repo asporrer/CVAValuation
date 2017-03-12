@@ -1,6 +1,6 @@
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.product;
 
-import main.net.finmath.antonsporrer.masterthesis.montecarlo.AbstractProductConditionalFairValue_Model;
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface;
 import net.finmath.exception.CalculationException;
 import net.finmath.stochastic.RandomVariableInterface;
 import net.finmath.time.TimeDiscretizationInterface;
@@ -14,14 +14,15 @@ import net.finmath.time.TimeDiscretizationInterface;
  * @author Anton Sporrer
  *
  */
-public interface ProductConditionalFairValueProcessInterface<T extends AbstractProductConditionalFairValue_Model> {
+public interface ProductConditionalFairValueProcessInterface<T extends ProductConditionalFairValue_ModelInterface> {
 
 	/**
 	 * 
 	 * @param timeIndex
 	 * @return
+	 * @throws CalculationException 
 	 */
-	public RandomVariableInterface getNumeraire(int timeIndex);
+	public RandomVariableInterface getNumeraire(int timeIndex) throws CalculationException;
 	
 	/**
 	 * 
@@ -36,8 +37,9 @@ public interface ProductConditionalFairValueProcessInterface<T extends AbstractP
 	 * 
 	 * @param timeIndex
 	 * @return The underlying with respect to which the product is evaluated is returned.
+	 * @throws CalculationException 
 	 */
-	public RandomVariableInterface getUnderlying(int timeIndex, int componentIndex);
+	public RandomVariableInterface getUnderlying(int timeIndex, int componentIndex) throws CalculationException;
 	
 	
 	// TODO: Assign clone of the underlying model?

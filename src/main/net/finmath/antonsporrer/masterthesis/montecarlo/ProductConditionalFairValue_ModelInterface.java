@@ -1,5 +1,6 @@
 package main.net.finmath.antonsporrer.masterthesis.montecarlo;
 
+import net.finmath.exception.CalculationException;
 import net.finmath.montecarlo.model.AbstractModelInterface;
 import net.finmath.stochastic.RandomVariableInterface;
 
@@ -17,8 +18,9 @@ public interface ProductConditionalFairValue_ModelInterface extends AbstractMode
 	 * 
 	 * @param timeIndex
 	 * @return The Numeraire
+	 * @throws CalculationException 
 	 */
-	public RandomVariableInterface getNumeraire(int timeIndex);
+	public RandomVariableInterface getNumeraire(int timeIndex) throws CalculationException;
 	
 	/**
 	 * 
@@ -26,6 +28,6 @@ public interface ProductConditionalFairValue_ModelInterface extends AbstractMode
 	 * @param componentIndex
 	 * @return The value 
 	 */
-	public RandomVariableInterface getProcessValue(int timeIndex, int componentIndex);
+	public RandomVariableInterface getProcessValue(int timeIndex, int componentIndex) throws CalculationException;
 	
 }

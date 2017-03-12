@@ -6,7 +6,7 @@ import org.junit.runner.notification.Failure;
 
 import test.net.finmath.antonsporrer.masterthesis.montecarlo.intensitymodel.CIRModelTest;
 
-
+@Deprecated
 public class CouponBondTestRunner {
    public static void main(String[] args) {
       Result result = JUnitCore.runClasses(CouponBondTest.class);

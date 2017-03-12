@@ -1,6 +1,6 @@
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.product;
 
-import main.net.finmath.antonsporrer.masterthesis.montecarlo.AbstractZCBond_ProductConditionalFairValue_Model;
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.ZCBond_ProductConditionalFairValue_ModelInterface;
 import net.finmath.exception.CalculationException;
 import net.finmath.montecarlo.RandomVariable;
 import net.finmath.stochastic.RandomVariableInterface;
@@ -9,15 +9,23 @@ import net.finmath.stochastic.RandomVariableInterface;
 /**
  * 
  * This class implements the valuation of a coupon bond.
- * 
- * A coupon bond has the following payoff profile.
+ * It provides at each time the fair value of the 
+ * coupon bond conditioned on the value of the underlying 
+ * at the current path. E.g. if the underlying model is a short rate model:
+ * <br> E[  DiscountedCashflows(t) | r<sub>t</sub> = r<sup>*</sup><sub>t</sub>( &omega; ) ] 
+ * <br> is provided. 
+ * <br> - Where t is the evaluation time,
+ * <br> - r<sub>t</sub> is the short rate and r<sup>*</sup><sub>t</sub>( &omega; ) is the simulation of the short rate at time t and path &omega; .
+ * <br> - DiscountedCashflows(t) are the discounted cashflows of the zero coupon bond made at t or later. 
+ * <br>
+ * <br>A coupon bond has the following payoff profile.
  * <br> For i = 1, ..., n-1
  * <br> C<sub>i</sub> (T<sub>i+1</sub> - T<sub>i</sub> ) is payed in T<sub>i+1</sub> 
  * <br> 1 is payed in addition at time T<sub>n</sub> . 
  * 
  * @author Anton Sporrer
  */
-public class CouponBondConditionalFairValueProcess extends AbstractZCBondProductConditionalFairValueProcess<AbstractZCBond_ProductConditionalFairValue_Model> {
+public class CouponBondConditionalFairValueProcess extends AbstractProductConditionalFairValueProcess<ZCBond_ProductConditionalFairValue_ModelInterface> {
 
 	// T_2, ... , T_n
 	double[] paymentDates;
@@ -29,7 +37,7 @@ public class CouponBondConditionalFairValueProcess extends AbstractZCBondProduct
 	
 	
 	public CouponBondConditionalFairValueProcess(
-			AbstractZCBond_ProductConditionalFairValue_Model underlyingModel, double[] paymentDates, double[] periodFactors, double[] coupons) {
+			ZCBond_ProductConditionalFairValue_ModelInterface underlyingModel, double[] paymentDates, double[] periodFactors, double[] coupons) {
 		super(underlyingModel);
 		
 		if (!(paymentDates.length == periodFactors.length && paymentDates.length == coupons.length) ) {
@@ -64,12 +72,18 @@ public class CouponBondConditionalFairValueProcess extends AbstractZCBondProduct
 			
 			// Assigning this auxiliary random variable.
 			// The fair value of a zero coupon bond maturing at paymentDates[index] at evaluation time is fetched.
-			currentBondFairValue = underlyingModel.getZeroCouponBond(evaluationTime, paymentDates[index]);
-					
+			if( evaluationTime != paymentDates[index]) {
+				currentBondFairValue = underlyingModel.getZeroCouponBond(evaluationTime, paymentDates[index]);
+			}
+			else {
+				currentBondFairValue = new RandomVariable(1.0);
+			}
 			// Summing the fair values of all outstanding payments.
 			outstandingPayments = outstandingPayments.add( currentBondFairValue.mult( coupons[index] * periodFactors[index]) );
 			// The fair value at evaluation time of the payment of 1 at maturity.
-			if(index == paymentDates.length-1) { outstandingPayments = outstandingPayments.add(currentBondFairValue);  }
+			if(index == paymentDates.length-1) { 
+				outstandingPayments = outstandingPayments.add(currentBondFairValue);  
+			}
 		}
 		
 		return outstandingPayments;

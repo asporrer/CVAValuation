@@ -1,13 +1,13 @@
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.product;
 
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.ZCBond_ProductConditionalFairValue_ModelInterface;
 import net.finmath.exception.CalculationException;
 import net.finmath.stochastic.RandomVariableInterface;
-import main.net.finmath.antonsporrer.masterthesis.montecarlo.AbstractZCBond_ProductConditionalFairValue_Model;
 
-public class SwapConditionalFairValueProcess extends AbstractZCBondProductConditionalFairValueProcess<AbstractZCBond_ProductConditionalFairValue_Model>{
+public class SwapConditionalFairValueProcess extends AbstractProductConditionalFairValueProcess<ZCBond_ProductConditionalFairValue_ModelInterface>{
 
 	public SwapConditionalFairValueProcess(
-			AbstractZCBond_ProductConditionalFairValue_Model underlyingModel) {
+			ZCBond_ProductConditionalFairValue_ModelInterface underlyingModel) {
 		super(underlyingModel);
 		// TODO Auto-generated constructor stub
 	}
@@ -18,4 +18,7 @@ public class SwapConditionalFairValueProcess extends AbstractZCBondProductCondit
 		return null;
 	}
 
+	
+	
+	
 }

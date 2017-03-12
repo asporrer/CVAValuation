@@ -1,9 +1,9 @@
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.NPVAndDefaultsimulation;
 
-import main.net.finmath.antonsporrer.masterthesis.montecarlo.AbstractProductConditionalFairValue_Model;
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.intensitymodel.IntensityModelInterface;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.intermodelbmcorrelation.CorrelationInterface;
-import main.net.finmath.antonsporrer.masterthesis.montecarlo.product.AbstractProductConditionalFairValueProcess;
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.product.ProductConditionalFairValueProcessInterface;
 import net.finmath.exception.CalculationException;
 import net.finmath.montecarlo.BrownianMotion;
 import net.finmath.montecarlo.BrownianMotionInterface;
@@ -14,19 +14,16 @@ import net.finmath.montecarlo.process.ProcessEulerScheme;
 import net.finmath.stochastic.RandomVariableInterface;
 import net.finmath.time.TimeDiscretizationInterface;
 
-
-
 /**
- * 
  * 
  * 
  * @author Anton Sporrer
  *
  */
-public class NPVAndCorrelatedDefaultIntensitySimulation<T extends AbstractProductConditionalFairValue_Model> extends AbstractNPVAndDefaultIntensitySimulation<T>{
-
+public class NPVAndCorrelatedDefaultIntensitySimulation<T extends ProductConditionalFairValue_ModelInterface> extends AbstractNPVAndDefaultIntensitySimulation<T>{
+	
 	private IntensityModelInterface intensityModel;
-
+	
 	private CorrelationInterface underlyingIntensityCorrelation;
 	
 	private int seed;
@@ -45,14 +42,16 @@ public class NPVAndCorrelatedDefaultIntensitySimulation<T extends AbstractProduc
 	 */
 	public NPVAndCorrelatedDefaultIntensitySimulation(
 			T underlyingModel,
-			AbstractProductConditionalFairValueProcess<T> productProcess, IntensityModelInterface intensityModel, CorrelationInterface correlation, int seed) {
+			ProductConditionalFairValueProcessInterface<T> productProcess, IntensityModelInterface intensityModel, CorrelationInterface correlation, int seed) {
 		
 		super(underlyingModel, productProcess);
-		// TODO: Check is the underlying model has a not null process as instance variable.
+		// TODO: Check if the underlying model has a not null process as instance variable.
+		
+		this.intensityModel = intensityModel;
 		
 		this.underlyingIntensityCorrelation = correlation;
 		this.seed = seed;
-
+		
 		correlateUnderylingAndIntensity(this.getTimeDiscretization(), seed, this.getNumberOfPaths() );
 		// correlateUnderlyingAndIntensity(underlyingModel,  intensityModel, correlation, TimeDiscretizationInterface timeDiscretization, int numberOfPaths, int seed);
 		// TODO: Correlate intensity model and underlyingModel.
@@ -122,6 +121,7 @@ public class NPVAndCorrelatedDefaultIntensitySimulation<T extends AbstractProduc
 		processIntensityModel.setModel(intensityModel);
 		
 	}
+	
 	
 	
 	public RandomVariableInterface getIntensity(int timeIndex) throws CalculationException {
