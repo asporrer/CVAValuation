@@ -18,7 +18,7 @@ public class SimpleCVALogicTestDrive {
 		
 		IntensityBasedCVA intensityBasedCVA = new IntensityBasedCVA(1.0);
 		
-		ZCBond_ProductConditionalFairValue_ModelInterface underlyingModel = HullWhiteCreationHelper.createHullWhiteModel(0.0, 20, 0.5); 
+		ZCBond_ProductConditionalFairValue_ModelInterface underlyingModel = HullWhiteCreationHelper.createHullWhiteModel(0.0, 20, 0.5, 100); 
 		/* AbstractProductConditionalFairValueProcess<AbstractZCBond_ProductConditionalFairValue_Model> */  CouponBondConditionalFairValueProcess productProcess = new CouponBondConditionalFairValueProcess(underlyingModel, new double[] {1.0}, new double[] {1.0}, new double[] {1.0});
 		
 		IntensityModelInterface intensityModel = new CIRModel(1.0, 1.0 , 1.0, 1.0);

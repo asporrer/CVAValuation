@@ -18,7 +18,7 @@ import net.finmath.time.TimeDiscretizationInterface;
 public class HullWhiteCreationHelper {
 
 	
-	public static HullWhiteModel createHullWhiteModel(double initialTime, int numberOfTimeSteps, double deltaT ) {
+	public static HullWhiteModel createHullWhiteModel(double initialTime, int numberOfTimeSteps, double deltaT, int numberOfPaths ) {
 		
 		// Declaring and initializing the simulation time discretization.
 		TimeDiscretizationInterface timeDiscretization = new TimeDiscretization(initialTime, numberOfTimeSteps, deltaT);
@@ -45,14 +45,14 @@ public class HullWhiteCreationHelper {
 				0.5							/* tenor / period length */
 				);
 		
-		return createHullWhiteModel(initialTime, numberOfTimeSteps, deltaT, shortRateVolatilityModel, forwardCurve);
+		return createHullWhiteModel(initialTime, numberOfTimeSteps, deltaT, shortRateVolatilityModel, forwardCurve, numberOfPaths);
 			
 	}
 	
 	
 	
 	
-	public static HullWhiteModel createHullWhiteModel(double initialTime, int numberOfTimeSteps, double deltaT, ShortRateVolatilityModel shortRateVolatilityModel , ForwardCurve forwardCurve ) {
+	public static HullWhiteModel createHullWhiteModel(double initialTime, int numberOfTimeSteps, double deltaT, ShortRateVolatilityModel shortRateVolatilityModel , ForwardCurve forwardCurve, int numberOfPaths ) {
 
 		// Declaring and initializing the simulation time discretization.
 		TimeDiscretizationInterface timeDiscretization = new TimeDiscretization(initialTime, numberOfTimeSteps, deltaT);
@@ -60,11 +60,10 @@ public class HullWhiteCreationHelper {
 		////
 		// Declaring and Initializing an Uncorrelated Brownian Motion.
 		////
-		int numberOfFactors = 3;
-		int numberOfPaths = 10;
+		int numberOfFactors = 2;
 		int seed = 1337;
 		
-		BrownianMotionInterface brownianMotionShortRateModel = new BrownianMotion(timeDiscretization,2, numberOfPaths, seed);
+		BrownianMotionInterface brownianMotionShortRateModel = new BrownianMotion(timeDiscretization, numberOfFactors, numberOfPaths, seed);
 			
 		AbstractProcess processShortRateModel = new ProcessEulerScheme(brownianMotionShortRateModel);
 			
@@ -90,7 +89,6 @@ public class HullWhiteCreationHelper {
 	
 
 	/**
-	 * 
 	 * @param initialTime
 	 * @param numberOfTimeSteps
 	 * @param deltaT
@@ -99,9 +97,9 @@ public class HullWhiteCreationHelper {
 	 * @param forwardRates Has to have length 5.
 	 * @return
 	 */
-	public static HullWhiteModel createHullWhiteModel(double initialTime, int numberOfTimeSteps, double deltaT, double[] meanReversionShortRate , double[] volatilityShortRate, double[] forwardRates) {
+	public static HullWhiteModel createHullWhiteModel(double initialTime, int numberOfTimeSteps, double deltaT, double[] meanReversionShortRate , double[] volatilityShortRate, double[] forwardRates , int numberOfPaths) {
 		
-		if(numberOfTimeSteps != volatilityShortRate.length) {throw new IllegalArgumentException("The number of time steps has to be equal to the length of the mean reversion and volatility array.");}
+		if(numberOfTimeSteps + 1 != volatilityShortRate.length || numberOfTimeSteps + 1 != meanReversionShortRate.length) {throw new IllegalArgumentException("The number of times has to be equal to the length of the mean reversion and volatility array.");}
 		if(5 != forwardRates.length) {throw new IllegalArgumentException("The length of forwardRates array has to be five.");}
 		
 		TimeDiscretizationInterface timeDiscretization = new TimeDiscretization(initialTime, numberOfTimeSteps, deltaT);
@@ -115,7 +113,7 @@ public class HullWhiteCreationHelper {
 				0.5							/* tenor / period length */
 				);
 		
-		return createHullWhiteModel(initialTime, numberOfTimeSteps, deltaT, shortRateVolatilityModel, forwardCurve);
+		return createHullWhiteModel(initialTime, numberOfTimeSteps, deltaT, shortRateVolatilityModel, forwardCurve, numberOfPaths);
 	}
 	
 	

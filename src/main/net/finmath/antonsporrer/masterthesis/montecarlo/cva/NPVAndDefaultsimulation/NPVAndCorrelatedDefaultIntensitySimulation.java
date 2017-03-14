@@ -134,6 +134,10 @@ public class NPVAndCorrelatedDefaultIntensitySimulation<T extends ProductConditi
 		return super.getExpOfIntegratedIntensity(timeIndex);
 	}
 
+	public IntensityModelInterface getIntensityModel() {
+		return this.intensityModel;
+	}
+	
 
 	public int getSeed() {
 		return this.seed;

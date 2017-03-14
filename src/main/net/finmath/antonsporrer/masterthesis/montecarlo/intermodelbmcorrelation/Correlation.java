@@ -32,7 +32,8 @@ public class Correlation implements CorrelationInterface {
 	public double[][] getCorrelationFactorMatrix(){
 		
 		if(correlationFactor == null) {
-			correlationFactor = LinearAlgebra.getFactorMatrix(correlation, correlation.length);
+			// LinearAlgebra linearAlgebraForObba = new LinearAlgebra();
+			correlationFactor =  LinearAlgebra.getFactorMatrix(correlation, correlation.length);
 		}
 		
 		return correlationFactor;
@@ -41,6 +42,7 @@ public class Correlation implements CorrelationInterface {
 	public double getCorrelationFactor(int rowIndex, int columnIndex) {
 		
 		if(correlationFactor == null) {
+			// LinearAlgebra linearAlgebraForObba = new LinearAlgebra();
 			correlationFactor = LinearAlgebra.getFactorMatrix(correlation, correlation.length);
 		}
 		

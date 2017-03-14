@@ -20,7 +20,7 @@ public class IntensityBasedCVA extends AbstractCVA{
 		
 		RandomVariableInterface[] functionValues = new RandomVariableInterface[numberOfFunctionValues];
 		
-		for(int timeIndex = 0; timeIndex < numberOfFunctionValues - 1; timeIndex++) {
+		for(int timeIndex = 0; timeIndex < numberOfFunctionValues ; timeIndex++) {
 			functionValues[timeIndex] = npvAndDefaultIntensitySimulation.getDiscountedNPV(timeIndex, 0)
 					.mult( npvAndDefaultIntensitySimulation.getIntensity(timeIndex) )
 					.mult( npvAndDefaultIntensitySimulation.getExpOfIntegratedIntensity(timeIndex) );
