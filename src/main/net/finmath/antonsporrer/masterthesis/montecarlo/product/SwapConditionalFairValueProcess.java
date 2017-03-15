@@ -6,6 +6,10 @@ import net.finmath.stochastic.RandomVariableInterface;
 
 public class SwapConditionalFairValueProcess extends AbstractProductConditionalFairValueProcess<ZCBond_ProductConditionalFairValue_ModelInterface>{
 
+	
+	
+	
+	
 	public SwapConditionalFairValueProcess(
 			ZCBond_ProductConditionalFairValue_ModelInterface underlyingModel) {
 		super(underlyingModel);
