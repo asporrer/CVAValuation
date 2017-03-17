@@ -18,6 +18,7 @@ import net.finmath.marketdata.model.AnalyticModelInterface;
 import net.finmath.marketdata.model.curves.DiscountCurveFromForwardCurve;
 import net.finmath.marketdata.model.curves.DiscountCurveInterface;
 import net.finmath.marketdata.model.curves.ForwardCurveInterface;
+import net.finmath.montecarlo.RandomVariable;
 import net.finmath.montecarlo.interestrate.LIBORModelInterface;
 import net.finmath.montecarlo.interestrate.modelplugins.ShortRateVolailityModelInterface;
 import net.finmath.montecarlo.model.AbstractModel;
@@ -358,16 +359,22 @@ public class HullWhiteModel extends AbstractModel implements ZCBond_ProductCondi
 	
 	// Modifications: Changed private to public
 	public RandomVariableInterface getZeroCouponBond(double time, double maturity) throws CalculationException {
-		int timeIndex = getProcess().getTimeIndex(time);
-		if(timeIndex < 0) {
-			int timeIndexLo = -timeIndex-1-1;
-			double timeLo = getProcess().getTime(timeIndexLo);
-			return getZeroCouponBond(timeLo, maturity).mult(getShortRate(timeIndexLo).mult(time-timeLo).exp());
+		// Modified: added if-statement. Added first case to prevent index out of bound exception in case time == maturity.
+		if(time == maturity) {
+			return new RandomVariable(1.0);
 		}
-		RandomVariableInterface shortRate = getShortRate(timeIndex);
-		double A = getA(time, maturity);
-		double B = getB(time, maturity);
-		return shortRate.mult(-B).exp().mult(A);
+		else {
+			int timeIndex = getProcess().getTimeIndex(time);
+			if(timeIndex < 0) {
+				int timeIndexLo = -timeIndex-1-1;
+				double timeLo = getProcess().getTime(timeIndexLo);
+				return getZeroCouponBond(timeLo, maturity).mult(getShortRate(timeIndexLo).mult(time-timeLo).exp());
+			}
+			RandomVariableInterface shortRate = getShortRate(timeIndex);
+			double A = getA(time, maturity);
+			double B = getB(time, maturity);
+			return shortRate.mult(-B).exp().mult(A);
+		}
 	}
 
 	/**
