@@ -8,7 +8,7 @@ public class HullWhiteModelTestDrive {
 
 	public static void main(String[] args) throws CalculationException {
 		
-		HullWhiteModel hullWhiteModel = HullWhiteCreationHelper.createHullWhiteModel(0.0, 20, 0.5);
+		HullWhiteModel hullWhiteModel = HullWhiteCreationHelper.createHullWhiteModel(0.0, 20, 0.5, 20);
 
 		System.out.println( hullWhiteModel.getLIBOR(0, 19) );
 		

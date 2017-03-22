@@ -1,13 +1,30 @@
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.NPVAndDefaultsimulation;
 
+import main.net.finmath.antonsporrer.masterthesis.integration.Integration;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.product.ProductConditionalFairValueProcessInterface;
 import net.finmath.exception.CalculationException;
 import net.finmath.montecarlo.RandomVariable;
 import net.finmath.stochastic.RandomVariableInterface;
 
+
+/**
+ * 
+ * The default probability is modeled as follows in the intensity based approach.
+ * Let U be an uniform distributed random variable independent of the default intensity.
+ * Then the default stopping time &tau; is defined as follows. 
+ * <br> &tau; := inf(t >= 0 | U >= exp( - int<sub>0</sub><sup>t</sup> intensity(s) ds )).
+ * 
+ * @author Anton Sporrer
+ *
+ * @param <T>
+ */
+
 public abstract class AbstractNPVAndDefaultIntensitySimulation<T extends ProductConditionalFairValue_ModelInterface> extends AbstractNPVAndDefaultSimulation<T> implements NPVAndDefaultIntensitySimulationInterface<T> {
 	
+	// TODO: Change to ConcurrentHashMap and implement tests in function / correlated intensity sub-classes.
+	// These tests should secure that the underlying determining the expOfIntegratedIntensity did not change
+	// This array contains at index i is the pathwise approximation of exp(int_0^t_i intensity(s) ds).
 	private RandomVariableInterface[] expOfIntegratedIntensity;
 	
 	public AbstractNPVAndDefaultIntensitySimulation(
@@ -16,13 +33,42 @@ public abstract class AbstractNPVAndDefaultIntensitySimulation<T extends Product
 		super(underlyingModel, productProcess);
 	}
 
-	public double getDefaultProbability(int timeIndex) {
-		// TODO: Implement here.
-		// Lazy init for defaultProbability. 
-		return -1;
+	
+	
+	public double getDefaultProbability( int timeIndex ) throws CalculationException {
+		
+		// In case the passed time index is strictly bigger than the number of times of the underlying time discretization an error is thrown.
+		if( timeIndex > this.getTimeDiscretization().getNumberOfTimes() ) {
+			throw new IllegalArgumentException("The timeIndex is not allowed to be strictly bigger then numberOfTimes.");
+		}
+		
+		// Check if the requested default probability has already been calculated.
+		// In this case it is just returned.
+		if( this.defaultProbabilities.get(timeIndex) != null ) {
+			return defaultProbabilities.get(timeIndex);
+		}
+		
+		////
+		// The default probability of tau in ( 0 , t_{timeIndex} ] is calculated. 
+		//  The default stopping time is modeled by tau := inf(t >= 0 | U >= exp( - int_0^t intensity(s) ds )).
+		// Therefore the probability P( tau in ( 0 , t_{timeIndex} ] ) = E[ 1 - exp(- int_0^t intensity(s) ds ) ].  
+		////
+		
+		// Storing the current default probability to the default probabilities hash map.
+		defaultProbabilities.put(  timeIndex , 1.0 - ( ( new RandomVariable(1.0) ).div( this.getExpOfIntegratedIntensity(timeIndex) ) ).getAverage()  );
+		
+		return  defaultProbabilities.get(timeIndex);
+		
 	}
 	
 	
+	
+	/**
+	 * 
+	 * @param timeIndex The time index up to which is integrated.
+	 * @return The path-wise approximation of exp(int_0^t_{timeIndex} intensity(s) ds)
+	 * 
+	 */
 	public RandomVariableInterface getExpOfIntegratedIntensity(int timeIndex) throws CalculationException {
 		
 		if( expOfIntegratedIntensity == null ) {
@@ -64,7 +110,7 @@ public abstract class AbstractNPVAndDefaultIntensitySimulation<T extends Product
 			
 			currentTime = this.getTimeDiscretization().getTime(timeIndex);
 			
-			currentDeltaT = new RandomVariable(this.getTimeDiscretization().getTime(timeIndex+1) -  currentTime);
+			currentDeltaT = new RandomVariable(this.getTimeDiscretization().getTime(timeIndex+1) - currentTime);
 			
 			// intensity(t_timeIndex)
 			currentIntensity = this.getIntensity(timeIndex);

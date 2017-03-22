@@ -20,8 +20,7 @@ public class HullWhiteCreationHelper {
 	
 	public static HullWhiteModel createHullWhiteModel(double initialTime, int numberOfTimeSteps, double deltaT, int numberOfPaths ) {
 		
-		// Declaring and initializing the simulation time discretization.
-		TimeDiscretizationInterface timeDiscretization = new TimeDiscretization(initialTime, numberOfTimeSteps, deltaT);
+		
 		
 		// Volatility array for the volatility model.
 		double[] volatilities = new double[numberOfTimeSteps +1];
@@ -33,24 +32,64 @@ public class HullWhiteCreationHelper {
 			volatilities[index] = 0.3;
 			meanReversions[index] = 0.03;
 		}
+
 		
-		ShortRateVolatilityModel shortRateVolatilityModel = new ShortRateVolatilityModel(timeDiscretization, volatilities, meanReversions);
-		// ShortRateVolatilityModelHoLee shortRateVolatilityModelHoLee = new ShortRateVolatilityModelHoLee(0.3);
-		
-		
-		ForwardCurve forwardCurve = ForwardCurve.createForwardCurveFromForwards(
-				"forwardCurve"								/* name of the curve */,
-				new double[] {0.5 , 1.0 , 2.0 , 5.0 , 40.0}	/* fixings of the forward */,
-				new double[] {0.05, 0.05, 0.05, 0.05, 0.05}	/* forwards */,
-				0.5							/* tenor / period length */
-				);
-		
-		return createHullWhiteModel(initialTime, numberOfTimeSteps, deltaT, shortRateVolatilityModel, forwardCurve, numberOfPaths);
+		return createHullWhiteModel(initialTime, numberOfTimeSteps, deltaT, meanReversions, volatilities, new double[] {0.05, 0.05, 0.05, 0.05, 0.05}, numberOfPaths);
 			
 	}
 	
-	
-	
+
+	/**
+	 * @param initialTime
+	 * @param numberOfTimeSteps
+	 * @param deltaT
+	 * @param meanReversionShortRate
+	 * @param volatilityShortRate
+	 * @param forwardRates Has to have length 5.
+	 * @return
+	 */
+	public static HullWhiteModel createHullWhiteModel(double initialTime, int numberOfTimeSteps, double deltaT, double[] meanReversionShortRate , double[] volatilityShortRate, double[] forwardRates , int numberOfPaths) {
+		
+		if(numberOfTimeSteps + 1 != volatilityShortRate.length || numberOfTimeSteps + 1 != meanReversionShortRate.length) {throw new IllegalArgumentException("The number of times has to be equal to the length of the mean reversion and volatility array.");}
+		if(5 != forwardRates.length) {throw new IllegalArgumentException("The length of forwardRates array has to be five.");}
+		
+
+		return createHullWhiteModel(initialTime, numberOfTimeSteps, deltaT, meanReversionShortRate, volatilityShortRate, new double[] {0.5 , 1.0 , 2.0 , 5.0 , 40.0}, forwardRates, 0.5,  numberOfPaths);
+	}
+
+
+	/**
+	 * 
+	 * @param initialTime
+	 * @param numberOfTimeSteps
+	 * @param deltaT
+	 * @param meanReversionShortRate
+	 * @param volatilityShortRate
+	 * @param forwardFixings
+	 * @param forwardValues
+	 * @param forwardTenorPeriodLength
+	 * @param numberOfPaths
+	 * @return
+	 */
+	public static HullWhiteModel createHullWhiteModel(double initialTime, int numberOfTimeSteps, double deltaT, double[] meanReversionShortRate , double[] volatilityShortRate, double[] forwardFixings, double[] forwardValues, double forwardTenorPeriodLength, int numberOfPaths) {
+		
+		if(numberOfTimeSteps + 1 != volatilityShortRate.length || numberOfTimeSteps + 1 != meanReversionShortRate.length) {throw new IllegalArgumentException("The number of times has to be equal to the length of the mean reversion and volatility array.");}
+		if(forwardFixings.length != forwardValues.length) {throw new IllegalArgumentException("The length of forwardValues array has to be equal to the length of the forwardFixings array.");}
+		
+		TimeDiscretizationInterface timeDiscretization = new TimeDiscretization(initialTime, numberOfTimeSteps, deltaT);
+		
+		ShortRateVolatilityModel shortRateVolatilityModel = new ShortRateVolatilityModel(timeDiscretization, volatilityShortRate, meanReversionShortRate);
+
+		ForwardCurve forwardCurve = ForwardCurve.createForwardCurveFromForwards(
+				"forwardCurve"								/* name of the curve */,
+				forwardFixings	/* fixings of the forward */,
+				forwardValues	/* forwards */,
+				forwardTenorPeriodLength	/* tenor / period length */
+				);
+		
+		return createHullWhiteModel(initialTime, numberOfTimeSteps, deltaT, shortRateVolatilityModel, forwardCurve, numberOfPaths);
+	}
+
 	
 	public static HullWhiteModel createHullWhiteModel(double initialTime, int numberOfTimeSteps, double deltaT, ShortRateVolatilityModel shortRateVolatilityModel , ForwardCurve forwardCurve, int numberOfPaths ) {
 
@@ -88,33 +127,6 @@ public class HullWhiteCreationHelper {
 }
 	
 
-	/**
-	 * @param initialTime
-	 * @param numberOfTimeSteps
-	 * @param deltaT
-	 * @param meanReversionShortRate
-	 * @param volatilityShortRate
-	 * @param forwardRates Has to have length 5.
-	 * @return
-	 */
-	public static HullWhiteModel createHullWhiteModel(double initialTime, int numberOfTimeSteps, double deltaT, double[] meanReversionShortRate , double[] volatilityShortRate, double[] forwardRates , int numberOfPaths) {
-		
-		if(numberOfTimeSteps + 1 != volatilityShortRate.length || numberOfTimeSteps + 1 != meanReversionShortRate.length) {throw new IllegalArgumentException("The number of times has to be equal to the length of the mean reversion and volatility array.");}
-		if(5 != forwardRates.length) {throw new IllegalArgumentException("The length of forwardRates array has to be five.");}
-		
-		TimeDiscretizationInterface timeDiscretization = new TimeDiscretization(initialTime, numberOfTimeSteps, deltaT);
-		
-		ShortRateVolatilityModel shortRateVolatilityModel = new ShortRateVolatilityModel(timeDiscretization, volatilityShortRate, meanReversionShortRate);
-
-		ForwardCurve forwardCurve = ForwardCurve.createForwardCurveFromForwards(
-				"forwardCurve"								/* name of the curve */,
-				new double[] {0.5 , 1.0 , 2.0 , 5.0 , 40.0}	/* fixings of the forward */,
-				forwardRates	/* forwards */,
-				0.5							/* tenor / period length */
-				);
-		
-		return createHullWhiteModel(initialTime, numberOfTimeSteps, deltaT, shortRateVolatilityModel, forwardCurve, numberOfPaths);
-	}
 	
 	
 	

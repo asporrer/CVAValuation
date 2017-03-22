@@ -2,6 +2,7 @@ package main.net.finmath.antonsporrer.masterthesis.integration;
 
 import net.finmath.montecarlo.RandomVariable;
 import net.finmath.stochastic.RandomVariableInterface;
+import net.finmath.time.TimeDiscretization;
 import net.finmath.time.TimeDiscretizationInterface;
 
 /**
@@ -157,6 +158,21 @@ public class Integration {
 				
 		
 		return integral;
+		
+	}
+	
+	/**
+	 * 
+	 * 
+	 * 
+	 * @param functionValues
+	 * @param times The time points associated with the function values.
+	 * @param integrationMethod
+	 * @return
+	 */
+	public static RandomVariableInterface getIntegral(RandomVariableInterface[] functionValues, double[] times, IntegrationMethod integrationMethod) {
+	
+		return getIntegral(functionValues, new TimeDiscretization(times), integrationMethod);
 		
 	}
 	

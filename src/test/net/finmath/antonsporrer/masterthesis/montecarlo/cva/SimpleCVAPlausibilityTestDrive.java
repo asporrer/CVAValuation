@@ -23,13 +23,13 @@ public class SimpleCVAPlausibilityTestDrive {
 		double lossGivenDefault = 1.0;
 		IntensityBasedCVA intensityBasedCVA = new IntensityBasedCVA(lossGivenDefault);
 		
-		int numberOfPaths = 10;
+		int numberOfPaths = 10000;
 		
 		ZCBond_ProductConditionalFairValue_ModelInterface underlyingModel = HullWhiteCreationHelper.createHullWhiteModel(0.0, 20, 0.5, numberOfPaths); 
 		@SuppressWarnings("rawtypes")
 		ProductConditionalFairValueProcessInterface productProcess = new CouponBondConditionalFairValueProcess(underlyingModel, new double[] {10.0}, new double[] {1.0}, new double[] {1.0});
 		
-		IntensityModelInterface intensityModel = new CIRModel(0.05, 0.7 , 0.03, 0.07);
+		IntensityModelInterface intensityModel = new CIRModel(0.03, 0.7 , 0.03, 0.07);
 		
 		
 		CorrelationInterface correlation = new Correlation(new double[][]{{0.9},{0.0}});

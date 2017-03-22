@@ -28,7 +28,7 @@ import net.finmath.stochastic.RandomVariableInterface;
  */
 public class SwapConditionalFairValueProcess extends AbstractProductConditionalFairValueProcess<ZCBond_ProductConditionalFairValue_ModelInterface>{
 	
-	// T_1, T_2, ... , T_n
+	// T_1, T_2, ... , T_n. T_1 is the first fixing date. No payments are made at T_1.
 	double[] paymentDatesFixingDates;
 	// Swap Rate
 	double swapRate;
@@ -45,10 +45,11 @@ public class SwapConditionalFairValueProcess extends AbstractProductConditionalF
 		this.paymentDatesFixingDates = paymentDatesFixingDates;
 		this.swapRate = swapRate;
 	}
-
+	
 	public RandomVariableInterface getFairValue(int timeIndex) throws CalculationException {
 		
 		int numberOfDates = paymentDatesFixingDates.length;
+		
 		
 		////
 		// The first date index greater or equal to the 
@@ -64,151 +65,78 @@ public class SwapConditionalFairValueProcess extends AbstractProductConditionalF
 		}
 		
 		
-		// The following two cases have to be considered
-		if( nextDateIndex == 0 ) {
-			
-			////
-			// Calculating the fair value of the Floating payments.
-			////
-			
-			// The fair Zero Coupon Bond values P(T_1,t) ,P(T_n,t) are fetched.
-			RandomVariableInterface bondT1 = this.underlyingModel.getZeroCouponBond(evaluationTime, paymentDatesFixingDates[nextDateIndex]);
-			RandomVariableInterface bondTn = this.underlyingModel.getZeroCouponBond(evaluationTime, paymentDatesFixingDates[numberOfDates - 1]);
-			
-			// Calculating P(T_1,t) - P(T_n,t) this is the fair value of the floating payments.
-			RandomVariableInterface fairValueFloatingRatePayments = bondT1.addProduct(bondTn, -1.0);
-			
-			
-			////
-			// Calculating the fair value of the fixed payments.
-			// This is the fair value of a coupon bond.
-			// The class used to calculate the fair value of a coupon bond is reused.
-			////
-			
-			// The fair value of a coupon bond bond is calculated.
-			
-			// ( T_2, ... , T_n )
-			double[] paymentDates = new double[ numberOfDates - 1 ];
-			// ( swapRate, swapRate, ... , swapRate )
-			double[] coupons = new double[ numberOfDates - 1 ];
-			// ( T_2 - T_1, T_3 - T_2, ... , T_n - T_{n-1} )
-			double[] periodFactors = new double[ numberOfDates - 1 ];
-			
-			for(int index = 0; index < numberOfDates - 1 ; index++) {
-				paymentDates[index] = paymentDatesFixingDates[index + 1];
-				coupons[index] = swapRate;
-				periodFactors[index] = paymentDatesFixingDates[index + 1] - paymentDatesFixingDates[index];
-			}
-			
-			// Declaring and initializing the coupon bond calculation class.
-			CouponBondConditionalFairValueProcess couponBondConditionalFairValueProcess = new CouponBondConditionalFairValueProcess(this.getUnderlyingModel(), paymentDates, periodFactors, coupons);
-			
-			// Calculating the fair value of the fixed rate payments. The fair value of the coupon bond is calculated. 
-			// In a second step the bond payment of the ZCBond has to be subtracted since this is not part of the swap payments.
-			RandomVariableInterface fairValueFixedRatePayments = couponBondConditionalFairValueProcess.getFairValue(timeIndex).addProduct(bondTn, -1.0);
-			
-
-			////
-			// Subtracting the fair value of the fixed payments from the fair value of the floating payments. 
-			// This is the fair value of the swap.
-			////
-			
-			return fairValueFloatingRatePayments.addProduct( fairValueFixedRatePayments, -1.0 );
+		////
+		// Calculating the fair value of the Floating payments. 
+		////
 		
-		}
-		else {
+		// The fair Zero Coupon Bond values P(T_nextIndex,t) ,P(T_n,t) are fetched.
+		RandomVariableInterface bondTNextDateIndex = this.underlyingModel.getZeroCouponBond(evaluationTime, paymentDatesFixingDates[nextDateIndex]);
+		RandomVariableInterface bondTn = this.underlyingModel.getZeroCouponBond(evaluationTime, paymentDatesFixingDates[numberOfDates - 1]);
+		
+		// Calculating P(T_1,t) - P(T_n,t) this is the fair value of the floating payments.
+		RandomVariableInterface fairValueFloatingRatePayments = bondTNextDateIndex.addProduct(bondTn, -1.0);
+		
+		// In case the evaluation time is not smaller or equal to the first fixing date. 
+		// The fair value of the floating rate in the current period has to be added. 
+		// (E.g. L^{nextDatesIndex - 1}(T_{ nextDateIndex - 1 })(T_{nextDateIndex}) - T_{nextDateIndex - 1} ) P(T_{nextDateIndex}; evaluationDate).
+		if( nextDateIndex != 0 ) {
 			
+			RandomVariableInterface fairValueCurrentFloatingRatePayment = new RandomVariable(0.0);
+			
+			// The bond from the previous to the next time period is fetched. (P(T_{nextDateIndex}; T_{nextDateIndex - 1}))
+			RandomVariableInterface bondTNextDateIndexAtPreviousTimeIndex = this.underlyingModel.getZeroCouponBond( paymentDatesFixingDates[ nextDateIndex - 1 ] , paymentDatesFixingDates[ nextDateIndex ]);
+			
+			// P(T_{nextDateIndex};evaluationTime) / P(T_{nextDateIndex}; T_{nextDateIndex - 1}) -  P(T_{nextDateIndex};evaluationTime) is calculated. 
+			fairValueCurrentFloatingRatePayment = bondTNextDateIndex.div(bondTNextDateIndexAtPreviousTimeIndex).addProduct(bondTNextDateIndex, -1.0);
+			
+			// Adding the fair value of the current floating rate payments.
+			fairValueFloatingRatePayments = fairValueFloatingRatePayments.add(fairValueCurrentFloatingRatePayment);
 			
 		}
 		
 		
+		////
+		// Calculating the fair value of the fixed payments.
+		// This is the fair value of a coupon bond.
+		// The class used to calculate the fair value of a coupon bond is reused.
+		////
 		
-
-		// The following two cases have to be considered
-		 {
-	
-			 // TODO: Generalize form T_1 to T_nextIndex.
-			 
-			////
-			// Calculating the fair value of the Floating payments. 
-			////
-			
-			// The fair Zero Coupon Bond values P(T_nextIndex,t) ,P(T_n,t) are fetched.
-			RandomVariableInterface bondTNextDateIndex = this.underlyingModel.getZeroCouponBond(evaluationTime, paymentDatesFixingDates[nextDateIndex]);
-			RandomVariableInterface bondTn = this.underlyingModel.getZeroCouponBond(evaluationTime, paymentDatesFixingDates[numberOfDates - 1]);
-			
-			// Calculating P(T_1,t) - P(T_n,t) this is the fair value of the floating payments.
-			RandomVariableInterface fairValueFloatingRatePayments = bondTNextDateIndex.addProduct(bondTn, -1.0);
-			
-			// In case the evaluation time is not smaller or equal to the first fixing date. 
-			// The fair value of the floating rate in the current period as to be added. 
-			// (E.g. L^nextDatesIndex(T_{ nextDateIndex - 1 })(T_{nextDateIndex}) - T_{nextDateIndex - 1} ) P(T_{nextDateIndex}; evaluationDate).
-			if( nextDateIndex != 0 ) {
-				
-				RandomVariableInterface fairValueCurrentFloatingRatePayment = new RandomVariable(0.0);
-				
-				// The bond from the previous to the next time period is fetched. (P(T_{nextDateIndex}; T_{nextDateIndex - 1}))
-				RandomVariableInterface bondTNextDateIndexAtPreviousTimeIndex = this.underlyingModel.getZeroCouponBond( paymentDatesFixingDates[ nextDateIndex - 1 ] , paymentDatesFixingDates[ nextDateIndex ]);
-				
-				// P(T_{nextDateIndex};evaluationTime) / P(T_{nextDateIndex}; T_{nextDateIndex - 1}) -  P(T_{nextDateIndex};evaluationTime) is calculated. 
-				fairValueCurrentFloatingRatePayment = bondTNextDateIndex.div(bondTNextDateIndexAtPreviousTimeIndex).addProduct(bondTNextDateIndex, -1.0);
-				
-				// Adding the fair value of the current floating rate payments.
-				fairValueFloatingRatePayments = fairValueFloatingRatePayments.add(fairValueCurrentFloatingRatePayment);
-				
-			}
-			
-			
-			////
-			// Calculating the fair value of the fixed payments.
-			// This is the fair value of a coupon bond.
-			// The class used to calculate the fair value of a coupon bond is reused.
-			////
-			
-			// The fair value of a coupon bond bond is calculated.
-			
-			// ( T_2, ... , T_n )
-			double[] paymentDates = new double[ numberOfDates - 1 ];
-			// ( swapRate, swapRate, ... , swapRate )
-			double[] coupons = new double[ numberOfDates - 1 ];
-			// ( T_2 - T_1, T_3 - T_2, ... , T_n - T_{n-1} )
-			double[] periodFactors = new double[ numberOfDates - 1 ];
-			
-			for(int index = 0; index < numberOfDates - 1 ; index++) {
-				paymentDates[index] = paymentDatesFixingDates[index + 1];
-				coupons[index] = swapRate;
-				periodFactors[index] = paymentDatesFixingDates[index + 1] - paymentDatesFixingDates[index];
-			}
-			
-			// Declaring and initializing the coupon bond calculation class.
-			CouponBondConditionalFairValueProcess couponBondConditionalFairValueProcess = new CouponBondConditionalFairValueProcess(this.getUnderlyingModel(), paymentDates, periodFactors, coupons);
-			
-			// Calculating the fair value of the fixed rate payments. The fair value of the coupon bond is calculated. 
-			// In a second step the bond payment of the ZCBond has to be subtracted since this is not part of the swap payments.
-			RandomVariableInterface fairValueFixedRatePayments = couponBondConditionalFairValueProcess.getFairValue(timeIndex).addProduct(bondTn, -1.0);
-			
-	
-			////
-			// Subtracting the fair value of the fixed payments from the fair value of the floating payments. 
-			// This is the fair value of the swap.
-			////
-			
-			return fairValueFloatingRatePayments.addProduct( fairValueFixedRatePayments, -1.0 );
-				
+		// The fair value of a coupon bond bond is calculated.
+		
+		// The next payment date index is set.
+		int nextPaymentDateIndex = nextDateIndex;
+		
+		// In case the next date index is the first fixing date the next payment date has to be incremented.
+		if(nextDateIndex == 0) { nextPaymentDateIndex++; }
+		
+		// ( T_nextPaymentDateIndex, ... , T_n )
+		double[] paymentDates = new double[ numberOfDates - 1 ];
+		// ( swapRate, swapRate, ... , swapRate )
+		double[] coupons = new double[ numberOfDates - 1 ];
+		// ( T_nextPaymentDateIndex - T_{nextPaymentDateIndex - 1} , T_{nextPaymentDateIndex + 1} - T_nextPaymentDateIndex, ... , T_n - T_{n-1} )
+		double[] periodFactors = new double[ numberOfDates - 1 ];
+		
+		for( int index = 0; index < numberOfDates - 1 ; index++ ) {
+			paymentDates[ index ] = paymentDatesFixingDates[ index + nextPaymentDateIndex ];
+			coupons[ index ] = swapRate;
+			periodFactors[ index ] = paymentDatesFixingDates[ index + nextPaymentDateIndex ] - paymentDatesFixingDates[ index + nextPaymentDateIndex - 1 ];
 		}
+		
+		// Declaring and initializing the coupon bond calculation class.
+		CouponBondConditionalFairValueProcess couponBondConditionalFairValueProcess = new CouponBondConditionalFairValueProcess(this.getUnderlyingModel(), paymentDates, periodFactors, coupons);
+		
+		// Calculating the fair value of the fixed rate payments. The fair value of the coupon bond is calculated. 
+		// In a second step the bond payment of the ZCBond has to be subtracted since this is not part of the swap payments.
+		RandomVariableInterface fairValueFixedRatePayments = couponBondConditionalFairValueProcess.getFairValue(timeIndex).addProduct(bondTn, -1.0);
+		
 
+		////
+		// Subtracting the fair value of the fixed payments from the fair value of the floating payments. 
+		// This is the fair value of the swap.
+		////
 		
-		
-		double[] auxiliaryCouponBondCoupons = new double[paymentDatesFixingDates.length];
-		
-		for(int index = 0; index<auxiliaryCouponBondCoupons.length; index++) {
-			auxiliaryCouponBondCoupons[index] = 1
-		}		
-		
-		// TODO: If parametrization is changed this coupon bond is parameterized with T.
-		CouponBondConditionalFairValueProcess couponBondConditionalFairValueProcess = new CouponBondConditionalFairValueProcess(this.getUnderlyingModel() , paymentDates, periodFactors, coupons)
-		
-		return null;
+		return fairValueFloatingRatePayments.addProduct( fairValueFixedRatePayments, -1.0 );
+				
 	}
 
 	

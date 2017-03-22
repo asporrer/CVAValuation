@@ -19,8 +19,10 @@ import net.finmath.stochastic.RandomVariableInterface;
 public class NPVAndDefaultIntensityFunctionSimulation<T extends  ProductConditionalFairValue_ModelInterface & IntensityFunctionArgumentModel> extends AbstractNPVAndDefaultIntensitySimulation<T>{
 
 
-	FunctionInterface intensityFunction;
+	private FunctionInterface intensityFunction;
 	
+	private T underlyingModelforDefaultProbabilityConsistencyCheck;
+	private FunctionInterface intensityFunctionforDefaultProbabilityConsistencyCheck;
 	//TODO: Store Intensity: private RandomVariableInterface[] intensityProcess; implement a wider class of functions not only "markovian" functions.
 	
 	//TODO: Create Class Default Intensity Function and add to constructor.
@@ -36,6 +38,22 @@ public class NPVAndDefaultIntensityFunctionSimulation<T extends  ProductConditio
 		return intensityFunction.getValue( this.getProductProcess().getUnderlyingModel().getIntensityFunctionArgument(timeIndex, 0 /* Could be extended if needed */ ) );
 	}
 
+	@Override
+	public double getDefaultProbability(int timeIndex) throws CalculationException {
+		
+		// TODO: Check if this guarantees that the default probabilities are consistent!
+		// Check if the underlying model or the intensity function has changed. If so the default probabilities have 
+		// to be reset to guarantee consistent default probabilities.
+		if(underlyingModelforDefaultProbabilityConsistencyCheck != this.getProductProcess().getUnderlyingModel() || intensityFunctionforDefaultProbabilityConsistencyCheck != intensityFunction) {
+			defaultProbabilities.clear();
+			underlyingModelforDefaultProbabilityConsistencyCheck = this.getProductProcess().getUnderlyingModel() ;
+			intensityFunctionforDefaultProbabilityConsistencyCheck = this.intensityFunction;
+		}
+		
+		return super.getDefaultProbability(timeIndex);
+		
+	}
+	
 	public RandomVariableInterface getExpOfIntegratedIntensity(int timeIndex) throws CalculationException {
 		// TODO Use if-statement to treat the following case. The intensity model provides a getExpOfIntegratedIntensity function. 
 		return super.getExpOfIntegratedIntensity(timeIndex);

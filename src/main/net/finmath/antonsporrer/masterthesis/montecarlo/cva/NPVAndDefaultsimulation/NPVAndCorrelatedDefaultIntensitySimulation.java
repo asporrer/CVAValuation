@@ -23,10 +23,14 @@ import net.finmath.time.TimeDiscretizationInterface;
 public class NPVAndCorrelatedDefaultIntensitySimulation<T extends ProductConditionalFairValue_ModelInterface> extends AbstractNPVAndDefaultIntensitySimulation<T>{
 	
 	private IntensityModelInterface intensityModel;
+	private IntensityModelInterface intensityModelForDefaultProbabilityConsistencyCheck;
+	
 	
 	private CorrelationInterface underlyingIntensityCorrelation;
 	
 	private int seed;
+	
+	
 	
 	
 	/**
@@ -57,6 +61,19 @@ public class NPVAndCorrelatedDefaultIntensitySimulation<T extends ProductConditi
 		// TODO: Correlate intensity model and underlyingModel.
 	}
 	
+	@Override
+	public double getDefaultProbability(int timeIndex) throws CalculationException {
+		
+		// TODO: Check if this guarantees that the default probabilities are consistent!
+		// Check if the intensityModel has changed. If so the default probabilities have 
+		// to be reset to guarantee consistent default probabilities.
+		if(intensityModelForDefaultProbabilityConsistencyCheck != intensityModel) {
+			defaultProbabilities.clear();
+			intensityModelForDefaultProbabilityConsistencyCheck = intensityModel;
+		}
+		
+		return super.getDefaultProbability(timeIndex);
+	}
 	
 	private void correlateUnderylingAndIntensity(TimeDiscretizationInterface timeDiscretization, int seed, int numberOfPaths) {
 		
@@ -134,6 +151,8 @@ public class NPVAndCorrelatedDefaultIntensitySimulation<T extends ProductConditi
 		return super.getExpOfIntegratedIntensity(timeIndex);
 	}
 
+	
+	
 	public IntensityModelInterface getIntensityModel() {
 		return this.intensityModel;
 	}

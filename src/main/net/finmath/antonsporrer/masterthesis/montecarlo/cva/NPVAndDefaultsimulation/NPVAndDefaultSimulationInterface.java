@@ -1,5 +1,6 @@
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.NPVAndDefaultsimulation;
 
+import main.net.finmath.antonsporrer.masterthesis.integration.Integration;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.product.ProductConditionalFairValueProcessInterface;
 import net.finmath.exception.CalculationException;
@@ -35,7 +36,7 @@ public interface NPVAndDefaultSimulationInterface<T extends ProductConditionalFa
 	 * @param timeIndex
 	 * @return Default Probability of default occuring in the intervall (timeIndex, timeIndex + 1]. If the timeIndex is the last discretization point of the underlying time discretization than the probability of default in (timeIndex, infinity) is returned.
 	 */
-	public double getDefaultProbability(int timeIndex);
+	public double getDefaultProbability(int timeIndex) throws CalculationException;
 	
 	public TimeDiscretizationInterface getTimeDiscretization();
 	

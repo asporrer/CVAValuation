@@ -30,5 +30,4 @@ public interface NPVAndDefaultIntensitySimulationInterface<T extends ProductCond
 	 */
 	public RandomVariableInterface getExpOfIntegratedIntensity(int timeIndex) throws CalculationException;
 	
-	
 }
