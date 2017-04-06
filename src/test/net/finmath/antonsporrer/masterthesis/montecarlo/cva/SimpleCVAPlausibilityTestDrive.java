@@ -31,9 +31,8 @@ public class SimpleCVAPlausibilityTestDrive {
 		
 		IntensityModelInterface intensityModel = new CIRModel(0.03, 0.7 , 0.03, 0.07);
 		
-		
+	
 		CorrelationInterface correlation = new Correlation(new double[][]{{0.9},{0.0}});
-		
 		
 		
 		NPVAndDefaultIntensitySimulationInterface npvAndDefaultIntensitySimulation = new NPVAndCorrelatedDefaultIntensitySimulation<ZCBond_ProductConditionalFairValue_ModelInterface>(underlyingModel, productProcess, intensityModel , correlation , 3142);

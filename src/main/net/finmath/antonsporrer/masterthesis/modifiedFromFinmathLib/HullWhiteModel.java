@@ -11,7 +11,7 @@ package main.net.finmath.antonsporrer.masterthesis.modifiedFromFinmathLib;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import main.net.finmath.antonsporrer.masterthesis.montecarlo.IntensityFunctionArgumentModel;
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.IntensityFunctionArgumentModelInterface;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.ZCBond_ProductConditionalFairValue_ModelInterface;
 import net.finmath.exception.CalculationException;
 import net.finmath.marketdata.model.AnalyticModelInterface;
@@ -104,7 +104,7 @@ import net.finmath.time.TimeDiscretizationInterface;
  * @author Christian Fries
  * @version 1.4
  */
-public class HullWhiteModel extends AbstractModel implements ZCBond_ProductConditionalFairValue_ModelInterface, IntensityFunctionArgumentModel  {
+public class HullWhiteModel extends AbstractModel implements ZCBond_ProductConditionalFairValue_ModelInterface, IntensityFunctionArgumentModelInterface  {
 
 	private final TimeDiscretizationInterface		liborPeriodDiscretization;
 

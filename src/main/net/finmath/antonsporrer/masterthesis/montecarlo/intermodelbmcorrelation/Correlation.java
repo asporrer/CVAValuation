@@ -1,14 +1,47 @@
+/* 
+ * Contact: anton.sporrer@yahoo.com
+ */
+
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.intermodelbmcorrelation;
 
 import net.finmath.functions.LinearAlgebra;
 
+/**
+ * 
+ * The two purposes of this class are. 
+ * First to build a matrix from a given block according to 
+ * {@link #createCorrelationMatrix(double[][]) }.
+ * Secondly, to provide the useful methods for the built matrix.
+ * <br> The built matrix can be interpreted as a correlation matrix of 
+ * two random vectors. Where the intercorrelations are specified by the 
+ * constructor parameter interCorrelations. The intracorrelations of the
+ * two random vectors are zero that is to say that the two random vectors 
+ * on their own have the identity matrix as correlation matrix.
+ * 
+ * 
+ * @author Anton Sporrer
+ *
+ */
 public class Correlation implements CorrelationInterface {
 	
 	private double[][] correlationFactor;
 	private double[][] correlation;
+	
+	////
+	// The dimensions of the intercorrelation matrix are stored such that
+	// the 
+	////
 	int numberOfInterCorrelationsRows;
 	int numberOfInterCorrelationColumns;
 	
+	/**
+	 *  
+	 *  This constructor passes the parameter to 
+	 *  {@link #createCorrelationMatrix(double[][])}
+	 * 	which builds a matrix according to its documentation.
+	 * 
+	 * @param interCorrelations 
+	 */
 	public Correlation(double[][] interCorrelations) {
 		
 		createCorrelationMatrix(interCorrelations);
@@ -29,23 +62,19 @@ public class Correlation implements CorrelationInterface {
 		return correlation[rowIndex][columnIndex];
 	}
 	
-	public double[][] getCorrelationFactorMatrix(){
-		
+	
+	public double[][] getCorrelationFactorMatrix(){	
 		if(correlationFactor == null) {
-			// LinearAlgebra linearAlgebraForObba = new LinearAlgebra();
 			correlationFactor =  LinearAlgebra.getFactorMatrix(correlation, correlation.length);
 		}
-		
 		return correlationFactor;
 	}
 	
+	
 	public double getCorrelationFactor(int rowIndex, int columnIndex) {
-		
 		if(correlationFactor == null) {
-			// LinearAlgebra linearAlgebraForObba = new LinearAlgebra();
 			correlationFactor = LinearAlgebra.getFactorMatrix(correlation, correlation.length);
 		}
-		
 		return correlationFactor[rowIndex][columnIndex];
 	}
 	
@@ -80,14 +109,14 @@ public class Correlation implements CorrelationInterface {
 	/**
 	 * Let interCorrelation be of dimension m x n. 
 	 * This method returns a symmetric and quadratic matrix A of dimension m+n.
-	 * The quadratic matrix from (0,0) to (m-1, m-1) of A is the identity matrix. 
-	 * The same holds for the quadratic matrix from (m,m) to (m + n - 1, m + n - 1) of A. 
+	 * The quadratic matrix from index (0,0) to index (m-1, m-1) of A is the identity matrix. 
+	 * The same holds for the quadratic matrix from index (m,m) to index (m + n - 1, m + n - 1) of A. 
 	 * The matrix from (0, m) to (m - 1, m + n - 1) of A is the passed parameter. This is the 
 	 * intercorrelation matrix.  
 	 * 
 	 * @param interCorrelations 
 	 */
-	public void createCorrelationMatrix(double[][] interCorrelations) {
+	private void createCorrelationMatrix(double[][] interCorrelations) {
 		
 		int numberOfFactorsFirstModel = interCorrelations.length;
 		int numberOfFactorsSecondModel = interCorrelations[0].length;

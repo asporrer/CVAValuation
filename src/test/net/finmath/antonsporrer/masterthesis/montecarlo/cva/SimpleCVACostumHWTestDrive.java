@@ -1,6 +1,7 @@
 package test.net.finmath.antonsporrer.masterthesis.montecarlo.cva;
 
 import main.net.finmath.antonsporrer.masterthesis.integration.Integration.IntegrationMethod;
+import main.net.finmath.antonsporrer.masterthesis.modifiedFromFinmathLib.HullWhiteModel;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.ZCBond_ProductConditionalFairValue_ModelInterface;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.IntensityBasedCVA;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.NPVAndDefaultsimulation.NPVAndCorrelatedDefaultIntensitySimulation;
@@ -36,19 +37,19 @@ public class SimpleCVACostumHWTestDrive {
 		}
 		
 		
-		ZCBond_ProductConditionalFairValue_ModelInterface underlyingModel = HullWhiteCreationHelper.createHullWhiteModel(0.0, 20, 0.5, meanReversion, volatilities, forwardRates, numberOfPaths ); 
+		HullWhiteModel underlyingModel = HullWhiteCreationHelper.createHullWhiteModel(0.0, 20, 0.5, meanReversion, volatilities, forwardRates, numberOfPaths ); 
 		
-		@SuppressWarnings("rawtypes")
-		ProductConditionalFairValueProcessInterface productProcess = new CouponBondConditionalFairValueProcess(underlyingModel, new double[] {10.0}, new double[] {1.0}, new double[] {1.0});
 		
-		IntensityModelInterface intensityModel = new CIRModel(0.02, 0.05 , 0.02, 0.03);
+		ProductConditionalFairValueProcessInterface<HullWhiteModel> productProcess = new CouponBondConditionalFairValueProcess<HullWhiteModel>(underlyingModel, new double[] {10.0}, new double[] {1.0}, new double[] {1.0});
+		
+		IntensityModelInterface intensityModel = new CIRModel(0.01, 0.05 , 0.01, 0.03);
 		
 		
 		CorrelationInterface correlation = new Correlation(new double[][]{{0.9},{0.0}});
 		
 		
 		
-		NPVAndDefaultIntensitySimulationInterface npvAndDefaultIntensitySimulation = new NPVAndCorrelatedDefaultIntensitySimulation<ZCBond_ProductConditionalFairValue_ModelInterface>(underlyingModel, productProcess, intensityModel , correlation , 3142);
+		NPVAndDefaultIntensitySimulationInterface<HullWhiteModel> npvAndDefaultIntensitySimulation = new NPVAndCorrelatedDefaultIntensitySimulation<HullWhiteModel>(underlyingModel, productProcess, intensityModel , correlation , 3142);
 		
 		System.out.println( "The CVA with LGD of " + lossGivenDefault + " is: "  + intensityBasedCVA.getCVA( npvAndDefaultIntensitySimulation, IntegrationMethod.Trapezoidal ).getAverage() );
 		

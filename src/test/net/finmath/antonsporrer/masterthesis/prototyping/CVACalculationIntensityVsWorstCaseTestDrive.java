@@ -21,7 +21,7 @@ public class CVACalculationIntensityVsWorstCaseTestDrive {
 		double initialTime = 0;
 		int numberOfTimeSteps = 20;
 		double deltaT = 0.5;
-		ConditionalBondFormulaModelInterface bondModel = (ConditionalBondFormulaModelInterface) HullWhiteCreationHelper.createHullWhiteModel(initialTime, numberOfTimeSteps, deltaT);
+		ConditionalBondFormulaModelInterface bondModel = (ConditionalBondFormulaModelInterface) HullWhiteCreationHelper.createHullWhiteModel(initialTime, numberOfTimeSteps, deltaT, 100);
 
 		// Intensity Model parameters.
 		double initialValue = 0;

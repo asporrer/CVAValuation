@@ -2,6 +2,7 @@ package test.net.finmath.antonsporrer.masterthesis.montecarlo.cva;
 
 import net.finmath.exception.CalculationException;
 import main.net.finmath.antonsporrer.masterthesis.integration.Integration;
+import main.net.finmath.antonsporrer.masterthesis.modifiedFromFinmathLib.HullWhiteModel;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.ZCBond_ProductConditionalFairValue_ModelInterface;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.IntensityBasedCVA;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.NPVAndDefaultsimulation.NPVAndCorrelatedDefaultIntensitySimulation;
@@ -18,14 +19,14 @@ public class SimpleCVALogicTestDrive {
 		
 		IntensityBasedCVA intensityBasedCVA = new IntensityBasedCVA(1.0);
 		
-		ZCBond_ProductConditionalFairValue_ModelInterface underlyingModel = HullWhiteCreationHelper.createHullWhiteModel(0.0, 20, 0.5, 100); 
-		/* AbstractProductConditionalFairValueProcess<AbstractZCBond_ProductConditionalFairValue_Model> */  CouponBondConditionalFairValueProcess productProcess = new CouponBondConditionalFairValueProcess(underlyingModel, new double[] {1.0}, new double[] {1.0}, new double[] {1.0});
+		HullWhiteModel underlyingModel = HullWhiteCreationHelper.createHullWhiteModel(0.0, 20, 0.5, 100); 
+		/* AbstractProductConditionalFairValueProcess<AbstractZCBond_ProductConditionalFairValue_Model> */  CouponBondConditionalFairValueProcess<HullWhiteModel> productProcess = new CouponBondConditionalFairValueProcess<HullWhiteModel>(underlyingModel, new double[] {1.0}, new double[] {1.0}, new double[] {1.0});
 		
 		IntensityModelInterface intensityModel = new CIRModel(1.0, 1.0 , 1.0, 1.0);
 		CorrelationInterface correlation = null;
 		
-		@SuppressWarnings("rawtypes")
-		NPVAndDefaultIntensitySimulationInterface npvAndDefaultIntensitySimulation = new NPVAndCorrelatedDefaultIntensitySimulation<ZCBond_ProductConditionalFairValue_ModelInterface>(underlyingModel, productProcess, intensityModel , correlation , 3141);
+		
+		NPVAndDefaultIntensitySimulationInterface<HullWhiteModel> npvAndDefaultIntensitySimulation = new NPVAndCorrelatedDefaultIntensitySimulation<HullWhiteModel>(underlyingModel, productProcess, intensityModel , correlation , 3141);
 		//NPVAndCorrelatedDefaultIntensitySimulation<AbstractZCBond_ProductConditionalFairValue_Model> npvAndDefaultIntensitySimulation = new NPVAndCorrelatedDefaultIntensitySimulation<AbstractZCBond_ProductConditionalFairValue_Model>(underlyingModel, productProcess, intensityModel, correlation, seed)
 		
 		intensityBasedCVA.getCVA( npvAndDefaultIntensitySimulation, Integration.IntegrationMethod.LeftPoints);

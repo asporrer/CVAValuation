@@ -1,3 +1,7 @@
+/* 
+ * Contact: anton.sporrer@yahoo.com
+ */
+
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.NPVAndDefaultsimulation;
 
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface;
@@ -16,6 +20,11 @@ import net.finmath.time.TimeDiscretizationInterface;
 
 /**
  * 
+ * This class implements a simulation of correlated underlying process (e.g. a short rate or a LIBOR Market Model) specified by 
+ * {@link main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface} and
+ * a default intensity specified by {@link main.net.finmath.antonsporrer.masterthesis.montecarlo.intensitymodel.IntensityModelInterface}.
+ * This is simply done by correlating the Brownian motions used to simulate the underlying model and the intensity model. 
+ * 
  * 
  * @author Anton Sporrer
  *
@@ -23,26 +32,30 @@ import net.finmath.time.TimeDiscretizationInterface;
 public class NPVAndCorrelatedDefaultIntensitySimulation<T extends ProductConditionalFairValue_ModelInterface> extends AbstractNPVAndDefaultIntensitySimulation<T>{
 	
 	private IntensityModelInterface intensityModel;
+	// The calculated default probabilities are cached. The correctness of these stored probabilities is
+	// only guaranteed if the intensity model unchanged. Therefore the model is also stored in this
+	// variable for a later check before providing the stored default probabilities. 
+	// TODO: This test is not sufficient and should be extended.
 	private IntensityModelInterface intensityModelForDefaultProbabilityConsistencyCheck;
 	
-	
+	// The correlation of the Brownian motions B_1, B_1. Where B_1 is used to simulate the underlying and 
+	// and B_2 is used to simulate the intensity.
 	private CorrelationInterface underlyingIntensityCorrelation;
 	
+	// The seed for the brownian motion used in this simulation. 
 	private int seed;
-	
-	
-	
+
 	
 	/**
 	 * 
-	 * It is assumed that an underlyingModel having a not null instance variable of type AbstractProcess.
+	 * It is assumed that the underlyingModel has a not null instance variable of type AbstractProcess.
 	 * Such that getNumberOfPaths() and getTimeDiscretization() return proper values.
 	 * 
-	 * @param underlyingModel
-	 * @param productProcess
+	 * @param underlyingModel The underlying model for example a short rate model.
+	 * @param productProcess 
 	 * @param intensityModel
-	 * @param correlation
-	 * @param seed
+	 * @param correlation The intercorrelations of the Brownian motions B_1, B_2. B_1 is used to simulate the underlying, B_2 is used to simulate the intensity. 
+	 * @param seed The seed of (B_1,B_2) the Brownian motion.
 	 */
 	public NPVAndCorrelatedDefaultIntensitySimulation(
 			T underlyingModel,
@@ -57,14 +70,12 @@ public class NPVAndCorrelatedDefaultIntensitySimulation<T extends ProductConditi
 		this.seed = seed;
 		
 		correlateUnderylingAndIntensity(this.getTimeDiscretization(), seed, this.getNumberOfPaths() );
-		// correlateUnderlyingAndIntensity(underlyingModel,  intensityModel, correlation, TimeDiscretizationInterface timeDiscretization, int numberOfPaths, int seed);
-		// TODO: Correlate intensity model and underlyingModel.
 	}
+	
 	
 	@Override
 	public double getDefaultProbability(int timeIndex) throws CalculationException {
-		
-		// TODO: Check if this guarantees that the default probabilities are consistent!
+		// TODO: Improve! This does not necessarily guarantee that the default probabilities are still correct. 
 		// Check if the intensityModel has changed. If so the default probabilities have 
 		// to be reset to guarantee consistent default probabilities.
 		if(intensityModelForDefaultProbabilityConsistencyCheck != intensityModel) {
@@ -75,11 +86,17 @@ public class NPVAndCorrelatedDefaultIntensitySimulation<T extends ProductConditi
 		return super.getDefaultProbability(timeIndex);
 	}
 	
+	
+	/**
+	 * 
+	 * @param timeDiscretization
+	 * @param seed
+	 * @param numberOfPaths
+	 */
 	private void correlateUnderylingAndIntensity(TimeDiscretizationInterface timeDiscretization, int seed, int numberOfPaths) {
 		
 		// The dimension or in other words the number of factors of the Brownian motion driving the underlying and the intensity model
 		// is set.
-		// TODO: Check if models provide desired numbers in any case.
 		int numberOfFactors = underlyingIntensityCorrelation.getNumberOfRows();
 	
 		// First an uncorrelated Brownian motion is needed. 
@@ -140,24 +157,25 @@ public class NPVAndCorrelatedDefaultIntensitySimulation<T extends ProductConditi
 	}
 	
 	
-	
 	public RandomVariableInterface getIntensity(int timeIndex) throws CalculationException {
 		return this.intensityModel.getIntensity(timeIndex);
 	}
 
 
-	public RandomVariableInterface getExpOfIntegratedIntensity(int timeIndex) throws CalculationException {
-		// TODO Use if-statement to treat the following case. The intensity model provides a getExpOfIntegratedIntensity function. 
+	public RandomVariableInterface getExpOfIntegratedIntensity(int timeIndex) throws CalculationException { 
 		return super.getExpOfIntegratedIntensity(timeIndex);
 	}
 
-	
 	
 	public IntensityModelInterface getIntensityModel() {
 		return this.intensityModel;
 	}
 	
-
+	
+	/**
+	 * 
+	 * @return seed The seed of the correlated Brownian motion used to simulate the underlying and the intensity
+	 */
 	public int getSeed() {
 		return this.seed;
 	}
