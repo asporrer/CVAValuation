@@ -13,7 +13,7 @@ public class CorrelateUnderlyingAndIntensityTestDrive {
 	public static void main(String[] args) {
 
 		HullWhiteCreationHelper hullWhiteCreationHelper = new HullWhiteCreationHelper();
-		AbstractModelInterface hullWhiteModel = hullWhiteCreationHelper.createHullWhiteModel(0, 20, 0.5);
+		AbstractModelInterface hullWhiteModel = hullWhiteCreationHelper.createHullWhiteModel(0, 20, 0.5, 100);
 		
 		AbstractModelInterface cirModel = new CIRModel(0, 1, 0.03, 0.12);
 		

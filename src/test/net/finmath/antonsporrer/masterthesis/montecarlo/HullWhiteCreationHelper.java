@@ -20,8 +20,6 @@ public class HullWhiteCreationHelper {
 	
 	public static HullWhiteModel createHullWhiteModel(double initialTime, int numberOfTimeSteps, double deltaT, int numberOfPaths ) {
 		
-		
-		
 		// Volatility array for the volatility model.
 		double[] volatilities = new double[numberOfTimeSteps +1];
 		
@@ -29,10 +27,9 @@ public class HullWhiteCreationHelper {
 		double[] meanReversions = new double[numberOfTimeSteps +1];
 		
 		for(int index = 0; index<numberOfTimeSteps +1; index++) {
-			volatilities[index] = 0.3;
-			meanReversions[index] = 0.03;
+			volatilities[index] = 0.03;
+			meanReversions[index] = 0.05;
 		}
-
 		
 		return createHullWhiteModel(initialTime, numberOfTimeSteps, deltaT, meanReversions, volatilities, new double[] {0.05, 0.05, 0.05, 0.05, 0.05}, numberOfPaths);
 			

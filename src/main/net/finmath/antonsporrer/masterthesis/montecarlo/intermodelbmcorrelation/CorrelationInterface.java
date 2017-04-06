@@ -1,5 +1,17 @@
+/* 
+ * Contact: anton.sporrer@yahoo.com
+ */
+
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.intermodelbmcorrelation;
 
+/**
+ * 
+ * This interface specifies useful methods for handling a correlation matrix and 
+ * its factor matrix. 
+ * 
+ * @author Anton Sporrer
+ *
+ */
 public interface CorrelationInterface {
 
 	/**
@@ -18,7 +30,7 @@ public interface CorrelationInterface {
 	
 	
 	/**
-	 * @return correlationFactorMatrix The factor F of the correlation C. That is to say C = F*F<sup>T<sup>.
+	 * @return correlationFactorMatrix The factor F of the correlation C. That is to say F satisfies: C = F*F<sup>T<sup>.
 	 */
 	public double[][] getCorrelationFactorMatrix();
 	
@@ -30,9 +42,16 @@ public interface CorrelationInterface {
 	 */
 	public double getCorrelationFactor(int rowIndex, int columnIndex);
 	
-	
+	/**
+	 * 
+	 * @return The number of rows of the correlation matrix.
+	 */
 	public int getNumberOfRows();
 	
+	/**
+	 * 
+	 * @return The number of columns of the correlation matrix.
+	 */
 	public int getNumberOfColumns();
 	
 	/**

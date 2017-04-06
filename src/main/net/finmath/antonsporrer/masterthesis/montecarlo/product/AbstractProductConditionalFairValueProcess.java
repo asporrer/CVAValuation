@@ -1,3 +1,7 @@
+/* 
+ * Contact: anton.sporrer@yahoo.com
+ */
+
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.product;
 
 import net.finmath.exception.CalculationException;
@@ -6,23 +10,35 @@ import net.finmath.time.TimeDiscretizationInterface;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface;
 
 
+/**
+ * This abstract class implements some methods common to all products. 
+ * These methods are needed independent of whether a bond, cap, swaption etc. 
+ * are implemented. And they are independent of whether there is an analytic
+ * bond formula or an analytic formula for another payoff implemented in the
+ * underlying model of type T. They are also independent of whether an American 
+ * Monte Carlo simulation is used in the underlying model of type T to get 
+ * the conditional fair price. 
+ * 
+ * 
+ * @author Anton Sporrer
+ *
+ * @param <T> The getUnderlyingModel method provides a type T return value.
+ */
 public abstract class AbstractProductConditionalFairValueProcess<T extends  ProductConditionalFairValue_ModelInterface > implements ProductConditionalFairValueProcessInterface<T> {
 
+	// The underlying model conditioned to which the fair value of the product is calculated.
 	T underlyingModel;
 	
 	
-	// TODO: Keep both constructor and setUnderlyingModel?
 	public AbstractProductConditionalFairValueProcess(T underlyingModel) {
 		this.underlyingModel = underlyingModel;
 	}
-	
 
 	
 	/**
 	 * 
 	 * @return The specified component of the underlying at the current time is returned.
-	 * @throws CalculationException 
-	 * 
+	 * @throws CalculationException  
 	 */
 	public RandomVariableInterface getUnderlying(int timeIndex, int componentIndex) throws CalculationException {
 		return this.underlyingModel.getProcessValue(timeIndex, componentIndex);
@@ -33,16 +49,14 @@ public abstract class AbstractProductConditionalFairValueProcess<T extends  Prod
 	}
 	
 	
-	
-	// TODO: Assign clone of the underlying model?
 	public void setUnderlyingModel(T underlyingModel) {
+		// TODO: Assign clone of the underlying model?
 		this.underlyingModel = underlyingModel;
 	}
 	
 	public T getUnderlyingModel() {
 		return underlyingModel;
 	}
-	
 	
 	public int getNumberOfPaths() {
 		return this.underlyingModel.getProcess().getNumberOfPaths();

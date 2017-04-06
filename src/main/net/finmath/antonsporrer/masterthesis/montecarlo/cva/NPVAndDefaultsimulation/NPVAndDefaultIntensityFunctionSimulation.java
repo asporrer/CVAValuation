@@ -1,7 +1,11 @@
+/* 
+ * Contact: anton.sporrer@yahoo.com
+ */
+
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.NPVAndDefaultsimulation;
 
-import main.net.finmath.antonsporrer.masterthesis.function.FunctionInterface;
-import main.net.finmath.antonsporrer.masterthesis.montecarlo.IntensityFunctionArgumentModel;
+import main.net.finmath.antonsporrer.masterthesis.function.RandomVariableFunctionInterface;
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.IntensityFunctionArgumentModelInterface;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.product.ProductConditionalFairValueProcessInterface;
 import net.finmath.exception.CalculationException;
@@ -11,30 +15,46 @@ import net.finmath.stochastic.RandomVariableInterface;
 
 /**
  * 
- * Function and intensity model have to be compatible!
+ * This class implements a simulation of an underlying process (e.g. a short rate or a LIBOR Market Model) specified by 
+ * {@link main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface} and
+ * a default intensity which is a function of the underlying. More precisely the underlying has to implement {@link main.net.finmath.antonsporrer.masterthesis.montecarlo.IntensityFunctionArgumentModelInterface}.
+ * Therefore the underlying provides via {@link main.net.finmath.antonsporrer.masterthesis.montecarlo.IntensityFunctionArgumentModelInterface#getIntensityFunctionArgument getIntensityFunctionArgument} 
+ * the argument for a so called intensity function implementing {@link main.net.finmath.antonsporrer.masterthesis.function.RandomVariableFunctionInterface}. The function value is then the intensity.
+ * 
+ * 
  * 
  * @author Anton Sporrer
  *
  */
-public class NPVAndDefaultIntensityFunctionSimulation<T extends  ProductConditionalFairValue_ModelInterface & IntensityFunctionArgumentModel> extends AbstractNPVAndDefaultIntensitySimulation<T>{
+public class NPVAndDefaultIntensityFunctionSimulation<T extends  ProductConditionalFairValue_ModelInterface & IntensityFunctionArgumentModelInterface> extends AbstractNPVAndDefaultIntensitySimulation<T>{
 
 
-	private FunctionInterface intensityFunction;
+	private RandomVariableFunctionInterface intensityFunction;
 	
 	private T underlyingModelforDefaultProbabilityConsistencyCheck;
-	private FunctionInterface intensityFunctionforDefaultProbabilityConsistencyCheck;
+	private RandomVariableFunctionInterface intensityFunctionforDefaultProbabilityConsistencyCheck;
 	//TODO: Store Intensity: private RandomVariableInterface[] intensityProcess; implement a wider class of functions not only "markovian" functions.
 	
-	//TODO: Create Class Default Intensity Function and add to constructor.
-	
+	/**
+	 * 
+	 * 
+	 * TODO: Implement usage of seed.
+	 * 
+	 * @param underlyingModel 
+	 * @param productProcess 
+	 * @param seed The seed of the Brownian motion used to simulate the underlying model (Not implemented!)
+	 * @param intensityFunction The intensity function using arguments provided by the underlying model to calculate the default intensity.
+	 */
 	public NPVAndDefaultIntensityFunctionSimulation(
 			T underlyingModel,
-			ProductConditionalFairValueProcessInterface<T> productProcess, int seed, FunctionInterface intensityFunction ) {
+			ProductConditionalFairValueProcessInterface<T> productProcess, int seed, RandomVariableFunctionInterface intensityFunction ) {
 		super(underlyingModel, productProcess);
 		this.intensityFunction = intensityFunction;
 	}
 
+	
 	public RandomVariableInterface getIntensity(int timeIndex) throws CalculationException {
+		// The intensity function is applied to the intensity function argument provided by the underlying model.
 		return intensityFunction.getValue( this.getProductProcess().getUnderlyingModel().getIntensityFunctionArgument(timeIndex, 0 /* Could be extended if needed */ ) );
 	}
 
@@ -59,6 +79,13 @@ public class NPVAndDefaultIntensityFunctionSimulation<T extends  ProductConditio
 		return super.getExpOfIntegratedIntensity(timeIndex);
 	}
 	
+	/**
+	 * 
+	 * @param timeIndex The time index
+	 * @param componentIndex The component index
+	 * @return The component of the argument at the given time index provided to the intensity function. 
+	 * @throws CalculationException
+	 */
 	public RandomVariableInterface getIntensityFunctionArgument(int timeIndex, int componentIndex) throws CalculationException {
 		return this.getProductProcess().getUnderlyingModel().getIntensityFunctionArgument(timeIndex, componentIndex);
 	}

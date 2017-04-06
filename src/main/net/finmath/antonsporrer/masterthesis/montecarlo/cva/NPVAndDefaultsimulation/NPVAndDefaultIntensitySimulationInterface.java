@@ -1,3 +1,7 @@
+/* 
+ * Contact: anton.sporrer@yahoo.com
+ */
+
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.NPVAndDefaultsimulation;
 
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface;
@@ -6,8 +10,8 @@ import net.finmath.stochastic.RandomVariableInterface;
 
 /**
  * 
+ * This subinterface specifies required methods for joint product and intensity simulation.
  * 
- * TODO: ?let getIntensity return a RandomVariableInterface vector? 
  * @author Anton Sporrer
  *
  */
@@ -24,8 +28,8 @@ public interface NPVAndDefaultIntensitySimulationInterface<T extends ProductCond
 	
 	/**
 	 * 
-	 * @param timeIndex
-	 * @return The exponential aplied to the integral of lambda from zero to the current time is returned.
+	 * @param timeIndex The time index up to which is integrated.
+	 * @return The path-wise approximation (Riemann-Integral-wise) of exp(int_0^t_{timeIndex} intensity(s) ds)
 	 * @throws CalculationException 
 	 */
 	public RandomVariableInterface getExpOfIntegratedIntensity(int timeIndex) throws CalculationException;

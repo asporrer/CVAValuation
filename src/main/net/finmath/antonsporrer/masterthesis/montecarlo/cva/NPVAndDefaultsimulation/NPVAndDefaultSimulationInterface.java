@@ -1,6 +1,9 @@
+/* 
+ * Contact: anton.sporrer@yahoo.com
+ */
+
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.NPVAndDefaultsimulation;
 
-import main.net.finmath.antonsporrer.masterthesis.integration.Integration;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.product.ProductConditionalFairValueProcessInterface;
 import net.finmath.exception.CalculationException;
@@ -8,16 +11,27 @@ import net.finmath.stochastic.RandomVariableInterface;
 import net.finmath.time.TimeDiscretizationInterface;
 
 /**
- * An interface for the coupling of a fair value process of an underlying product and a its default time. 
+ * An interface for the coupling of a fair value process of an underlying product and a a default time. 
  * 
  * @author Anton Sporrer
  * 
+ * @param <T> The parameter is utilized by {@link #getProductProcess()}. The return type provides methods returning T type variables.
  */
 public interface NPVAndDefaultSimulationInterface<T extends ProductConditionalFairValue_ModelInterface> {
 	
+
 	/**
+	 * 
+	 * The path dependent discounted net present value of this product is returned.
+	 * <br> That is to say first only the future or present payments after or at the time t_timeIndex are considered.
+	 * These payments are discounted back to t_timeIndex and then the value of the factorized conditional expectation 
+	 * path-wise applied to the value of the underlying at t_timeIndex (conditional refers to the underlying). 
+	 * <br> Second the these path-wise values are discounted back to the time with index discountBackToIndex.
+	 * The discounting is done with the numéraire of the underlying model. 
+	 * 
 	 * @param timeIndex
-	 * @return NPV The Net Present Value at the timeIndex discounted back to time zero is returned.
+	 * @param discountBackToIndex The index of the time to which the net present value  should be discounted.
+	 * @return NPV The Net Present Value at the timeIndex discounted back to time with index discountBackToIndex is returned.
 	 * @throws CalculationException 
 	 */
 	public RandomVariableInterface getDiscountedNPV(int timeIndex, int discountBackToIndex) throws CalculationException;
@@ -25,8 +39,10 @@ public interface NPVAndDefaultSimulationInterface<T extends ProductConditionalFa
 	
 	/**
 	 * 
-	 * @param timeIndex
-	 * @return
+	 * The numéraire in question is derived from the underlying model with respect to which the product is evaluated.
+	 * 
+	 * @param timeIndex 
+	 * @return The numéraire at given time index. 
 	 * @throws CalculationException 
 	 */
 	public RandomVariableInterface getNumeraire(int timeIndex) throws CalculationException;
@@ -34,21 +50,34 @@ public interface NPVAndDefaultSimulationInterface<T extends ProductConditionalFa
 	
 	/**
 	 * @param timeIndex
-	 * @return Default Probability of default occuring in the intervall (timeIndex, timeIndex + 1]. If the timeIndex is the last discretization point of the underlying time discretization than the probability of default in (timeIndex, infinity) is returned.
+	 * @return Default Probability of default occurring in the interval (0, t<sub>timeIndex</sub>].
 	 */
 	public double getDefaultProbability(int timeIndex) throws CalculationException;
 	
+	/**
+	 * 
+	 * @return The time discretization of the underlying model with respect to which the product is evaluated.
+	 */
 	public TimeDiscretizationInterface getTimeDiscretization();
 	
+	/**
+	 * 
+	 * @return The number of paths used in this simulation.
+	 */
 	public int getNumberOfPaths();
 	
 	
+	/**
+	 * 
+	 * @param productProcess The underyling product process is set.
+	 */
 	public void setProductProcess(ProductConditionalFairValueProcessInterface<T> productProcess);
 	
-	
+	/**
+	 * 
+	 * @return the underlying product process.
+	 */
 	public ProductConditionalFairValueProcessInterface<T> getProductProcess();
 	
-	
-	
-	
+
 }

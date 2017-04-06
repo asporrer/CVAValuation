@@ -1,3 +1,7 @@
+/* 
+ * Contact: anton.sporrer@yahoo.com
+ */
+
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.product;
 
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.ZCBond_ProductConditionalFairValue_ModelInterface;
@@ -26,25 +30,32 @@ import net.finmath.stochastic.RandomVariableInterface;
  * 
  * @author Anton Sporrer
  */
-public class SwapConditionalFairValueProcess extends AbstractProductConditionalFairValueProcess<ZCBond_ProductConditionalFairValue_ModelInterface>{
+public class SwapConditionalFairValueProcess<T extends ZCBond_ProductConditionalFairValue_ModelInterface> extends AbstractProductConditionalFairValueProcess<T>{
 	
-	// T_1, T_2, ... , T_n. T_1 is the first fixing date. No payments are made at T_1.
+	// T_1 < T_2 < ... < T_n. T_1 is just the first fixing date. No payments are made at T_1. All other dates are the consecutive fixing and payoff dates.   
 	double[] paymentDatesFixingDates;
 	// Swap Rate
 	double swapRate;
 	
+//	TODO: Calculate and Use Par Swap Rate.
+//	public SwapConditionalFairValueProcess(T underlyingModel, double[] paymentDatesFixingDates) {
+//		this(underlyingModel, paymentDatesFixingDates, -Double.NaN );
+//	}
+	
+	
 	/**
 	 * 
-	 * @param underlyingModel
+	 * @param underlyingModel The underlying model with respect to which the fair value of the coupon bond is evaluated.
 	 * @param paymentDatesFixingDates This array contains the fixing dates and the payment dates. It is assumed that the first index is the first fixing date and is strictly greater than zero. The last index is the last payment date. All other indices are payment date of the previous period and fixing date of the next period at the same time.
 	 * @param swapRate The swap rate of the swap. 
 	 */
 	public SwapConditionalFairValueProcess(
-			ZCBond_ProductConditionalFairValue_ModelInterface underlyingModel, double[] paymentDatesFixingDates, double swapRate) {
+			T underlyingModel, double[] paymentDatesFixingDates, double swapRate) {
 		super(underlyingModel);
 		this.paymentDatesFixingDates = paymentDatesFixingDates;
 		this.swapRate = swapRate;
 	}
+	
 	
 	public RandomVariableInterface getFairValue(int timeIndex) throws CalculationException {
 		
@@ -66,7 +77,7 @@ public class SwapConditionalFairValueProcess extends AbstractProductConditionalF
 		
 		
 		////
-		// Calculating the fair value of the Floating payments. 
+		// Calculating the fair value of the floating payments. 
 		////
 		
 		// The fair Zero Coupon Bond values P(T_nextIndex,t) ,P(T_n,t) are fetched.
@@ -78,7 +89,7 @@ public class SwapConditionalFairValueProcess extends AbstractProductConditionalF
 		
 		// In case the evaluation time is not smaller or equal to the first fixing date. 
 		// The fair value of the floating rate in the current period has to be added. 
-		// (E.g. L^{nextDatesIndex - 1}(T_{ nextDateIndex - 1 })(T_{nextDateIndex}) - T_{nextDateIndex - 1} ) P(T_{nextDateIndex}; evaluationDate).
+		// (E.g. L(T_{nextDatesIndex - 1}, T_{nextDatesIndex}, T_{ nextDateIndex - 1 }) * (T_{nextDateIndex}) - T_{nextDateIndex - 1} ) * P(T_{nextDateIndex}; evaluationDate).
 		if( nextDateIndex != 0 ) {
 			
 			RandomVariableInterface fairValueCurrentFloatingRatePayment = new RandomVariable(0.0);
@@ -101,7 +112,7 @@ public class SwapConditionalFairValueProcess extends AbstractProductConditionalF
 		// The class used to calculate the fair value of a coupon bond is reused.
 		////
 		
-		// The fair value of a coupon bond bond is calculated.
+		// The fair value of a coupon bond is calculated.
 		
 		// The next payment date index is set.
 		int nextPaymentDateIndex = nextDateIndex;
@@ -110,23 +121,23 @@ public class SwapConditionalFairValueProcess extends AbstractProductConditionalF
 		if(nextDateIndex == 0) { nextPaymentDateIndex++; }
 		
 		// ( T_nextPaymentDateIndex, ... , T_n )
-		double[] paymentDates = new double[ numberOfDates - 1 ];
+		double[] paymentDates = new double[ numberOfDates - nextPaymentDateIndex ];
 		// ( swapRate, swapRate, ... , swapRate )
-		double[] coupons = new double[ numberOfDates - 1 ];
+		double[] coupons = new double[ numberOfDates - nextPaymentDateIndex ];
 		// ( T_nextPaymentDateIndex - T_{nextPaymentDateIndex - 1} , T_{nextPaymentDateIndex + 1} - T_nextPaymentDateIndex, ... , T_n - T_{n-1} )
-		double[] periodFactors = new double[ numberOfDates - 1 ];
+		double[] periodFactors = new double[ numberOfDates - nextPaymentDateIndex ];
 		
-		for( int index = 0; index < numberOfDates - 1 ; index++ ) {
+		for( int index = 0; index < numberOfDates - nextPaymentDateIndex ; index++ ) {
 			paymentDates[ index ] = paymentDatesFixingDates[ index + nextPaymentDateIndex ];
 			coupons[ index ] = swapRate;
 			periodFactors[ index ] = paymentDatesFixingDates[ index + nextPaymentDateIndex ] - paymentDatesFixingDates[ index + nextPaymentDateIndex - 1 ];
 		}
 		
 		// Declaring and initializing the coupon bond calculation class.
-		CouponBondConditionalFairValueProcess couponBondConditionalFairValueProcess = new CouponBondConditionalFairValueProcess(this.getUnderlyingModel(), paymentDates, periodFactors, coupons);
+		CouponBondConditionalFairValueProcess<T> couponBondConditionalFairValueProcess = new CouponBondConditionalFairValueProcess<T>(this.getUnderlyingModel(), paymentDates, periodFactors, coupons);
 		
-		// Calculating the fair value of the fixed rate payments. The fair value of the coupon bond is calculated. 
-		// In a second step the bond payment of the ZCBond has to be subtracted since this is not part of the swap payments.
+		// Calculating the fair value of the fixed rate payments. In other words the fair value of the coupon bond is calculated. 
+		// In a second step the bond payment of the zero coupon bond has to be subtracted since this is not part of the swap payments.
 		RandomVariableInterface fairValueFixedRatePayments = couponBondConditionalFairValueProcess.getFairValue(timeIndex).addProduct(bondTn, -1.0);
 		
 
@@ -139,7 +150,7 @@ public class SwapConditionalFairValueProcess extends AbstractProductConditionalF
 				
 	}
 
-	
+	// TODO: Implement deterministic discounting.
 	
 	
 }
