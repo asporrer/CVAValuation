@@ -32,11 +32,11 @@ import net.finmath.stochastic.RandomVariableInterface;
 public class CouponBondConditionalFairValueProcess<T extends ZCBond_ProductConditionalFairValue_ModelInterface> extends AbstractProductConditionalFairValueProcess<T> {
 
 	// T_2, ... , T_n
-	double[] paymentDates;
+	private double[] paymentDates;
 	// C_1, ... , C_{n-1}
-	double[] coupons;
+	private double[] coupons;
 	// T_2 - T_1, ... , T_n - T_{n-1}
-	double[] periodFactors;
+	private double[] periodFactors;
 	
 	
 	/**

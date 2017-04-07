@@ -33,9 +33,9 @@ import net.finmath.stochastic.RandomVariableInterface;
 public class SwapConditionalFairValueProcess<T extends ZCBond_ProductConditionalFairValue_ModelInterface> extends AbstractProductConditionalFairValueProcess<T>{
 	
 	// T_1 < T_2 < ... < T_n. T_1 is just the first fixing date. No payments are made at T_1. All other dates are the consecutive fixing and payoff dates.   
-	double[] paymentDatesFixingDates;
+	private double[] paymentDatesFixingDates;
 	// Swap Rate
-	double swapRate;
+	private double swapRate;
 	
 //	TODO: Calculate and Use Par Swap Rate.
 //	public SwapConditionalFairValueProcess(T underlyingModel, double[] paymentDatesFixingDates) {
