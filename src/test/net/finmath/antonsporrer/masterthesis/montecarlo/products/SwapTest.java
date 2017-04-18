@@ -96,8 +96,8 @@ public class SwapTest {
 
 	
 	
-	System.out.println("The Swap Value: " + swapConditionalFairValueProcess.getFairValue(0));
-	assertEquals( result, swapConditionalFairValueProcess.getFairValue(0).getRealizations()[0], 0.0000001 );
+	System.out.println("The Swap Value: " + swapConditionalFairValueProcess.getFairValueNonMultiCurve(0));
+	assertEquals( result, swapConditionalFairValueProcess.getFairValueNonMultiCurve(0).getRealizations()[0], 0.0000001 );
 	
 	
 	

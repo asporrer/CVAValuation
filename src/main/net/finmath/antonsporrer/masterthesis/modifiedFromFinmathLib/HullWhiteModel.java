@@ -603,6 +603,30 @@ public class HullWhiteModel extends AbstractModel implements ZCBond_ProductCondi
 		
 		return this.getProcessValue(timeIndex, 0);
 	}
+	
+	// TODO: Comments, small test
+	public double getDiscountingAdjustment(double initialTime, double finaltime) {
+		
+		double discountingAdjustment = 1.0;
+		
+		// If a discounting curve exists 
+		if(this.getDiscountCurve() != null) {
+			AnalyticModelInterface analyticModel = this.getAnalyticModel();
+			DiscountCurveInterface discountCurve = this.getDiscountCurve();
+			ForwardCurveInterface forwardCurve = this.getForwardRateCurve();
+			DiscountCurveInterface discountCurveFromForwardCurve = new DiscountCurveFromForwardCurve(forwardCurve);
+
+			double forwardBondOnForwardCurve = discountCurveFromForwardCurve.getDiscountFactor(analyticModel, initialTime) / discountCurveFromForwardCurve.getDiscountFactor(analyticModel, finaltime);
+			double forwardBondOnDiscountCurve = discountCurve.getDiscountFactor(analyticModel, initialTime) / discountCurve.getDiscountFactor(analyticModel, finaltime);
+			discountingAdjustment = forwardBondOnForwardCurve / forwardBondOnDiscountCurve;
+		}
+		
+		return discountingAdjustment;
+		
+	}
+	
+		
+	
 }
 
 

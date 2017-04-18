@@ -38,7 +38,7 @@ public interface ProductConditionalFairValueProcessInterface<T extends ProductCo
 	 * @return The fair values of the product conditioned at the current time with respect to the path-wise current states of the underlying (e.g. in case of a short rate model: for each path &omega;, E[V|r(t<sub>timeIndex</sub>)=r(<sub>timeIndex</sub>,&omega;)]) is returned. Where V is the discounted payoff of the product).
 	 * @throws CalculationException 
 	 */
-	public RandomVariableInterface getFairValue(int timeIndex) throws CalculationException;
+	public RandomVariableInterface getFairValueNonMultiCurve(int timeIndex) throws CalculationException;
 	
 	/**
 	 * 

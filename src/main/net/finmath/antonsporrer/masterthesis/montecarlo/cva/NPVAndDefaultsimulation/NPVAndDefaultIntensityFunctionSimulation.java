@@ -4,6 +4,7 @@
 
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.NPVAndDefaultsimulation;
 
+import main.net.finmath.antonsporrer.masterthesis.function.FunctionInterface;
 import main.net.finmath.antonsporrer.masterthesis.function.RandomVariableFunctionInterface;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.IntensityFunctionArgumentModelInterface;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface;
@@ -29,10 +30,10 @@ import net.finmath.stochastic.RandomVariableInterface;
 public class NPVAndDefaultIntensityFunctionSimulation<T extends  ProductConditionalFairValue_ModelInterface & IntensityFunctionArgumentModelInterface> extends AbstractNPVAndDefaultIntensitySimulation<T>{
 
 
-	private RandomVariableFunctionInterface intensityFunction;
+	private FunctionInterface<RandomVariableInterface, RandomVariableInterface> intensityFunction;
 	
 	private T underlyingModelforDefaultProbabilityConsistencyCheck;
-	private RandomVariableFunctionInterface intensityFunctionforDefaultProbabilityConsistencyCheck;
+	private FunctionInterface<RandomVariableInterface, RandomVariableInterface> intensityFunctionforDefaultProbabilityConsistencyCheck;
 	//TODO: Store Intensity: private RandomVariableInterface[] intensityProcess; implement a wider class of functions not only "markovian" functions.
 	
 	/**
@@ -47,7 +48,7 @@ public class NPVAndDefaultIntensityFunctionSimulation<T extends  ProductConditio
 	 */
 	public NPVAndDefaultIntensityFunctionSimulation(
 			T underlyingModel,
-			ProductConditionalFairValueProcessInterface<T> productProcess, int seed, RandomVariableFunctionInterface intensityFunction ) {
+			ProductConditionalFairValueProcessInterface<T> productProcess, int seed, FunctionInterface<RandomVariableInterface, RandomVariableInterface> intensityFunction ) {
 		super(underlyingModel, productProcess);
 		this.intensityFunction = intensityFunction;
 	}

@@ -2,7 +2,7 @@ package main.net.finmath.antonsporrer.masterthesis.montecarlo.intensitymodel;
 
 import java.util.Map;
 
-
+import main.net.finmath.antonsporrer.masterthesis.function.FunctionInterface;
 import net.finmath.exception.CalculationException;
 import net.finmath.montecarlo.RandomVariable;
 import net.finmath.montecarlo.model.AbstractModelInterface;
@@ -10,7 +10,7 @@ import net.finmath.montecarlo.process.ProcessEulerScheme;
 import net.finmath.stochastic.RandomVariableInterface;
 
 
-
+//TODO: Update documentation
 /**
  * 
  * This class implements a CIR model. 
@@ -38,7 +38,7 @@ import net.finmath.stochastic.RandomVariableInterface;
  * 
  */
 
-public class CIRModel extends AbstractIntensityModel  {
+public class CIRPlusPlusModel extends AbstractIntensityModel  {
 
 	// The start value of the intensity model.
 	private double initialValue;
@@ -49,21 +49,23 @@ public class CIRModel extends AbstractIntensityModel  {
 	// and the Volatility.
 	private double nu;
 	
+	// The deterministic shift
+	FunctionInterface<Integer, Double> psi;
 	
 	
-	
-	public CIRModel(double initialValue, double kappa, double mu, double nu) {
+	public CIRPlusPlusModel(double initialValue, double kappa, double mu, double nu, FunctionInterface<Integer, Double> psi) {
 		super();
 		this.initialValue = initialValue;
 		this.kappa = kappa;
 		this.mu = mu;
 		this.nu = nu;
+		this.psi = psi;
 		if(nu*nu >= 2*kappa*mu) {throw new IllegalArgumentException("The following inequality has to be satisfied nu*nu < 2*kappa*mu. Otherwise the CIR Model can obtain negative values.");}
 		if( initialValue < 0 ) {throw new IllegalArgumentException("The initial value has to be greater or equal to zero!");}
 	}
 	
-	public CIRModel(double initialValue, double kappa, double mu, double nu, ProcessEulerScheme process) {
-		this(initialValue, kappa, mu, nu);
+	public CIRPlusPlusModel(double initialValue, double kappa, double mu, double nu, FunctionInterface<Integer, Double> psi, ProcessEulerScheme process) {
+		this(initialValue, kappa, mu, nu, psi);
 		this.setProcess(process);
 		process.setModel(this);
 	}
@@ -122,7 +124,8 @@ public class CIRModel extends AbstractIntensityModel  {
 	
 	
 	public RandomVariableInterface getIntensity(int timeIndex) throws CalculationException {
-		return this.getProcessValue(timeIndex, 0);
+		// The simulated process is fetched and the current deterministic shift is added.
+		return this.getProcessValue(timeIndex, 0).add(psi.getValue(timeIndex));
 	}
 	
 	

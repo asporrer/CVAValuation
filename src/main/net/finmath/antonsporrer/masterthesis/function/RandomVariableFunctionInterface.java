@@ -16,6 +16,7 @@ import net.finmath.stochastic.RandomVariableInterface;
  * @author Anton Sporrer
  *
  */
+@Deprecated
 public interface RandomVariableFunctionInterface {
 	
 	public RandomVariableInterface getValue(RandomVariableInterface input);

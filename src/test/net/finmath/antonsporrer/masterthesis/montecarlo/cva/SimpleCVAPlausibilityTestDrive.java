@@ -39,7 +39,7 @@ public class SimpleCVAPlausibilityTestDrive {
 		
 		System.out.println( "The CVA with LGD of " + lossGivenDefault + " is: "  + intensityBasedCVA.getCVA( npvAndDefaultIntensitySimulation, IntegrationMethod.LeftPoints ).getAverage() );
 		
-		System.out.println("The Product Value is: " + productProcess.getFairValue(0).getAverage());
+		System.out.println("The Product Value is: " + productProcess.getFairValueNonMultiCurve(0).getAverage());
 		
 	}
 

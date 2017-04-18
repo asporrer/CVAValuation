@@ -45,7 +45,7 @@ public abstract class AbstractNPVAndDefaultSimulation<T extends ProductCondition
 		}
 		
 		public RandomVariableInterface getDiscountedNPV(int timeIndex, int discountBackToIndex) throws CalculationException {
-			return productProcess.getFairValue(timeIndex).div(productProcess.getNumeraire(timeIndex).mult(productProcess.getNumeraire(discountBackToIndex))).floor(0.0);
+			return productProcess.getFairValueNonMultiCurve(timeIndex).div(productProcess.getNumeraire(timeIndex).mult(productProcess.getNumeraire(discountBackToIndex))).floor(0.0);
 		}
 		
 		/**

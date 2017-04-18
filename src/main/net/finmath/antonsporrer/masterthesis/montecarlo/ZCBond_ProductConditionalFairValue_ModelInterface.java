@@ -32,12 +32,30 @@ public interface ZCBond_ProductConditionalFairValue_ModelInterface extends Produ
 	 * 
 	 * This function returns a random variable holding the fair prices of the zero coupon bond specified 
 	 * by the parameters. More precisely the fair price of a ZCB on each path determined by the value of the underlying.
+	 * In a multicurve setting this is the value of the defaultable bond.
 	 * 
 	 * @param evaluationTime The evaluation time of the fair price of the zero coupon bond.
 	 * @param maturity The maturity of the zero coupon bond.
-	 * @return The fair price of a zero coupon bond maturing at maturity at evaluation time. 
+	 * @return The fair price of a zero coupon bond maturing at maturity at evaluation time. In a multicurve setting this is the value of the defaultable bond.
 	 * @throws CalculationException
 	 */
 	public RandomVariableInterface getZeroCouponBond(double evaluationTime, double maturity) throws CalculationException;
+	
+	
+	/**
+	 * 
+	 * 
+	 * This method calculates the discounting adjustment. Thereby enables to implement multi-curve 
+	 * evaluation.
+	 * Let &lambda;(T) be the deterministic credit spread or the so called default intensity at time T.
+	 * An implementation of this method calculates exp( int_initialTime^finalTime &lambda;(s) ds )
+	 * using the information of the forwad curve (e.g. 3M LIBOR) and the discount curve (e.g. OIS).
+	 * 
+	 * @param initialTime
+	 * @param finaltime
+	 * @return The exponential function applied to the integrated deterministic credit spread. exp( int_initialTime^finalTime &lambda;(s) ds ) 
+	 */
+	public double getDiscountingAdjustment(double initialTime, double finaltime);
+
 	
 }

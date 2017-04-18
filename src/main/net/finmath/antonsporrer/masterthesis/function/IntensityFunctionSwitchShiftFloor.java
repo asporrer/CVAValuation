@@ -20,7 +20,7 @@ import net.finmath.stochastic.RandomVariableInterface;
  * @author Anton Sporrer
  *
  */
-public class IntensityFunctionSwitchShiftFloor implements RandomVariableFunctionInterface {
+public class IntensityFunctionSwitchShiftFloor implements FunctionInterface<RandomVariableInterface,RandomVariableInterface> {
 
 	// The shift parameter 
 	private double shift;
