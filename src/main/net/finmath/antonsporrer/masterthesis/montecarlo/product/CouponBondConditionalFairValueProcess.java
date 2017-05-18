@@ -43,7 +43,6 @@ public class CouponBondConditionalFairValueProcess<T extends ZCBond_ProductCondi
 	// T_2 - T_1, ... , T_n - T_{n-1}
 	private double[] periodFactors;
 	
-	
 	/**
 	 * 
 	 * @param underlyingModel The underlying model with respect to which the fair value of the coupon bond is evaluated.
@@ -63,9 +62,7 @@ public class CouponBondConditionalFairValueProcess<T extends ZCBond_ProductCondi
 		this.paymentDates = paymentDates; 
 		this.periodFactors = periodFactors;
 		this.coupons = coupons;
-		
 
-		
 	}
 
 	

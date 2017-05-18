@@ -11,12 +11,12 @@ import net.finmath.time.TimeDiscretizationInterface;
 /**
  * 
  * This function is used by the {@link main.net.finmath.antonsporrer.masterthesis.montecarlo.intensitymodel.CIRPlusPlusModel CIR++Model}.
- * The Parameters of the CIR model are passed to this function. In addition a series the default probabilities 
+ * The Parameters of the CIR model are passed to this function. In addition a series of default probabilities 
  * (P( t<sub> k<sub>j</sub> </sub> < &tau; ))<sub> j= 0, ... , l </sub> is provided to this function.
  * In turn this function provides the deterministic shift function &psi; via {@link #getValue(Double)}. This 
- * deterministic shift function is, as mentioned used by the {@link main.net.finmath.antonsporrer.masterthesis.montecarlo.intensitymodel.CIRPlusPlusModel CIR++Model}
+ * deterministic shift function is, as mentioned, used by the {@link main.net.finmath.antonsporrer.masterthesis.montecarlo.intensitymodel.CIRPlusPlusModel CIR++Model}
  * and guarantees that the input default probabilities of this function are reproduced by the CIR++ model.
- * That is to say, that E[exp(-int_0^t<sub> k<sub>j</sub> </sub> intensity(s) ds)] = P( t<sub> k<sub>j</sub> </sub> < &tau; ) for j= 0, ... , l. Where the intensity() is the
+ * That is to say, that E[exp(-int_0^t<sub> k<sub>j</sub> </sub> intensity(s) ds)] = P( t<sub> k<sub>j</sub> </sub> < &tau; ) for j= 0, ... , l. Where intensity() is the
  * intensity provided by the CIR++ model.  
  * 
  * <br> TODO: - At the moment this class assumes that the keys of the defaultProbabilities are elements of the time discretization points t<sub> 0 </sub> < t<sub> 1 </sub> < ... < t<sub> n </sub> and that
@@ -138,6 +138,7 @@ public class DeterministicShiftCIRDefaultProbabilities implements FunctionInterf
 	
 	/**
 	 * TODO: Psi should be modified for using the trapezoidal integration approximation.
+	 * 
 	 * <br> Calculating psi (deterministic shift) from Psi (integrated deterministic shift). 
 	 * <br> psi is set such that integrating psi with the right point integral approximation
 	 * rule results in Psi whereas in addition psi is stepwise constant.

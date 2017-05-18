@@ -18,7 +18,7 @@ import net.finmath.time.TimeDiscretizationInterface;
  * 
  * @author Anton Sporrer
  * 
- * @param <T> This interface is parameterized such that some methods return or get T type variables which have certain methods. Further {@link main.net.finmath.antonsporrer.masterthesis.montecarlo.product.AbstractProductConditionalFairValueProcess} implements this interface
+ * @param <T> This interface is parameterized such that some methods return or get T type variables which provide certain methods. Further {@link main.net.finmath.antonsporrer.masterthesis.montecarlo.product.AbstractProductConditionalFairValueProcess} implements this interface
  * and has an instance variable of type T.
  * 
  */

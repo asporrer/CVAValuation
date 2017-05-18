@@ -67,6 +67,10 @@ public abstract class AbstractNPVAndDefaultSimulation<T extends ProductCondition
 			return this.productProcess.getNumberOfPaths();
 		}
 		
+		public void plugInProductProcess(ProductConditionalFairValueProcessInterface<T> productProcessParameter) {
+			productProcessParameter.setUnderlyingModel(this.productProcess.getUnderlyingModel());
+			this.productProcess = productProcessParameter;
+		}
 		
 		public void setProductProcess(ProductConditionalFairValueProcessInterface<T> productProcess) {
 			this.productProcess = productProcess;

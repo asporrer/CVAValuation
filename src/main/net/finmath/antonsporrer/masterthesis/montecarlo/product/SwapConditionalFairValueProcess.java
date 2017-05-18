@@ -15,14 +15,14 @@ import net.finmath.stochastic.RandomVariableInterface;
  * This class implements the valuation of a swap.
  * It provides at each time the fair value of the 
  * swap conditioned on the value of the underlying 
- * at the current path. E.g. if the underlying model is a short rate model:
+ * on the current path. E.g. if the underlying model is a short rate model:
  * <br> E[  DiscountedCashflows(t) | r<sub>t</sub> = r<sup>*</sup><sub>t</sub>( &omega; ) ] 
  * <br> is provided. 
- * <br> - Where t is the evaluation time,
+ * <br> - Where t is the evaluation time.
  * <br> - r<sub>t</sub> is the short rate and r<sup>*</sup><sub>t</sub>( &omega; ) is the simulation of the short rate at time t and path &omega; .
  * <br> - DiscountedCashflows(t) are the discounted cashflows of the swap made at t or later. 
  * <br>
- * <br> This class implements swap on the defaultable ("defaultable" is only relevant in multi-curve setting) Libor rate L<sup>d</sup>. In case the discounting curve 
+ * <br> This class implements a swap on the defaultable ("defaultable" is only relevant in the multi-curve setting) Libor rate L<sup>d</sup>. In case the discounting curve 
  * of the underlying model is equal to the forward curve then L<sup>d</sup> = L and the swap can be seen as a swap on the non-defaultable Libor L. It has the following payoff profile.
  * <br> For i = 1, ..., n-1
  * <br> (L<sup>d,i</sup>(T<sub>i</sub>) - K) (T<sub>i+1</sub> - T<sub>i</sub> ) is payed in T<sub>i+1</sub> 
@@ -332,7 +332,7 @@ public class SwapConditionalFairValueProcess<T extends ZCBond_ProductConditional
 		double evaluationTime = underlyingModel.getTimeDiscretization().getTime(0);
 		
 		//
-		// The non-defaultable bond P(T_n; 0) is calculated
+		// The non-defaultable bond price P(T_n; 0) is calculated
 		//
 	
 		RandomVariableInterface nonDefaultableBondTn = underlyingModel.getZeroCouponBond(evaluationTime, paymentDatesFixingDates[numberOfDates-1]);

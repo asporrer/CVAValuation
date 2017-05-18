@@ -1,4 +1,4 @@
-package test.net.finmath.antonsporrer.masterthesis.montecarlo.products;
+package test.net.finmath.antonsporrer.masterthesis.montecarlo.products.swaprate;
 
 
 import java.util.Arrays;

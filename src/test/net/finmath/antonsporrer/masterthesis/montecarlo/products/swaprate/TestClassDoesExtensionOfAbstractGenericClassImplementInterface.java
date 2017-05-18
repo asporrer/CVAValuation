@@ -1,4 +1,4 @@
-package test.net.finmath.antonsporrer.masterthesis.montecarlo.products;
+package test.net.finmath.antonsporrer.masterthesis.montecarlo.products.swaprate;
 
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.ZCBond_ProductConditionalFairValue_ModelInterface;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.product.CouponBondConditionalFairValueProcess;

@@ -73,6 +73,18 @@ public interface NPVAndDefaultSimulationInterface<T extends ProductConditionalFa
 	 */
 	public void setProductProcess(ProductConditionalFairValueProcessInterface<T> productProcess);
 	
+	
+	/**
+	 * 
+	 * In contrast to {@link #setProductProcess(ProductConditionalFairValueProcessInterface)} 
+	 * an implementation of this method should not simply set the new parameter product process N as new 
+	 * instance variable instead of the old product process O. But beforehand N should get the underlying 
+	 * model of O. Thereby the short rate and if used the intensity can be reused.
+	 * 
+	 * @param productProcess
+	 */
+	public void plugInProductProcess(ProductConditionalFairValueProcessInterface<T> productProcess);
+	
 	/**
 	 * 
 	 * @return the underlying product process.

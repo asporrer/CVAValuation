@@ -44,10 +44,7 @@ public class SimpleCVACostumHWTestDrive {
 		
 		IntensityModelInterface intensityModel = new CIRModel(0.01, 0.05 , 0.01, 0.03);
 		
-		
 		CorrelationInterface correlation = new Correlation(new double[][]{{0.9},{0.0}});
-		
-		
 		
 		NPVAndDefaultIntensitySimulationInterface<HullWhiteModel> npvAndDefaultIntensitySimulation = new NPVAndCorrelatedDefaultIntensitySimulation<HullWhiteModel>(underlyingModel, productProcess, intensityModel , correlation , 3142);
 		

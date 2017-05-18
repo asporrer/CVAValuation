@@ -48,7 +48,6 @@ public abstract class AbstractProductConditionalFairValueProcess<T extends  Prod
 		return underlyingModel.getNumeraire(timeIndex);
 	}
 	
-	
 	public void setUnderlyingModel(T underlyingModel) {
 		// TODO: Assign clone of the underlying model?
 		this.underlyingModel = underlyingModel;
