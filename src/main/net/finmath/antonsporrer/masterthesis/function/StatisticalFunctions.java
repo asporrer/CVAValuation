@@ -111,11 +111,11 @@ public class StatisticalFunctions {
 	
 	/**
 	 * This method gets an array a = (a<sub>1</sub>, a<sub>2</sub>, ... , a<sub>n</sub>) and first calculates 
-	 * the arithmetic mean &mu;<sup>a</sup> of this array. Second the array b = (|a<sub>1</sub> - &mu;<sup>a</sup>| / &mu;<sup>a</sup> , |a<sub>2</sub> - &mu;<sup>a</sup>| / &mu;<sup>a</sup>, ... , |a<sub>n</sub> - &mu;<sup>a</sup>| / &mu;<sup>a</sup>)
+	 * the arithmetic mean &mu;<sup>a</sup> of this array. Second the array b = (|a<sub>1</sub> - &mu;<sup>a</sup>| / |&mu;<sup>a</sup>| , |a<sub>2</sub> - &mu;<sup>a</sup>| / |&mu;<sup>a</sup>|, ... , |a<sub>n</sub> - &mu;<sup>a</sup>| / |&mu;<sup>a</sup>|)
 	 * is calculated and returned
 	 * 
 	 * @param values (a<sub>1</sub>, a<sub>2</sub>, ... , a<sub>n</sub>)
-	 * @return (|a<sub>1</sub> - &mu;<sup>a</sup>| / &mu;<sup>a</sup> , |a<sub>2</sub> - &mu;<sup>a</sup>| / &mu;<sup>a</sup>, ... , |a<sub>n</sub> - &mu;<sup>a</sup>| / &mu;<sup>a</sup>)
+	 * @return (|a<sub>1</sub> - &mu;<sup>a</sup>| / |&mu;<sup>a</sup>| , |a<sub>2</sub> - &mu;<sup>a</sup>| / |&mu;<sup>a</sup>|, ... , |a<sub>n</sub> - &mu;<sup>a</sup>| / |&mu;<sup>a</sup>|)
 	 */
 	public static double[] getRelativeDeviationsWRTMean(double[] values) {
 		
@@ -124,11 +124,11 @@ public class StatisticalFunctions {
 		
 		double[] realtiveDevationsWRTMean = new double[values.length];
 		double[] deviationsFromMean = getDeviationsFromMean(values);
-		double mean = getArithmeticMean(values);
-		if(mean == 0.0) {throw new ArithmeticException("The arithmetic mean of the argument is zero. It is not allowed to divide by zero.");}
+		double absOfMean = Math.abs( getArithmeticMean(values) );
+		if(absOfMean == 0.0) {throw new ArithmeticException("The arithmetic mean of the argument is zero. It is not allowed to divide by zero.");}
 		
 		for(int i = 0; i < values.length; i++) {
-			realtiveDevationsWRTMean[i] = deviationsFromMean[i]/mean;
+			realtiveDevationsWRTMean[i] = deviationsFromMean[i]/absOfMean;
 		}
 		
 		return realtiveDevationsWRTMean;

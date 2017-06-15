@@ -34,7 +34,7 @@ public class IntensityFunctionSwitchShiftFloor implements FunctionInterface<Rand
 	 * @param shift The shift parameter determines how much the function shifts towards negative infinity.
 	 */
 	public IntensityFunctionSwitchShiftFloor(double shift) {
-		this(shift, true);
+		this(shift, false);
 	}
 	
 	/**

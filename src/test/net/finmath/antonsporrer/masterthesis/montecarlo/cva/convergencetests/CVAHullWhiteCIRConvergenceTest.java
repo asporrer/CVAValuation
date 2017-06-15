@@ -1,15 +1,22 @@
 package test.net.finmath.antonsporrer.masterthesis.montecarlo.cva.convergencetests;
 
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
+import main.net.finmath.antonsporrer.masterthesis.function.IntensityFunctionSwitchShiftFloor;
 import main.net.finmath.antonsporrer.masterthesis.function.KahanSummation;
 import main.net.finmath.antonsporrer.masterthesis.function.StatisticalFunctions;
+import main.net.finmath.antonsporrer.masterthesis.integration.Integration;
 import main.net.finmath.antonsporrer.masterthesis.integration.Integration.IntegrationMethod;
 import main.net.finmath.antonsporrer.masterthesis.modifiedFromFinmathLib.HullWhiteModel;
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.ZCBond_ProductConditionalFairValue_ModelInterface;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.IntensityBasedCVA;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.NPVAndDefaultsimulation.NPVAndCorrelatedDefaultIntensitySimulation;
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.NPVAndDefaultsimulation.NPVAndDefaultIntensityFunctionSimulation;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.NPVAndDefaultsimulation.NPVAndDefaultIntensitySimulationInterface;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.intensitymodel.CIRModel;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.intensitymodel.IntensityModelInterface;
@@ -20,39 +27,42 @@ import main.net.finmath.antonsporrer.masterthesis.montecarlo.product.ProductCond
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.product.SwapConditionalFairValueProcess;
 import net.finmath.exception.CalculationException;
 import net.finmath.stochastic.RandomVariableInterface;
+import net.finmath.time.TimeDiscretizationInterface;
 import test.net.finmath.antonsporrer.masterthesis.montecarlo.HullWhiteCreationHelper;
 
 public class CVAHullWhiteCIRConvergenceTest {
 	
-	HashMap<Integer, Integer> pathsPerCVANumberOfCVAs;
 	
-	int numberOfPaths;
-	int seed = 3142;
-	
-	int numberOfTimeSteps = 90;
-	double timeStepSize = 1.0 / numberOfTimeSteps;
-	
-	HullWhiteModel underlyingModel; 
-	
-	IntensityModelInterface intensityModel;
-	
-	CorrelationInterface correlation;
-	
-	NPVAndDefaultIntensitySimulationInterface<HullWhiteModel> npvAndDefaultIntensitySimulation;
-	
-	IntensityBasedCVA intensityBasedCVA;
+	private static DecimalFormat commaDecSepFormatter = new DecimalFormat( "###.###############", new DecimalFormatSymbols(Locale.GERMAN) );
 	
 	
+	private HashMap<Integer, Integer> pathsPerCVANumberOfCVAs;
+	
+	private int numberOfPaths;
+	private int seed = 3145;
+	
+	private int numberOfTimeSteps = 50;
+	private double timeStepSize = 1.0 / numberOfTimeSteps;
+	
+	private HullWhiteModel underlyingModel; 
+	
+	private IntensityModelInterface intensityModel;
+	
+	private CorrelationInterface correlation;
+	
+	private NPVAndDefaultIntensitySimulationInterface<HullWhiteModel> npvAndDefaultIntensitySimulation;
+	
+	private IntensityBasedCVA intensityBasedCVA;
 	
 	public CVAHullWhiteCIRConvergenceTest() {
 		System.out.println("Heap Space: " + java.lang.Runtime.getRuntime().maxMemory());
-
+		
 		// CVAs from independent simulations and their relative error are printed.
 		pathsPerCVANumberOfCVAs = new HashMap<Integer, Integer>();
-//		pathsPerCVANumberOfCVAs.put(1000, 10);
+		pathsPerCVANumberOfCVAs.put(1000, 10);
 		pathsPerCVANumberOfCVAs.put(10000, 10);
-//		pathsPerCVANumberOfCVAs.put(100000, 10);
-//		pathsPerCVANumberOfCVAs.put(500000, 1);
+		pathsPerCVANumberOfCVAs.put(100000, 10);
+//		pathsPerCVANumberOfCVAs.put(1000000, 1);
 		
 		numberOfPaths = 0;
 		for(Map.Entry<Integer, Integer> entry : pathsPerCVANumberOfCVAs.entrySet() ) {
@@ -91,7 +101,7 @@ public class CVAHullWhiteCIRConvergenceTest {
 
 		double[] increasingSampleSizeMeanArray = getIncreasingSampleSizeMeanArray( realizations );
 		
-		int stepSize = Math.max(1, numberOfPaths / 10);
+		int stepSize = Math.max(1, numberOfPaths / 1000);
 		
 		System.out.println("Printing the increasing sample size mean.");
 		
@@ -116,10 +126,7 @@ public class CVAHullWhiteCIRConvergenceTest {
 	}
 	
 	public void calculatePrintCVAs(double[] realizations) throws CalculationException {
-		
-		
 
-				
 		HashMap<Integer, double[]> cvaHashMap = new HashMap<Integer, double[]>();
 		
 		int currentStartIndex = 0;
@@ -142,7 +149,7 @@ public class CVAHullWhiteCIRConvergenceTest {
 			currentCVAArray = cvaHashMapEntry.getValue();
 			
 			System.out.println( "Number of Paths is " + cvaHashMapEntry.getKey() + " for CVAs: ");
-			System.out.println( "The mean relative error is: " + KahanSummation.getValue( StatisticalFunctions.getRelativeDeviationsWRTMean(currentCVAArray)) );
+			System.out.println( "The mean relative error is: " + StatisticalFunctions.getArithmeticMean( StatisticalFunctions.getRelativeDeviationsWRTMean(currentCVAArray)) );
 			for(int index = 0; index < currentCVAArray.length; index++) {
 				System.out.println(  Double.toString( currentCVAArray[index] ).replace('.', ',') );
 			}
@@ -170,7 +177,6 @@ public class CVAHullWhiteCIRConvergenceTest {
 		double periodStepSize = maturity / (double) numberOfPaymentDates;
 		
 		for(int index = 0; index < numberOfPaymentDates ; index++) {
-			
 			paymentDates[index] = (index+1) * periodStepSize;
 			periodFactors[index] = periodStepSize;
 			coupons[index] = 0.1;
@@ -180,7 +186,7 @@ public class CVAHullWhiteCIRConvergenceTest {
 		double[] currentPeriodFactors = null;
 		double[] currentCoupons = null;
 		
-		for(int index = 0; index < numberOfPaymentDates ; index++) {
+		for(int index = 0; index <  1 /* numberOfPaymentDates */  ; index++) {
 			
 			System.out.println("Printing the " + index + "th coupon bond.");
 			
@@ -192,12 +198,18 @@ public class CVAHullWhiteCIRConvergenceTest {
 			
 			npvAndDefaultIntensitySimulation.plugInProductProcess(productProcess);
 			
-			RandomVariableInterface realizationsRV = intensityBasedCVA.getCVA( npvAndDefaultIntensitySimulation, IntegrationMethod.Trapezoidal );
+			RandomVariableInterface realizationsRV = intensityBasedCVA.getCVA( npvAndDefaultIntensitySimulation, IntegrationMethod.LeftPoints );
+			
+			
 			
 			calculatePrintCVAs(realizationsRV.getRealizations());
-		
-			increasingSampleSizePlot(realizationsRV.getRealizations());
 			
+//			increasingSampleSizePlot(realizationsRV.getRealizations());
+			
+//			testIntegratedNPV(npvAndDefaultIntensitySimulation);
+			
+			testExpectationNPV(npvAndDefaultIntensitySimulation);
+
 		}
 		
 	}
@@ -212,7 +224,7 @@ public class CVAHullWhiteCIRConvergenceTest {
 		int numberOfPaymentDates = 10; 
 		
 		double[] paymentFixingDates = new double[numberOfPaymentDates];
-
+		
 		double maturity = numberOfTimeSteps * timeStepSize;
 		double periodStepSize = maturity / (double) numberOfPaymentDates;
 		
@@ -221,23 +233,26 @@ public class CVAHullWhiteCIRConvergenceTest {
 		}
 		
 		double[] currentPaymentFixingDates = null;
-
 		
-		for(int index = 0; index < numberOfPaymentDates - 1 /* "- 1" since a swap needs at least to dates. */ ; index++) {
+		for(int index = 0; index < 1 /*numberOfPaymentDates - 1 */ /* "- 1" since a swap needs at least to dates. */ ; index++) {
 			
 			System.out.println("Printing the " + index + "th swap.");
 			
 			currentPaymentFixingDates = java.util.Arrays.copyOfRange(paymentFixingDates, index, numberOfPaymentDates);
-
+			
 			productProcess = new SwapConditionalFairValueProcess<HullWhiteModel>(underlyingModel, currentPaymentFixingDates); 
 			
 			npvAndDefaultIntensitySimulation.plugInProductProcess(productProcess);
 			
-			RandomVariableInterface realizationsRV = intensityBasedCVA.getCVA( npvAndDefaultIntensitySimulation, IntegrationMethod.Trapezoidal );
+			RandomVariableInterface realizationsRV = intensityBasedCVA.getCVA( npvAndDefaultIntensitySimulation, IntegrationMethod.LeftPoints );
 			
 			calculatePrintCVAs(realizationsRV.getRealizations());
-		
-			increasingSampleSizePlot(realizationsRV.getRealizations());
+			
+//			increasingSampleSizePlot(realizationsRV.getRealizations());
+			
+			testIntegratedNPV(npvAndDefaultIntensitySimulation);
+			
+			testExpectationNPV(npvAndDefaultIntensitySimulation);
 			
 		}
 
@@ -245,13 +260,16 @@ public class CVAHullWhiteCIRConvergenceTest {
 	
 	
 	public static void main(String[] args) throws CalculationException {
-
-
+		
 		CVAHullWhiteCIRConvergenceTest cvaHullWhiteCIRConvergenceTest = new CVAHullWhiteCIRConvergenceTest();
+		
+		/* Call of test method. Are the values of two consecutive getCVA method calls identical? 
+		 * The bond Obba sheet suggests they are not.  */
+//		cvaHullWhiteCIRConvergenceTest.consistencyUnitTest();
 		
 		cvaHullWhiteCIRConvergenceTest.testCouponBond();
 		
-		cvaHullWhiteCIRConvergenceTest.testSwap();
+//		cvaHullWhiteCIRConvergenceTest.testSwap();
 		
 		// CVAs from independent simulations and their relative error are printed.
 //		HashMap<Integer, Integer> pathsPerCVANumberOfCVAs = new HashMap<Integer, Integer>();
@@ -338,7 +356,7 @@ public class CVAHullWhiteCIRConvergenceTest {
 			currentCVAArray = cvaHashMapEntry.getValue();
 			
 			System.out.println( "Number of Paths is " + cvaHashMapEntry.getKey() + " for CVAs: ");
-			System.out.println( "The mean relative error is: " + KahanSummation.getValue( StatisticalFunctions.getRelativeDeviationsWRTMean(currentCVAArray)) );
+			System.out.println( "The mean relative error is: " + StatisticalFunctions.getArithmeticMean( StatisticalFunctions.getRelativeDeviationsWRTMean(currentCVAArray)) );
 			for(int index = 0; index < currentCVAArray.length; index++) {
 				System.out.println(  Double.toString( currentCVAArray[index] ).replace('.', ',') );
 			}
@@ -447,6 +465,92 @@ public class CVAHullWhiteCIRConvergenceTest {
 	}
 	
 	
+	public void consistencyUnitTest() throws CalculationException {
+
+		double[] paymentDates = new double[] {0.5, 1.0};
+		double[] periodFactors = new double[] {0.5, 0.5};
+		double[] coupons = new double[] {0.1,0.1};
+		
+		CouponBondConditionalFairValueProcess<HullWhiteModel> productProcess = new CouponBondConditionalFairValueProcess<HullWhiteModel>(null, paymentDates, periodFactors, coupons);
+		
+//		npvAndDefaultIntensitySimulation.plugInProductProcess(productProcess);
+//		
+		RandomVariableInterface realizationsRV = intensityBasedCVA.getCVA( npvAndDefaultIntensitySimulation, IntegrationMethod.Trapezoidal );
+		System.out.println("First getCVA call (Correlation): " + realizationsRV.getAverage());
+		realizationsRV = intensityBasedCVA.getCVA( npvAndDefaultIntensitySimulation, IntegrationMethod.Trapezoidal );
+		System.out.println("Second getCVA call (Correlation): " + realizationsRV.getAverage());
+		
+		IntensityFunctionSwitchShiftFloor intensityFunction = new IntensityFunctionSwitchShiftFloor(0.01);
+		
+		NPVAndDefaultIntensityFunctionSimulation npvForItensity = new NPVAndDefaultIntensityFunctionSimulation(underlyingModel, productProcess, seed, intensityFunction);
+		
+		realizationsRV = intensityBasedCVA.getCVA(npvForItensity, IntegrationMethod.Trapezoidal);
+		System.out.println("First getCVA call (Lando): " + realizationsRV.getAverage());
+		realizationsRV = intensityBasedCVA.getCVA(npvForItensity, IntegrationMethod.Trapezoidal);
+		System.out.println("Second getCVA call (Lando): " + realizationsRV.getAverage());
+		
+	}
+	
+	/**
+	 * This method looks at the integral of the NPV with respect to time.
+	 * Basically I want to answer the following question. 
+	 * Is the NPV integral value using a 10 time step discretization larger than the same value using 
+	 * a 50 time steps discretization?
+	 * 
+	 * @param npvAndDefaultIntensitySimulation Used to calculate the NPV.
+	 * @throws CalculationException
+	 */
+	public void testIntegratedNPV(NPVAndDefaultIntensitySimulationInterface npvAndDefaultIntensitySimulation) throws CalculationException {
+		
+		TimeDiscretizationInterface timeDiscretization = npvAndDefaultIntensitySimulation.getTimeDiscretization();
+		int numberOfTimes = timeDiscretization.getNumberOfTimes();
+		
+		RandomVariableInterface[] npvValuesArray = new RandomVariableInterface[numberOfTimes];
+		
+		for(int index = 0; index < numberOfTimes; index++) {
+			npvValuesArray[index] = npvAndDefaultIntensitySimulation.getDiscountedNPV(index , 0 ).floor(0.0);
+		}
+		
+		System.out.println("Integral of the NPV using " + (numberOfTimes-1) + " time steps:  " + commaDecSepFormatter.format( Integration.getIntegral(npvValuesArray, timeDiscretization, IntegrationMethod.Trapezoidal).getAverage() ));
+		
+	}
+	
+	
+	/**
+	 * This class answers the following question. 
+	 * Looking at a particular set of time points is the 
+	 * NPV expectation simulated using a finer time discretization
+	 * smaller than the NPV expectation simulated using a coarser 
+	 * time discretization?
+	 * 
+	 * @param npvAndDefaultIntensitySimulation Used to calculate the NPV.
+	 * @throws CalculationException
+	 * 
+	 */
+	public void testExpectationNPV(NPVAndDefaultIntensitySimulationInterface npvAndDefaultIntensitySimulation) throws CalculationException {
+		
+		TimeDiscretizationInterface timeDiscretization = npvAndDefaultIntensitySimulation.getTimeDiscretization();
+		
+		double[] timeArray = new double[] { 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0 };
+		
+		for(int index = 0; index < timeArray.length; index++) {
+			System.out.println( "The expectation of the discounted NPV at time " + timeArray[index] + " and index " + timeDiscretization.getTimeIndex( timeArray[index]) + ": ");
+		}
+		
+		for(int index = 0; index < timeArray.length; index++) {
+			System.out.println( commaDecSepFormatter.format( npvAndDefaultIntensitySimulation.getDiscountedNPV(timeDiscretization.getTimeIndex( timeArray[index]), 0 ).floor(0.0).getAverage() )  );
+		}
+		
+		
+		for(int index = 0; index < timeDiscretization.getNumberOfTimes(); index++) {
+			System.out.println( "The expectation of the discounted NPV at time " + timeDiscretization.getTime(index) + " and index " + index + ": ");
+		}
+		
+		for(int index = 0; index < timeDiscretization.getNumberOfTimes(); index++) {
+			System.out.println( commaDecSepFormatter.format( npvAndDefaultIntensitySimulation.getDiscountedNPV(index, 0 ).floor(0.0).getAverage() )  );
+		}
+		
+	}
 	
 	
 }

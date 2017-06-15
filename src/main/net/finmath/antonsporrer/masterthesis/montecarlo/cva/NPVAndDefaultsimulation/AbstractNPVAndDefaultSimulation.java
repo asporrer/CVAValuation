@@ -23,7 +23,7 @@ import net.finmath.time.TimeDiscretizationInterface;
 public abstract class AbstractNPVAndDefaultSimulation<T extends ProductConditionalFairValue_ModelInterface> implements NPVAndDefaultSimulationInterface<T>{
 		
 		private ProductConditionalFairValueProcessInterface<T> productProcess;
-	
+		
 		// This hash map contains the default probabilities. More precisely the value associated with with key i 
 		// is the probability of default in the interval (0, t_{i}].
 		final protected ConcurrentHashMap<Integer, Double> defaultProbabilities;
@@ -45,7 +45,8 @@ public abstract class AbstractNPVAndDefaultSimulation<T extends ProductCondition
 		}
 		
 		public RandomVariableInterface getDiscountedNPV(int timeIndex, int discountBackToIndex) throws CalculationException {
-			return productProcess.getFairValueNonMultiCurve(timeIndex).div(productProcess.getNumeraire(timeIndex).mult(productProcess.getNumeraire(discountBackToIndex))).floor(0.0);
+			//TODO: Are there any cases in which getFairValueNonMultiCurve should be used instead of getFairValue?
+			return productProcess.getFairValue(timeIndex).div(productProcess.getNumeraire(timeIndex).mult(productProcess.getNumeraire(discountBackToIndex)));
 		}
 		
 		/**
@@ -76,7 +77,7 @@ public abstract class AbstractNPVAndDefaultSimulation<T extends ProductCondition
 			this.productProcess = productProcess;
 		}
 		
-		public ProductConditionalFairValueProcessInterface<T> getProductProcess() {
+		public ProductConditionalFairValueProcessInterface<T>/*ConditionalProductInterface*/ getProductProcess() {
 			return this.productProcess;
 		}
 		

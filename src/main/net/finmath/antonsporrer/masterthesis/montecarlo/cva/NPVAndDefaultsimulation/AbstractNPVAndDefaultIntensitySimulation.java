@@ -96,7 +96,7 @@ public abstract class AbstractNPVAndDefaultIntensitySimulation<T extends Product
 		// 		 Maybe first fetch the intensity array and store it in an auxiliary intensityArray 
 		// 		 which can be passed to an integral approximation function.
 		
-		// TODO: Trapezoidal formula could be used here.
+		// TODO: Trapezoidal formula could be used here. -> Is in use now.
 		
 		// The number of time discretization points of the underlying model with respect to the product.
 		int numberOfTimes = this.getTimeDiscretization().getNumberOfTimes();

@@ -444,7 +444,7 @@ public class SwapConditionalFairValueProcess<T extends ZCBond_ProductConditional
 		// The fair Zero Coupon Bond values P(T_nextIndex,t) ,P(T_n,t) are fetched.
 		RandomVariableInterface bondTNextDateIndex = this.underlyingModel.getZeroCouponBond(evaluationTime, paymentDatesFixingDates[nextDateIndex]);
 		RandomVariableInterface bondTn = this.underlyingModel.getZeroCouponBond(evaluationTime, paymentDatesFixingDates[numberOfDates - 1]);
-
+		
 		// Calculating P(T_nextIndex,t) - P(T_n,t) this is the fair value of the floating payments 
 		// for fixing dates greater or equal to nextIndex.
 		// In case nextIndex = n the following value is zero thus no case distinction is necessary.

@@ -29,7 +29,7 @@ public interface NPVAndDefaultSimulationInterface<T extends ProductConditionalFa
 	 * <br> Second the these path-wise values are discounted back to the time with index discountBackToIndex.
 	 * The discounting is done with the numéraire of the underlying model. 
 	 * 
-	 * @param timeIndex
+	 * @param timeIndex The evaluation time to which the present of net present value refers.
 	 * @param discountBackToIndex The index of the time to which the net present value  should be discounted.
 	 * @return NPV The Net Present Value at the timeIndex discounted back to time with index discountBackToIndex is returned.
 	 * @throws CalculationException 
