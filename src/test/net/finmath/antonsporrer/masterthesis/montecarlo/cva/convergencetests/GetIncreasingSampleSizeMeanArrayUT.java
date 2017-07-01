@@ -11,7 +11,7 @@ import org.junit.rules.ExpectedException;
 
 /**
  * 
- * Unit test for {@link test.net.finmath.antonsporrer.masterthesis.montecarlo.cva.convergencetests.CVAHullWhiteCIRConvergenceTest #getIncreasingSampleSizeMeanArray(double[]) }
+ * Unit test for {@link test.net.finmath.antonsporrer.masterthesis.montecarlo.cva.convergencetests.CVAHullWhiteCIRConvergencePlausibilityTest #getIncreasingSampleSizeMeanArray(double[]) }
  * 
  * @author Anton Sporrer
  *
@@ -24,18 +24,18 @@ public class GetIncreasingSampleSizeMeanArrayUT {
 	@Test 
 	public void throwsIllegalArgumentExceptionTest() {
 		exception.expect(IllegalArgumentException.class);
-		CVAHullWhiteCIRConvergenceTest.getIncreasingSampleSizeMeanArray(null);
+		CVAHullWhiteCIRConvergencePlausibilityTest.getIncreasingSampleSizeMeanArray(null);
 	}
 	
 	@Test 
 	public void boundrySingleInputTest() {
-		Assert.assertArrayEquals( new double[] {1.0} , CVAHullWhiteCIRConvergenceTest.getIncreasingSampleSizeMeanArray(new double[] {1.0}), 1E-7);
+		Assert.assertArrayEquals( new double[] {1.0} , CVAHullWhiteCIRConvergencePlausibilityTest.getIncreasingSampleSizeMeanArray(new double[] {1.0}), 1E-7);
 	}
 	
 	@Test
 	public void testExample1() {
-		Assert.assertArrayEquals(new double[] {1.0, 1.5, 2.0, 2.0}, CVAHullWhiteCIRConvergenceTest.getIncreasingSampleSizeMeanArray(new double[] {1.0, 2.0, 3.0, 2.0}) , 1E-7);
-		Assert.assertArrayEquals(new double[] {1.0, 1.0, 1.0, 1.0}, CVAHullWhiteCIRConvergenceTest.getIncreasingSampleSizeMeanArray(new double[] {1.0, 1.0, 1.0, 1.0}) , 1E-7);
+		Assert.assertArrayEquals(new double[] {1.0, 1.5, 2.0, 2.0}, CVAHullWhiteCIRConvergencePlausibilityTest.getIncreasingSampleSizeMeanArray(new double[] {1.0, 2.0, 3.0, 2.0}) , 1E-7);
+		Assert.assertArrayEquals(new double[] {1.0, 1.0, 1.0, 1.0}, CVAHullWhiteCIRConvergencePlausibilityTest.getIncreasingSampleSizeMeanArray(new double[] {1.0, 1.0, 1.0, 1.0}) , 1E-7);
 	}
 	
 }

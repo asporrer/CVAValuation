@@ -11,7 +11,7 @@ import net.finmath.stochastic.RandomVariableInterface;
  * 
  * All models implementing this interface should provide the fair value of a
  * zero coupon bond maturing at maturity conditional on path-wise states of 
- * the underlying at evaluation time. Therefore for all models implementing 
+ * the underlying at evaluation time. Therefore all models implementing 
  * this interface should fulfill the following. Knowing the value of the underlying
  * on a path &omega; at evaluation time implies the fair value of a zero coupon bond 
  * on this path &omega;.

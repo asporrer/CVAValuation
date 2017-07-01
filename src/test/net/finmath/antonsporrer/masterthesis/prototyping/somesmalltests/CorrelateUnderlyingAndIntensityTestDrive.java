@@ -1,7 +1,7 @@
 package test.net.finmath.antonsporrer.masterthesis.prototyping.somesmalltests;
 
 import test.net.finmath.antonsporrer.masterthesis.montecarlo.HullWhiteCreationHelper;
-import test.net.finmath.antonsporrer.masterthesis.prototyping.CVA;
+import test.net.finmath.antonsporrer.masterthesis.prototyping.proofofconcept.CVA;
 import net.finmath.montecarlo.interestrate.HullWhiteModel;
 import net.finmath.montecarlo.model.AbstractModelInterface;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.intensitymodel.CIRModel;

@@ -17,6 +17,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.NPVAndDefaultsimulation.NPVAndDefaultSimulationInterface;
 import net.finmath.exception.CalculationException;
 import net.finmath.optimizer.SolverException;
@@ -80,8 +81,7 @@ public class ConstrainedWorstCaseCVA extends AbstractCVA {
 	 * @throws ExecutionException
 	 * @throws CalculationException
 	 */
-	@SuppressWarnings("rawtypes")
-	public double getConstrainedWorstCaseCVA( NPVAndDefaultSimulationInterface npvAndDefaultSimulation, double penaltyFactor ) throws InterruptedException, ExecutionException, CalculationException {
+	public double getConstrainedWorstCaseCVA( NPVAndDefaultSimulationInterface< ? extends ProductConditionalFairValue_ModelInterface> npvAndDefaultSimulation, double penaltyFactor ) throws InterruptedException, ExecutionException, CalculationException {
 		
 		// The number of intervals into which the positive time line is divided. 
 		// Including the interval from the last time discretization point to infinity.
@@ -116,6 +116,7 @@ public class ConstrainedWorstCaseCVA extends AbstractCVA {
 		// Calculating the probability that default occurrs after the last time discretization point.
 		defaultProbabilities[numberOfTimeDiscretizationIntervalls - 1] = 1.0 - npvAndDefaultSimulation.getDefaultProbability( numberOfTimeDiscretizationIntervalls - 1 );
 		
+		
 		// Calling the method actually calculating the constrained worst case CVA (assumed LGD is one) and multiplying the actual LGD.
 		return this.getLGD() * getWorstCaseCVANotToFarFromIndependence( penaltyFactor, discountedFlooredNPV, npvAndDefaultSimulation.getNumberOfPaths(), defaultProbabilities, terminationCriterionRows, terminationCriterionColumns, terminationCriterionColumnsAbsolut );
 		
@@ -138,7 +139,9 @@ public class ConstrainedWorstCaseCVA extends AbstractCVA {
 	 * @throws ExecutionException 
 	 * @throws InterruptedException 
 	 */
-	private double getWorstCaseCVANotToFarFromIndependence(final double penaltyFactor, final RandomVariableInterface[] discountedFlooredNPV, final int numberOfSimulationPaths, final double[] defaultProbabilities, final double terminationCriterionRows, final double terminationCriterionColumns, final double terminationCriterionColumnsAbsolut ) throws InterruptedException, ExecutionException {
+	public double getWorstCaseCVANotToFarFromIndependence(final double penaltyFactor, final RandomVariableInterface[] discountedFlooredNPV, final int numberOfSimulationPaths, final double[] defaultProbabilities, final double terminationCriterionRows, final double terminationCriterionColumns, final double terminationCriterionColumnsAbsolut ) throws InterruptedException, ExecutionException {
+		
+		// TODO: Add error handling in case there are too few paths or time steps.
 		
 		////
 		// Calculating the Initial Matrix for the IPFP.
@@ -177,7 +180,8 @@ public class ConstrainedWorstCaseCVA extends AbstractCVA {
 		
 		
 		////
-		// First the initial matrix is assigned as follows. Where F_{i,j} := q_{j} * (1 / numberOfRows)
+		// First, the initial matrix is assigned as follows. 
+		// Where F_{i,j} := q_{j} * (1 / numberOfRows).
 		// Where F_{i,j} is the independent joint distribution of the following marginal distributions. 
 		// The default probabilities on the different interval indices and the uniform distribution on path set.
 		// matrix[i][j] = exp( penaltyFactor * discountedFlooredNPV[i][j] ) * F_{i,j}.
@@ -214,7 +218,7 @@ public class ConstrainedWorstCaseCVA extends AbstractCVA {
 			
 		});
 		
-		// Second all columns except the last one of the matrix are assigned.
+		// Then all columns except the last one of the matrix are assigned.
 		for(int columnIndex = 0; columnIndex < numberOfColumns - 1; columnIndex++) {
 		
 			final int fixedColumnIndex = columnIndex;
@@ -245,6 +249,15 @@ public class ConstrainedWorstCaseCVA extends AbstractCVA {
 						// Multiply the current entry by the penalty factor and apply exp then multiply with F_{rowIndex, fixedColumnINdex}.
 						matrixA[rowIndex][fixedColumnIndex] = Math.exp( penaltyFactor * currentEntry ) * currentIndependentCommonDistributionWeight;
 						
+// TODO: Comment out debug code.
+//if(true) {
+//	System.out.println("matrixA[rowIndex][columnIndex]: " + matrixA[rowIndex][fixedColumnIndex]);
+//	System.out.println("NPV or C is: " + currentEntry);
+//	System.out.println("Common Distribution Weight: " + currentIndependentCommonDistributionWeight);
+//	System.out.println("Penalty Factor: " + penaltyFactor);
+//	System.out.println("The row index, column index are: " + rowIndex+ "," + fixedColumnIndex);
+//	}
+						
 					}
 					
 					return 0.0;
@@ -254,7 +267,7 @@ public class ConstrainedWorstCaseCVA extends AbstractCVA {
 		}
 	
 	
-		// Waits until each thread executed the call code. TODO: Error handling
+		// Waits until each thread executed the call code. TODO: Error handling, overflow handling
 		executor.invokeAll(callablesInitialMatrix);
 
 		
@@ -267,10 +280,10 @@ public class ConstrainedWorstCaseCVA extends AbstractCVA {
 		// The number of blocks into which the matrix is split. When each block has at most rowPerBlock rows.
 		// If the number of rows is not divisible by the number of threads one additional block is needed
 		// to cover the whole matrix.
-		final int numberOfMatrixBlocks = (numberOfRows % numberOfThreads) == 0 ? numberOfThreads: numberOfThreads + 1;
+		final int numberOfMatrixBlocks = (numberOfRows % numberOfThreads) == 0 ? numberOfThreads : Math.min( numberOfThreads + 1, numberOfRows);
 		
 		// The number of rows each block has.
-		final int rowsPerBlock = numberOfRows / numberOfThreads;
+		final int rowsPerBlock = numberOfRows / Math.min(numberOfRows, numberOfThreads);
 		
 
 		////
@@ -306,6 +319,9 @@ public class ConstrainedWorstCaseCVA extends AbstractCVA {
 				// If we are in the last block the rows only iterate to the final row of the
 				// whole matrix.
 				final int fixedIndexLastRowOfBlockPlusOne = ( blockIndex != (numberOfMatrixBlocks - 1) ) ? (blockIndex+1) * rowsPerBlock : numberOfRows;
+				
+// TODO: Comment out after Debugging:
+final int iterationIndexDebug = iterationIndex;
 				
 				callablesForRowSum.add(new Callable<Boolean>() {
 					
@@ -361,6 +377,17 @@ public class ConstrainedWorstCaseCVA extends AbstractCVA {
 							// Renormalizing the current row.
 							for(int columnIndex = 0; columnIndex < numberOfColumns; columnIndex++) {
 								matrixB[rowIndex][columnIndex] = matrixA[rowIndex][columnIndex] / currentRowSum * pathProbability;
+								
+// TODO: Debug Code: Comment out after test.
+//if( iterationIndexDebug == 2 && rowIndex == 22  ) {
+//		System.out.println("matrixB[rowIndex][columnIndex]: " + matrixB[rowIndex][columnIndex]);
+//		System.out.println("matrixA[rowIndex][columnIndex]: " + matrixA[rowIndex][columnIndex]);
+//		System.out.println("Sum in Denominator is: " + currentRowSum);
+//		System.out.println("The row index, column index are: " + rowIndex+ "," + columnIndex);
+//		System.out.println("The iteration index is: " + iterationIndexDebug);
+//	}
+
+
 							}
 									
 						}
@@ -478,7 +505,7 @@ public class ConstrainedWorstCaseCVA extends AbstractCVA {
 		
 		// The set of Callables is reset.
 		Set<Callable<Double>> callablesFinalSum = new HashSet<Callable<Double>>();
-
+		
 		for(int columnIndex = 0; columnIndex < numberOfColumns - 1; columnIndex++) {
 		
 			final int fixedColumnIndex = columnIndex;
@@ -486,7 +513,7 @@ public class ConstrainedWorstCaseCVA extends AbstractCVA {
 			callablesFinalSum.add(new Callable<Double>() {
 				public Double call() {
 					
-					System.out.println("Only column index: " + fixedColumnIndex);
+//					System.out.println("Only column index: " + fixedColumnIndex); // !
 					
 					double runningSum = 0.0;
 					double helperNextSum = 0.0;
@@ -505,7 +532,7 @@ public class ConstrainedWorstCaseCVA extends AbstractCVA {
 						runningSum = helperNextSum;
 						
 					}
-					System.out.println("Column " + fixedColumnIndex + " has running cva sum: " + runningSum);
+//					System.out.println("Column " + fixedColumnIndex + " has running cva sum: " + runningSum); // !
 					return runningSum;
 					
 				}

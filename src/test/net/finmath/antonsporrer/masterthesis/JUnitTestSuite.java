@@ -8,6 +8,7 @@ import test.net.finmath.antonsporrer.masterthesis.function.statisticalfunctions.
 import test.net.finmath.antonsporrer.masterthesis.function.statisticalfunctions.EmpiricalVarianceTest;
 import test.net.finmath.antonsporrer.masterthesis.function.statisticalfunctions.GetDeviationFromMeanUT;
 import test.net.finmath.antonsporrer.masterthesis.function.statisticalfunctions.GetRelativeDeviationsWRTMeanUT;
+import test.net.finmath.antonsporrer.masterthesis.montecarlo.cva.ConstrainedWorstCaseWWRUT;
 import test.net.finmath.antonsporrer.masterthesis.montecarlo.cva.convergencetests.ConvergenceTestGetArithmeticMeansUT;
 import test.net.finmath.antonsporrer.masterthesis.montecarlo.cva.convergencetests.GetIncreasingSampleSizeMeanArrayUT;
 import test.net.finmath.antonsporrer.masterthesis.montecarlo.cva.npvanddefaultsimulation.AbstractNPVAndDefaultSimulation.PlugInProductProcessUT;
@@ -23,7 +24,8 @@ import test.net.finmath.antonsporrer.masterthesis.montecarlo.cva.npvanddefaultsi
 	GetDeviationFromMeanUT.class,
 	GetRelativeDeviationsWRTMeanUT.class,
 	GetIncreasingSampleSizeMeanArrayUT.class, 
-	PlugInProductProcessUT.class
+	PlugInProductProcessUT.class,
+	ConstrainedWorstCaseWWRUT.class
 })
 
 public class JUnitTestSuite {   
