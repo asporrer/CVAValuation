@@ -188,6 +188,8 @@ public class ConstrainedWorstCaseWWRUT {
 			penaltyFactor = 60;
 			result = constrainedWorstCaseCVA.getWorstCaseCVANotToFarFromIndependence(penaltyFactor, discountedFlooredNPV, numberOfSimulationPaths, defaultProbabilities, 0.00000001, 0.000000001, 0.00000000000001 );
 			System.out.println("The result should be smaller than 9.75. The result is: " + result);
+
+			
 			Assert.assertEquals(9.95, result, 1);
 			
 			

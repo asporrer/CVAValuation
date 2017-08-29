@@ -78,7 +78,7 @@ public class SwapConditionalFairValueProcess<T extends ZCBond_ProductConditional
 	public double getSwapRate() {
 		return swapRate;
 	}
-
+	
 	
 	// Proofreading Notes: Master Thesis, Block 3, p.13)
 	/**
@@ -180,7 +180,7 @@ public class SwapConditionalFairValueProcess<T extends ZCBond_ProductConditional
  			
 			// All floating leg payments after the current interval are evaluated.
 			for(int indexFloatingLegFixingDate = nextDateIndex; indexFloatingLegFixingDate < numberOfDates - 1; indexFloatingLegFixingDate++ ) {
-
+				
 	 			// The current discounting adjustment from evaluation date to payment date is assigned. 
 	 			currentDiscountingAdjustmentEvalPayment = this.underlyingModel.getDiscountingAdjustment( evaluationTime, paymentDatesFixingDates[ indexFloatingLegFixingDate + 1 ] );
 				

@@ -122,7 +122,7 @@ public class ConstrainedWorstCaseCVA extends AbstractCVA {
 		
 	}
 	
-	
+
 	/**
 	 * 
 	 * This method uses the iterartive proportional fitting procedure (IPFP) to calculate the worst case CVA under a constraint.
@@ -175,6 +175,10 @@ public class ConstrainedWorstCaseCVA extends AbstractCVA {
 		
 		ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
 		
+		// TODO: Not used at the moment. Could be used as NaN cause explanation message. 
+		final double rescalingParameter = false ? getScalingParameter(discountedFlooredNPV, numberOfSimulationPaths, executor, penaltyFactor) : 0.0;		
+		
+		
 		// Using Callable instead of runnable such that invokeAll can be invoked.
 		Set<Callable<Double>> callablesInitialMatrix = new HashSet<Callable<Double>>();
 		
@@ -208,7 +212,7 @@ public class ConstrainedWorstCaseCVA extends AbstractCVA {
 					currentIndependentCommonDistributionWeight = pathProbability * defaultProbabilities[ numberOfColumns - 1 ]; 
 					
 					// Multiply the current entry by the penalty factor and apply exp. Then multiply with F_{rowIndex, fixedColumnIndex}.
-					matrixA[rowIndex][ numberOfColumns - 1 ] = Math.exp( penaltyFactor * currentEntry ) * currentIndependentCommonDistributionWeight;
+					matrixA[rowIndex][ numberOfColumns - 1 ] = Math.exp( penaltyFactor * currentEntry - rescalingParameter ) * currentIndependentCommonDistributionWeight;
 					
 				}
 				
@@ -247,9 +251,9 @@ public class ConstrainedWorstCaseCVA extends AbstractCVA {
 						currentIndependentCommonDistributionWeight = pathProbability * defaultProbabilities[fixedColumnIndex]; 
 						
 						// Multiply the current entry by the penalty factor and apply exp then multiply with F_{rowIndex, fixedColumnINdex}.
-						matrixA[rowIndex][fixedColumnIndex] = Math.exp( penaltyFactor * currentEntry ) * currentIndependentCommonDistributionWeight;
+						matrixA[rowIndex][fixedColumnIndex] = Math.exp( penaltyFactor * currentEntry - rescalingParameter ) * currentIndependentCommonDistributionWeight;
 						
-// TODO: Comment out debug code.
+// TODO: Comment out debug code - Start
 //if(true) {
 //	System.out.println("matrixA[rowIndex][columnIndex]: " + matrixA[rowIndex][fixedColumnIndex]);
 //	System.out.println("NPV or C is: " + currentEntry);
@@ -257,6 +261,7 @@ public class ConstrainedWorstCaseCVA extends AbstractCVA {
 //	System.out.println("Penalty Factor: " + penaltyFactor);
 //	System.out.println("The row index, column index are: " + rowIndex+ "," + fixedColumnIndex);
 //	}
+// TODO: Comment out debug code - End
 						
 					}
 					
@@ -574,6 +579,70 @@ final int iterationIndexDebug = iterationIndex;
 	
 	}
 
+	
+
+	private double getScalingParameter( RandomVariableInterface[] discountedFlooredNPV, int numberOfSimulationPaths, ExecutorService executor, double penaltyFactor) throws InterruptedException, ExecutionException {
+		
+		////
+		// The maximum value of the discounted and floored (at zero) NPV paths is calculated.
+		// One use-case is the rescaling of the exponents in the iterative proportional fitting procedure.
+		////
+		
+		Set<Callable<Double>> callablesMaxDiscountedFlooredNPV = new HashSet<Callable<Double>>();
+		
+		for(int columnIndex = 0; columnIndex < discountedFlooredNPV.length; columnIndex++) {
+		
+			final double[] currentColumn = discountedFlooredNPV[columnIndex].getRealizations();
+			
+			callablesMaxDiscountedFlooredNPV.add( new Callable<Double>() {
+				
+				public Double call() {
+					
+					double currentMax = 0.0;
+					
+					for(int rowIndex = 0; rowIndex< currentColumn.length; rowIndex++) {
+					
+						if(currentColumn[rowIndex]>currentMax) {currentMax = currentColumn[rowIndex];}
+						
+					}	
+					
+					return currentMax;
+					
+				}
+				
+			});
+		
+		}
+		
+		
+		// Waiting and collecting the results of the parallel calculation of the maximum of each discounted and floored NPV column.
+		List<Future<Double>> columnWiseMax = new ArrayList<Future<Double>>();
+		columnWiseMax = executor.invokeAll(callablesMaxDiscountedFlooredNPV);
+		
+		
+		// Calculating the absolute maximum by calculating the maximum of all column-wise maxima.
+		double currentMaximumDiscountedFlooredNPV = 0.0;
+		double maxOfCurrentColumn = 0.0;
+		
+		for(Future<Double> currentColumnMaxFuture: columnWiseMax) {
+		
+			maxOfCurrentColumn = currentColumnMaxFuture.get();
+			if(maxOfCurrentColumn > currentMaximumDiscountedFlooredNPV) {currentMaximumDiscountedFlooredNPV = maxOfCurrentColumn;}
+		
+		}	
+		
+		// The maximum value of the discounted and floored NPV is used to for rescaling in the calculation 
+		// of the initial matrix such that overflow does not occur when applying the exponential function.
+		// Basically exp(-rescalingParameter) will be multiplied to following the numerator and denominator  exp(penaltyFactor * NPV_i)/sum_j exp(penaltyFactor * NPV_j) 
+		// such that overflow is avoided.
+		double rescalingParameter = currentMaximumDiscountedFlooredNPV * penaltyFactor > 700 ? currentMaximumDiscountedFlooredNPV * penaltyFactor - ( 700 - Math.log(numberOfSimulationPaths) ) : 0.0;
+		
+		return rescalingParameter;
+		
+	}
+	
+	
+	
 	
 			// TODO: Delete after Tests are completed.
 		//		/**

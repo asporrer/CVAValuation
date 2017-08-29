@@ -10,6 +10,9 @@ import main.net.finmath.antonsporrer.masterthesis.montecarlo.IntensityFunctionAr
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.product.ProductConditionalFairValueProcessInterface;
 import net.finmath.exception.CalculationException;
+import net.finmath.montecarlo.process.AbstractProcess;
+import net.finmath.montecarlo.process.AbstractProcessInterface;
+import net.finmath.montecarlo.process.ProcessEulerScheme;
 import net.finmath.stochastic.RandomVariableInterface;
 
 
@@ -35,11 +38,11 @@ public class NPVAndDefaultIntensityFunctionSimulation<T extends  ProductConditio
 	private T underlyingModelforDefaultProbabilityConsistencyCheck;
 	private FunctionInterface<RandomVariableInterface, RandomVariableInterface> intensityFunctionforDefaultProbabilityConsistencyCheck;
 	//TODO: Store Intensity: private RandomVariableInterface[] intensityProcess; implement a wider class of functions not only "markovian" functions.
+	// TODO: Delete Seed.
 	
 	/**
 	 * 
-	 * 
-	 * TODO: Implement usage of seed.
+	 * TODO: Implement use of seed. Or Delete Seed
 	 * 
 	 * @param underlyingModel 
 	 * @param productProcess 
@@ -52,7 +55,7 @@ public class NPVAndDefaultIntensityFunctionSimulation<T extends  ProductConditio
 		super(underlyingModel, productProcess);
 		this.intensityFunction = intensityFunction;
 	}
-
+	
 	
 	public RandomVariableInterface getIntensity(int timeIndex) throws CalculationException {
 		// The intensity function is applied to the intensity function argument provided by the underlying model.
@@ -65,7 +68,8 @@ public class NPVAndDefaultIntensityFunctionSimulation<T extends  ProductConditio
 		// TODO: Check if this guarantees that the default probabilities are consistent!
 		// Check if the underlying model or the intensity function has changed. If so the default probabilities have 
 		// to be reset to guarantee consistent default probabilities.
-		if(underlyingModelforDefaultProbabilityConsistencyCheck != this.getProductProcess().getUnderlyingModel() || intensityFunctionforDefaultProbabilityConsistencyCheck != intensityFunction) {
+		if(underlyingModelforDefaultProbabilityConsistencyCheck != this.getProductProcess().getUnderlyingModel() || intensityFunctionforDefaultProbabilityConsistencyCheck != intensityFunction)
+		{
 			defaultProbabilities.clear();
 			underlyingModelforDefaultProbabilityConsistencyCheck = this.getProductProcess().getUnderlyingModel() ;
 			intensityFunctionforDefaultProbabilityConsistencyCheck = this.intensityFunction;

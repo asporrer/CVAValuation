@@ -13,15 +13,15 @@ import net.finmath.stochastic.RandomVariableInterface;
  * This class implements the following function operating on the paths of the input implementing RandomVariableInterface.
  * 
  * If the constructor parameter isSwitched is passed as true this function uses the following rule.
- * <br> x -> max( -x - shift , 0 )
+ * <br> x -> max( -x - shift , 0.001 )
  * <br> Otherwise the following rule is applied.
- * <br> x -> max( x - shift , 0 )
+ * <br> x -> max( x - shift , 0.001 )
  * 
  * @author Anton Sporrer
  *
  */
 public class IntensityFunctionSwitchShiftFloor implements FunctionInterface<RandomVariableInterface,RandomVariableInterface> {
-
+	
 	// The shift parameter 
 	private double shift;
 	
@@ -54,8 +54,7 @@ public class IntensityFunctionSwitchShiftFloor implements FunctionInterface<Rand
 	public RandomVariableInterface getValue(RandomVariableInterface input) {
 	
 		RandomVariableInterface output = null;
-		
-		output = (new RandomVariable(-shift)).addProduct(input, factor).floor(0);
+		output = (new RandomVariable(-shift)).addProduct(input, factor).floor(0.001);
 		
 		return output;
 		
