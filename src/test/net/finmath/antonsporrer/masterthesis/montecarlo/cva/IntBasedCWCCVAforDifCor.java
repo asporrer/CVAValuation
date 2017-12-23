@@ -1,12 +1,8 @@
 package test.net.finmath.antonsporrer.masterthesis.montecarlo.cva;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-
 import main.net.finmath.antonsporrer.masterthesis.function.FunctionInterface;
-import main.net.finmath.antonsporrer.masterthesis.function.RandomVariableFunctionInterface;
 import main.net.finmath.antonsporrer.masterthesis.integration.Integration.IntegrationMethod;
 import main.net.finmath.antonsporrer.masterthesis.modifiedFromFinmathLib.HullWhiteModel;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.ConstrainedWorstCaseCVA;

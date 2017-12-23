@@ -4,8 +4,6 @@
 
 package main.net.finmath.antonsporrer.masterthesis.function;
 
-import org.apache.commons.math3.exception.NotANumberException;
-
 /**
  * 
  * A set of statistical functions.
@@ -45,7 +43,7 @@ public class StatisticalFunctions {
 	 * 
 	 * A set of values x<sub>1</sub>, x<sub>2</sub>, ... , x<sub>n</sub>  is passed to this function and the function
 	 * returns the empirical variance &sigma;. The calculation is performed using the factor 1/n in the biased version and
-	 * using factor 1/(n-1) in the biased version. The arithmetic mean &mu; {@link #getArithmeticMean} is used.
+	 * using factor 1/(n-1) in the unbiased version. The arithmetic mean &mu; {@link #getArithmeticMean} is used.
 	 * <br> 
 	 * <br> &sigma; := factor * ( (x<sub>1</sub> - &mu;)^2 + (x<sub>2</sub> - &mu;)^2 + ... + (x<sub>n</sub> - &mu;)^2 )
 	 *  

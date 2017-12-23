@@ -37,7 +37,6 @@ public abstract class AbstractNPVAndDefaultSimulation<T extends ProductCondition
 			productProcess.setUnderlyingModel(underlyingModel);
 			this.productProcess = productProcess;
 			defaultProbabilities = new ConcurrentHashMap<Integer, Double>();
-			
 		}
 		
 		public RandomVariableInterface getNumeraire(int timeIndex) throws CalculationException {
@@ -45,7 +44,6 @@ public abstract class AbstractNPVAndDefaultSimulation<T extends ProductCondition
 		}
 		
 		public RandomVariableInterface getDiscountedNPV(int timeIndex, int discountBackToIndex) throws CalculationException {
-			//TODO: Are there any cases in which getFairValueNonMultiCurve should be used instead of getFairValue?
 			return productProcess.getFairValue(timeIndex).div(productProcess.getNumeraire(timeIndex).mult(productProcess.getNumeraire(discountBackToIndex)));
 		}
 		
@@ -58,7 +56,6 @@ public abstract class AbstractNPVAndDefaultSimulation<T extends ProductCondition
 		public double getDefaultProbability(int timeIndex) throws CalculationException {
 			return new Double( defaultProbabilities.get(timeIndex) );
 		}
-		
 		
 		public TimeDiscretizationInterface getTimeDiscretization() {
 			return this.productProcess.getTimeDiscretization();

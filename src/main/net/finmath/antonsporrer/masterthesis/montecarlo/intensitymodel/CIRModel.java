@@ -1,3 +1,7 @@
+/* 
+ * Contact: anton.sporrer@yahoo.com
+ */
+
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.intensitymodel;
 
 import java.util.Map;
@@ -14,7 +18,7 @@ import net.finmath.stochastic.RandomVariableInterface;
 /**
  * 
  * This class implements a CIR model. 
- * It is assumed that &nu;<sup>2</sup> < &kappa; &mu;. 
+ * It is assumed that &nu;<sup>2</sup> < 2 &kappa; &mu;. 
  * This implies that &lambda;<sub>t</sub> > 0, for all t in the simulation horizon. Where &lambda;<sub>t</sub> is the simulated process
  * specified by this model.
  * <br> Basically an Euler scheme is used to approximate this process. Although after

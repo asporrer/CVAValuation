@@ -11,12 +11,12 @@ import net.finmath.functions.LinearAlgebra;
  * The two purposes of this class are. 
  * First to build a matrix from a given block according to 
  * {@link #createCorrelationMatrix(double[][]) }.
- * Secondly, to provide the useful methods for the built matrix.
- * <br> The built matrix can be interpreted as a correlation matrix of 
+ * Secondly, to provide useful methods for the generated matrix.
+ * <br> The generated matrix can be interpreted as a correlation matrix of 
  * two random vectors. Where the intercorrelations are specified by the 
  * constructor parameter interCorrelations. The intracorrelations of the
- * two random vectors are zero that is to say that the two random vectors 
- * on their own have the identity matrix as correlation matrix.
+ * two random vectors are zero that is to say that each of the two random vectors 
+ * has the identity matrix as correlation matrix.
  * 
  * 
  * @author Anton Sporrer
@@ -28,8 +28,7 @@ public class Correlation implements CorrelationInterface {
 	private double[][] correlation;
 	
 	////
-	// The dimensions of the intercorrelation matrix are stored such that
-	// the 
+	// The dimensions of the intercorrelation matrix are stored.
 	////
 	int numberOfInterCorrelationsRows;
 	int numberOfInterCorrelationColumns;
@@ -54,6 +53,7 @@ public class Correlation implements CorrelationInterface {
 	public double[][] getCorrelationMatrix() {
 		
 		return correlation;
+		
 	}
 	
 	
@@ -126,12 +126,12 @@ public class Correlation implements CorrelationInterface {
 		double[][] correlationMatrix = new double[numberOfFactorsBothModels][numberOfFactorsBothModels];
 		
 		
-		// Assigning the identity matrix to the the first quadratic diagonal matrix.
+		// Assigning the identity matrix to the diagonal of the matrix.
 		for(int index = 0; index < numberOfFactorsFirstModel + numberOfFactorsSecondModel; index++) {
 			correlationMatrix[index][index] = 1.0;
 		}
 		
-		// Assigning the inter-correlations to the two model correlation matrix.
+		// Assigning the inter-correlations to the correlation matrix of the combined models.
 		for(int rowIndexInterCorrelationMatrix = 0; rowIndexInterCorrelationMatrix < numberOfFactorsFirstModel; rowIndexInterCorrelationMatrix++ ) {
 			for(int columnIndexInterCorrelationMatrix = numberOfFactorsFirstModel; columnIndexInterCorrelationMatrix < numberOfFactorsBothModels; columnIndexInterCorrelationMatrix++ ) {
 				// Assigning the upper right intercorrelation part.

@@ -64,17 +64,16 @@ public interface ProductConditionalFairValueProcessInterface<T extends ProductCo
 
 	/**
 	 * 
-	 * It should be pointed out that not a clone but the 
-	 * referenced model is assigned to the product.
-	 * 
-	 * TODO: Assign clone of the parameter underlying model.
-	 * 
+	 * It should be pointed out that in most implementations of this method 
+	 * referenced model is not cloned. Therefore the provided model itself 
+	 * is assigned to the product.
+	 *
 	 * @param underlyingModel The underlying model which will be assigned to the product.
 	 */
 	public void setUnderlyingModel(T underlyingModel);
 	
 	/**
-	 * TODO: Return a copy.
+	 * Not a copy but the model itself is returned.
 	 * 
 	 * @return The underlying model which respect to which the fair price of the product is calculated.
 	 */

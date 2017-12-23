@@ -13,13 +13,12 @@ import net.finmath.stochastic.RandomVariableInterface;
 /**
  * 
  * This class provides the credit valuation adjustment (CVA) 
- * in case of an intensity based model of default.  
+ * in case of an intensity based model of the default.  
  * The simulation {@link main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.NPVAndDefaultsimulation.NPVAndDefaultIntensitySimulationInterface}
  * provides the necessary product and default information to apply the following formula.
  * <br> CVA = LGD * E[ int_0^T ( N<sub>0</sub> * NPV(u) / N(u) )<sup>+</sup> * &lambda;(u) * exp( - int_0^u &lambda;(s) ds ) du ]
  * <br >Where LGD is the loss given default N is the numéraire provided by the underlying model NPV is the net present value provided by the underlying model
  * and &lambda; is the default intensity.
- * <br> TODO: Provide source justifying this formula: Bielecki & Rutkowski, Credit Risk ... .
  * @author Anton Sporrer
  *
  * 
@@ -55,7 +54,6 @@ public class IntensityBasedCVA extends AbstractCVA{
 
 		
 		for(int timeIndex = 0; timeIndex < numberOfFunctionValues ; timeIndex++) {
-			// TODO: Floor has been added.
 			functionValues[timeIndex] = (npvAndDefaultIntensitySimulation.getDiscountedNPV(timeIndex, 0).floor(0.0))
 					.mult( npvAndDefaultIntensitySimulation.getIntensity(timeIndex) )
 					.div( npvAndDefaultIntensitySimulation.getExpOfIntegratedIntensity(timeIndex) ); 

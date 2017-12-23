@@ -5,14 +5,10 @@
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.NPVAndDefaultsimulation;
 
 import main.net.finmath.antonsporrer.masterthesis.function.FunctionInterface;
-import main.net.finmath.antonsporrer.masterthesis.function.RandomVariableFunctionInterface;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.IntensityFunctionArgumentModelInterface;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.product.ProductConditionalFairValueProcessInterface;
 import net.finmath.exception.CalculationException;
-import net.finmath.montecarlo.process.AbstractProcess;
-import net.finmath.montecarlo.process.AbstractProcessInterface;
-import net.finmath.montecarlo.process.ProcessEulerScheme;
 import net.finmath.stochastic.RandomVariableInterface;
 
 
@@ -21,7 +17,7 @@ import net.finmath.stochastic.RandomVariableInterface;
  * 
  * This class implements a simulation of an underlying process (e.g. a short rate or a LIBOR Market Model) specified by 
  * {@link main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface} and
- * a default intensity which is a function of the underlying. More precisely the underlying has to implement {@link main.net.finmath.antonsporrer.masterthesis.montecarlo.IntensityFunctionArgumentModelInterface}.
+ * a default intensity which is implemented as a function of the underlying. More precisely the underlying has to implement {@link main.net.finmath.antonsporrer.masterthesis.montecarlo.IntensityFunctionArgumentModelInterface}.
  * Therefore the underlying provides via {@link main.net.finmath.antonsporrer.masterthesis.montecarlo.IntensityFunctionArgumentModelInterface#getIntensityFunctionArgument getIntensityFunctionArgument} 
  * the argument for a so called intensity function implementing {@link main.net.finmath.antonsporrer.masterthesis.function.RandomVariableFunctionInterface}. The function value is then the intensity.
  * 
@@ -37,12 +33,10 @@ public class NPVAndDefaultIntensityFunctionSimulation<T extends  ProductConditio
 	
 	private T underlyingModelforDefaultProbabilityConsistencyCheck;
 	private FunctionInterface<RandomVariableInterface, RandomVariableInterface> intensityFunctionforDefaultProbabilityConsistencyCheck;
-	//TODO: Store Intensity: private RandomVariableInterface[] intensityProcess; implement a wider class of functions not only "markovian" functions.
-	// TODO: Delete Seed.
-	
+
+
 	/**
 	 * 
-	 * TODO: Implement use of seed. Or Delete Seed
 	 * 
 	 * @param underlyingModel 
 	 * @param productProcess 
@@ -65,11 +59,11 @@ public class NPVAndDefaultIntensityFunctionSimulation<T extends  ProductConditio
 	@Override
 	public double getDefaultProbability(int timeIndex) throws CalculationException {
 		
-		// TODO: Check if this guarantees that the default probabilities are consistent!
-		// Check if the underlying model or the intensity function has changed. If so the default probabilities have 
-		// to be reset to guarantee consistent default probabilities.
+		// Check if the underlying model or the intensity function has changed. If so the default probabilities and the expOfIntegratedIntensity of the superclass have 
+		// to be reset to guarantee consistent default probabilities and expOfIntegratedIntensity.
 		if(underlyingModelforDefaultProbabilityConsistencyCheck != this.getProductProcess().getUnderlyingModel() || intensityFunctionforDefaultProbabilityConsistencyCheck != intensityFunction)
 		{
+			resetExpOfIntegratedIntensity();
 			defaultProbabilities.clear();
 			underlyingModelforDefaultProbabilityConsistencyCheck = this.getProductProcess().getUnderlyingModel() ;
 			intensityFunctionforDefaultProbabilityConsistencyCheck = this.intensityFunction;
@@ -80,7 +74,17 @@ public class NPVAndDefaultIntensityFunctionSimulation<T extends  ProductConditio
 	}
 	
 	public RandomVariableInterface getExpOfIntegratedIntensity(int timeIndex) throws CalculationException {
-		// TODO Use if-statement to treat the following case. The intensity model provides a getExpOfIntegratedIntensity function. 
+	
+		// Check if the underlying model or the intensity function has changed. If so the default probabilities and the expOfIntegratedIntensity of the superclass have 
+		// to be reset to guarantee consistent default probabilities and expOfIntegratedIntensity.
+		if(underlyingModelforDefaultProbabilityConsistencyCheck != this.getProductProcess().getUnderlyingModel() || intensityFunctionforDefaultProbabilityConsistencyCheck != intensityFunction)
+		{
+			resetExpOfIntegratedIntensity();
+			defaultProbabilities.clear();
+			underlyingModelforDefaultProbabilityConsistencyCheck = this.getProductProcess().getUnderlyingModel() ;
+			intensityFunctionforDefaultProbabilityConsistencyCheck = this.intensityFunction;
+		}
+		
 		return super.getExpOfIntegratedIntensity(timeIndex);
 	}
 	

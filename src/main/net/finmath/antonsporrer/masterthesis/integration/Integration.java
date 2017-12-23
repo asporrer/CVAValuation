@@ -13,7 +13,7 @@ import net.finmath.time.TimeDiscretizationInterface;
  * 
  * This class provides static methods to approximate an Lebesgue integral. 
  * Whereas the integrand is given only on discrete time points. Two Versions 
- * are provided in this class. One where the function values are given as an
+ * are provided by this class. One where the function values are given as an
  * double array and one where the function values are given as a RandomVariableInterface 
  * array.
  * 
@@ -23,7 +23,7 @@ import net.finmath.time.TimeDiscretizationInterface;
 public class Integration {
 	
 	/**
-	 * The names refer to the integration approximation used. 
+	 * The names refer to the used integration method. 
 	 * LeftPoints means on each interval the function is approximated 
 	 * by the constant function value of the left interval bound. 
 	 * RightPoints can be interpreted accordingly.
@@ -39,9 +39,9 @@ public class Integration {
 	 * This function gets a time discretization and corresponding function values 
 	 * [ E.g.  (t_0, t_1, ... , t_n), ( f(t_0), f(t_1), ... , f(t_n) ) ] and a integration 
 	 * approximation method of choice. According to the integration approximation method 
-	 * Kahan summation is used to calculate sum approximating the integral.
+	 * the Kahan summation is used to calculate the sum approximating the integral.
 	 * 
-	 * @param functionValues The discrete function values corresponding to the timediscretization [ e.g. ( f(t_0), f(t_1), ... , f(t_n) ) ].
+	 * @param functionValues The discrete function values corresponding to the time discretization [ e.g. ( f(t_0), f(t_1), ... , f(t_n) ) ].
 	 * @param times The time points associated with the function values [ e.g. (t_0, t_1, ... , t_n) ].
 	 * @param integrationMethod The integration method used to approximate the integral (e.g. Trapezoidal, ... ).
 	 * @return The approximation of the Lebesgue integral of the specified function.
@@ -56,11 +56,11 @@ public class Integration {
 	/**
 	 * This function gets a time discretization and corresponding function values 
 	 * [ E.g.  (t_0, t_1, ... , t_n), ( f(t_0), f(t_1), ... , f(t_n) ) ] and a integration 
-	 * approximation method of choice. According to the integration approximation method 
-	 * Kahan summation is used to calculate sum approximating the integral.
+	 * approximation method of choice. According to the integration approximation method the
+	 * Kahan summation is used to calculate the sum approximating the integral.
 	 * 
-	 * @param functionValues The discrete function values corresponding to the timediscretization [ e.g. ( f(t_0), f(t_1), ... , f(t_n) ) ].
-	 * @param timeDiscretization Holding [ e.g. (t_0, t_1, ... , t_n) ].
+	 * @param functionValues The discrete function values corresponding to the time discretization [ e.g. ( f(t_0), f(t_1), ... , f(t_n) ) ].
+	 * @param timeDiscretization Holding the time discretization points (t_0, t_1, ... , t_n).
 	 * @param integrationMethod The integration method used to approximate the integral (e.g. Trapezoidal, ... ).
 	 * @return The approximation of the Lebesgue integral of the specified function.
 	 */
@@ -128,7 +128,7 @@ public class Integration {
 
 	
 	/**
-	 * Analog to the other getIntegral methods with different signature. 
+	 * Analogous to the other getIntegral methods with different signature. 
 	 */
 	public static double getIntegral(double[] functionValues, TimeDiscretizationInterface timeDiscretization, IntegrationMethod integrationMethod) {
 		// TODO: Implement weights. Maybe check if the length of the function values array is equal to the time discretization length. 

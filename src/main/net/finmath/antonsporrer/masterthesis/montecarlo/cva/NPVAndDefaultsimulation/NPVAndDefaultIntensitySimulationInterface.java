@@ -10,7 +10,7 @@ import net.finmath.stochastic.RandomVariableInterface;
 
 /**
  * 
- * This subinterface specifies required methods for joint product and intensity simulation.
+ * This sub-interface specifies required methods for joint product and intensity simulation.
  * 
  * @author Anton Sporrer
  *

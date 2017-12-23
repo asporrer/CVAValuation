@@ -6,17 +6,13 @@ package main.net.finmath.antonsporrer.masterthesis.montecarlo.product;
 
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.ZCBond_ProductConditionalFairValue_ModelInterface;
 import net.finmath.exception.CalculationException;
-import net.finmath.marketdata.model.AnalyticModelInterface;
-import net.finmath.marketdata.model.curves.DiscountCurveFromForwardCurve;
-import net.finmath.marketdata.model.curves.DiscountCurveInterface;
-import net.finmath.marketdata.model.curves.ForwardCurveInterface;
 import net.finmath.montecarlo.RandomVariable;
 import net.finmath.stochastic.RandomVariableInterface;
 
 
 /**
  * 
- * This class implements the valuation of non-defaultable a coupon bond. Whereas "non-defaultable" is only relevant in a multi-curve setting, 
+ * This class implements the valuation of a non-defaultable coupon bond. Whereas "non-defaultable" is only relevant in a multi-curve setting, 
  * in other words if the discounting curve of the underlying model is not equal to the forward curve.
  * It provides at each time the fair value of the non-defaultable
  * coupon bond conditioned on the value of the underlying 
@@ -54,7 +50,7 @@ public class CouponBondConditionalFairValueProcess<T extends ZCBond_ProductCondi
 			T underlyingModel, double[] paymentDates, double[] periodFactors, double[] coupons) {
 		super(underlyingModel);
 		
-		// Small check if the arrays have at least the correct length.
+		// Small check if the arrays have the correct length.
 		if (!(paymentDates.length == periodFactors.length && paymentDates.length == coupons.length) ) {
 			throw new IllegalArgumentException("The length of the payment date, period factors and coupons array has to be equal.");
 		}

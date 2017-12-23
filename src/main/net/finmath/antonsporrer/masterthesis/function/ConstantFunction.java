@@ -10,10 +10,10 @@ import net.finmath.stochastic.RandomVariableInterface;
 
 /**
  * 
- * This class implements a constant function operating on the paths of the input implementing RandomVariableInterface.
+ * This class implements a constant function operating on the input implementing RandomVariableInterface.
  * 
  * 
- * This function uses the following rule.
+ * This function implements the following rule.
  * <br> x -> c
  * <br> Where c is a constant in the real numbers. 
  *
@@ -30,7 +30,7 @@ public class ConstantFunction implements FunctionInterface<RandomVariableInterfa
 	/**
 	 * 
 	 * 
-	 * @param constantFunctionValue The constant function value of this function.
+	 * @param constantFunctionValue The constant value of this function.
 	 */
 	public ConstantFunction(double constantFunctionValue) {
 		this.constantFunctionValue = constantFunctionValue;
@@ -38,7 +38,7 @@ public class ConstantFunction implements FunctionInterface<RandomVariableInterfa
 	
 	
 	/**
-	 * The function is applied path-wise to the input.
+	 * The function is applied to the input.
 	 */
 	public RandomVariableInterface getValue(RandomVariableInterface input) {
 	

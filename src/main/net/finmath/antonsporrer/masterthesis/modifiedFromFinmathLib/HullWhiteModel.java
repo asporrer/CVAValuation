@@ -214,7 +214,7 @@ public class HullWhiteModel extends AbstractModel implements ZCBond_ProductCondi
 				// This includes a control for zero bonds
 				double deterministicNumeraireAdjustment = numeraire.invert().getAverage() / discountCurve.getDiscountFactor(curveModel, time);
 				
-				// TODO: remodify:
+				// Has been changed.
 				// numeraire = numeraire.mult(deterministicNumeraireAdjustment);
 				numeraire = numeraire.div(getDiscountingAdjustment(0.0, time));
 			}
@@ -235,7 +235,7 @@ public class HullWhiteModel extends AbstractModel implements ZCBond_ProductCondi
 		if(discountCurve != null) {
 			// This includes a control for zero bonds
 			double deterministicNumeraireAdjustment = numeraire.invert().getAverage() / discountCurve.getDiscountFactor(curveModel, time);
-			// TODO: remodify:
+			// Has been changed.
 			// numeraire = numeraire.mult(deterministicNumeraireAdjustment);
 			numeraire = numeraire.div(getDiscountingAdjustment(0.0, time));
 		}
@@ -609,7 +609,7 @@ public class HullWhiteModel extends AbstractModel implements ZCBond_ProductCondi
 		return this.getProcessValue(timeIndex, 0);
 	}
 	
-	// TODO: Comments, small test
+	
 	public double getDiscountingAdjustment(double initialTime, double finaltime) {
 		
 		double discountingAdjustment = 1.0;

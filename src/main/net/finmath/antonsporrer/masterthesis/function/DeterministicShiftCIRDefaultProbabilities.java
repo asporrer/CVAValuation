@@ -11,24 +11,25 @@ import net.finmath.time.TimeDiscretizationInterface;
 /**
  * 
  * This function is used by the {@link main.net.finmath.antonsporrer.masterthesis.montecarlo.intensitymodel.CIRPlusPlusModel CIR++Model}.
- * The Parameters of the CIR model are passed to this function. In addition a series of default probabilities 
+ * The parameters of the CIR model are passed to this function. In addition a series of default probabilities 
  * (P( t<sub> k<sub>j</sub> </sub> < &tau; ))<sub> j= 0, ... , l </sub> is provided to this function.
  * In turn this function provides the deterministic shift function &psi; via {@link #getValue(Double)}. This 
  * deterministic shift function is, as mentioned, used by the {@link main.net.finmath.antonsporrer.masterthesis.montecarlo.intensitymodel.CIRPlusPlusModel CIR++Model}
  * and guarantees that the input default probabilities of this function are reproduced by the CIR++ model.
- * That is to say, that E[exp(-int_0^t<sub> k<sub>j</sub> </sub> intensity(s) ds)] = P( t<sub> k<sub>j</sub> </sub> < &tau; ) for j= 0, ... , l. Where intensity() is the
+ * That is to say that E[exp(-int_0^t<sub> k<sub>j</sub> </sub> intensity(s) ds)] = P( t<sub> k<sub>j</sub> </sub> < &tau; ) for j= 0, ... , l. Where intensity() is the
  * intensity provided by the CIR++ model.  
  * 
- * <br> TODO: - At the moment this class assumes that the keys of the defaultProbabilities are elements of the time discretization points t<sub> 0 </sub> < t<sub> 1 </sub> < ... < t<sub> n </sub> and that
+ * <br>
+ * <br> - At the moment this class assumes that the keys of the defaultProbabilities are elements of the time discretization points t<sub> 0 </sub> < t<sub> 1 </sub> < ... < t<sub> n </sub> and that
  * t<sub> n </sub> = t<sub> k<sub>l</sub> </sub>.  This could be generalized. 
- * <br> - There is some freedom of choice for psi different ways of calculating psi could be implemented. For now assuming psi as constant is implemented.
+ * <br> - There is some freedom of choice for psi. Different ways of calculating psi could be implemented. For now assuming psi as piece-wise constant is implemented.
  * 
  * @author Anton Sporrer
  * 
  */
 public class DeterministicShiftCIRDefaultProbabilities implements FunctionInterface<Integer, Double> {
 	
-	// The model parameters also used by the CIR++ model
+	// The model parameters used by the CIR++ model
 	private double initialValue;
 	private double kappa;
 	private double mu;
@@ -42,7 +43,7 @@ public class DeterministicShiftCIRDefaultProbabilities implements FunctionInterf
 	// The default probabilities
 	private TreeMap<Integer,Double> defaultProbabilities;
 	
-	// The integrals of the deterministic shift function psi over some intervals [0,t_i]. i is the key.
+	// The integrals of the deterministic shift function psi over intervals [0,t_i] where i is the key.
 	private TreeMap<Integer, Double> integratedDeterministicShiftValues;
 
 	// TODO: Implement if needed.
@@ -110,11 +111,11 @@ public class DeterministicShiftCIRDefaultProbabilities implements FunctionInterf
 	/**
 	 * &Psi; is calculated for all given default probabilities (P( t<sub> k<sub>j</sub> </sub> < &tau; ))<sub> j= 0, ... , l </sub> 
 	 * <br> &Psi;(t<sub> k<sub>j</sub> </sub>, &kappa;, &mu;, &nu;, initialValue ) = ln( P<sup>CIR</sup>(0,t<sub> k<sub>j</sub> </sub>, &kappa;, &mu;, &nu;, initialValue) / P( t<sub> k<sub>j</sub> </sub> < &tau; ))  , j= 0, ... , l.
-	 * 
+	 * <br>
 	 * <br> The CIR analytic bond price formula is used here to calculate 
 	 * P<sup>CIR</sup>(0,t, &kappa;, &mu;, &nu;, initialValue). 
-	 * 
-	 * (See Master thesis CIR++ chapter.)
+	 * <br>
+	 * <br> (See Master thesis CIR++ chapter.)
 	 * 
 	 */
 	private void calculateIntegratedShiftFromDefaultProbs() {
@@ -137,7 +138,6 @@ public class DeterministicShiftCIRDefaultProbabilities implements FunctionInterf
 	
 	
 	/**
-	 * TODO: Psi should be modified for using the trapezoidal integration approximation.
 	 * 
 	 * <br> Calculating psi (deterministic shift) from Psi (integrated deterministic shift). 
 	 * <br> psi is set such that integrating psi with the right point integral approximation
@@ -184,15 +184,16 @@ public class DeterministicShiftCIRDefaultProbabilities implements FunctionInterf
 		// Psi at the left interval bound
 		double valueLeftCurrentIntervalBound = 0.0;
 	
-		// Psi at the left interval bound
+		// Psi at the right interval bound
 		double valueRightCurrentIntervalBound = 0.0;
 		
 		
-		// The calculated function value psi.
+		// The calculated function value psi
 		double currentCalculatedIntervalValue = 0.0;
 		
 
-		// In this loop the values of psi are iteratively calculated.
+		// In this loop the values of psi are iteratively calculated. The natural ordering of the class Integer used by TreeMap
+		// guarantees that this loop goes through the entries in ascending order with respect to the map indices which are also the time indices.
 		for(Map.Entry<Integer, Double> entry: integratedDeterministicShiftValues.entrySet()) {
 		
 			// Updating the index, the time and the value of the upper bound.
@@ -201,7 +202,7 @@ public class DeterministicShiftCIRDefaultProbabilities implements FunctionInterf
 			valueRightCurrentIntervalBound = entry.getValue();
 			
 			// Calculating the diameter of the current interval.
-			timeLeftCurrentIntervalBound = timeRightCurrentIntervalBound - timeLeftCurrentIntervalBound;
+			deltaTCurrentInterval = timeRightCurrentIntervalBound - timeLeftCurrentIntervalBound;
 			
 			// Calculating the values for the finer discretization. Such that integrating over the values  of the  finer integral reproduces Psi.
 			currentCalculatedIntervalValue = (valueRightCurrentIntervalBound-valueLeftCurrentIntervalBound)/deltaTCurrentInterval;

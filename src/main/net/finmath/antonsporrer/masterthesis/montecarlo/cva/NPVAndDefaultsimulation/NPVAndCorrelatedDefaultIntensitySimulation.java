@@ -20,8 +20,8 @@ import net.finmath.time.TimeDiscretizationInterface;
 
 /**
  * 
- * This class implements a simulation of correlated underlying process (e.g. a short rate or a LIBOR Market Model) specified by 
- * {@link main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface} and
+ * This class implements a simulation of an underlying process (e.g. a short rate or a LIBOR Market Model) specified by 
+ * {@link main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface} correlated with
  * a default intensity specified by {@link main.net.finmath.antonsporrer.masterthesis.montecarlo.intensitymodel.IntensityModelInterface}.
  * This is simply done by correlating the Brownian motions used to simulate the underlying model and the intensity model. 
  * 
@@ -33,9 +33,10 @@ public class NPVAndCorrelatedDefaultIntensitySimulation<T extends ProductConditi
 	
 	private IntensityModelInterface intensityModel;
 	// The calculated default probabilities are cached. The correctness of these stored probabilities is
-	// only guaranteed if the intensity model unchanged. Therefore the model is also stored in this
+	// only guaranteed if the intensity model is left unchanged. Therefore the model is also stored in this
 	// variable for a later check before providing the stored default probabilities. 
-	// TODO: This test is not sufficient and should be extended.
+	// Caveat: If changes in intensity model parameters are not accompanied by a change in the reference the subsequent tests do not guarantee
+	// the update of expOfIntegratedIntensity and the default probabilities in the superclass.
 	private IntensityModelInterface intensityModelForDefaultProbabilityConsistencyCheck;
 	
 	// The correlation of the Brownian motions B_1, B_1. Where B_1 is used to simulate the underlying and 
@@ -62,7 +63,7 @@ public class NPVAndCorrelatedDefaultIntensitySimulation<T extends ProductConditi
 			ProductConditionalFairValueProcessInterface<T> productProcess, IntensityModelInterface intensityModel, CorrelationInterface correlation, int seed) {
 		
 		super(underlyingModel, productProcess);
-		// TODO: Check if the underlying model has a not null process as instance variable.
+		if(underlyingModel.getProcess() == null) {throw new IllegalArgumentException("The instance variable of type AbstractProcess of the underlying model is not allowed to be null.");}
 		
 		this.intensityModel = intensityModel;
 		
@@ -75,11 +76,12 @@ public class NPVAndCorrelatedDefaultIntensitySimulation<T extends ProductConditi
 	
 	@Override
 	public double getDefaultProbability(int timeIndex) throws CalculationException {
-		// TODO: Improve! This does not necessarily guarantee that the default probabilities are still correct. 
-		// Check if the intensityModel has changed. If so the default probabilities have 
-		// to be reset to guarantee consistent default probabilities.
+		// Check if the intensityModel has changed. If so the default probabilities 
+		// and the expOfIntegratedIntensity have to be reset such that they are 
+		// consistent with the intensity.
 		if(intensityModelForDefaultProbabilityConsistencyCheck != intensityModel) {
 			defaultProbabilities.clear();
+			resetExpOfIntegratedIntensity();
 			intensityModelForDefaultProbabilityConsistencyCheck = intensityModel;
 		}
 		
@@ -163,6 +165,15 @@ public class NPVAndCorrelatedDefaultIntensitySimulation<T extends ProductConditi
 
 
 	public RandomVariableInterface getExpOfIntegratedIntensity(int timeIndex) throws CalculationException { 
+		// Check if the intensityModel has changed. If so the default probabilities 
+		// and the expOfIntegratedIntensity have to be reset such that they are 
+		// consistent with the intensity.
+		if(intensityModelForDefaultProbabilityConsistencyCheck != intensityModel) {
+			resetExpOfIntegratedIntensity();
+			defaultProbabilities.clear();
+			intensityModelForDefaultProbabilityConsistencyCheck = intensityModel;
+		}
+		
 		return super.getExpOfIntegratedIntensity(timeIndex);
 	}
 

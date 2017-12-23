@@ -15,8 +15,8 @@ import net.finmath.stochastic.RandomVariableInterface;
  * intensity function to the return value of the getIntensityFunctionArgument method of this 
  * interface.
  * Therefore the getIntensityFunctionArgument method should be implemented in a way such that
- * the return value fits as an argument to the intensity function. Together a reasonable intensity
- * should be the result. This result can be used to calculate the CVA.
+ * the return value is a meaningful argument for the intensity function. The combination of getIntensityFunctionArgument 
+ * and intensity function should result in a reasonable intensity. This result can be used to calculate the CVA.
  * 
  * @author Anton Sporrer
  *
@@ -26,7 +26,7 @@ public interface IntensityFunctionArgumentModelInterface extends AbstractModelIn
 	/**
 	 * @param timeIndex The time index referring to the time point at which the intensity argument is requested.
 	 * @param argumentIndex The index of the function argument. Only used in case of a multidimensional intensity function otherwise 0.
-	 * @return Pathwise values used as an argument to calculate an intensity associated to the current underlying.
+	 * @return A random variable used as an argument to calculate an intensity associated to the current underlying.
 	 * @throws CalculationException
 	 */
 	public RandomVariableInterface getIntensityFunctionArgument(int timeIndex, int argumentIndex) throws CalculationException;

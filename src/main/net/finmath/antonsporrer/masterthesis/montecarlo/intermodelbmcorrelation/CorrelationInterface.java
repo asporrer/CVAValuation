@@ -24,13 +24,13 @@ public interface CorrelationInterface {
 	 * 
 	 * @param rowIndex The row index of the desired entry of the correlation matrix.
 	 * @param columnIndex The column index of the desired entry of the correlation matrix.
-	 * @return The correlation matrix entry with row index rowIndex and column index columnIndex.
+	 * @return The entry of the correlation matrix with row index rowIndex and column index columnIndex.
 	 */
 	public double getCorrelation(int rowIndex, int columnIndex);
 	
 	
 	/**
-	 * @return correlationFactorMatrix The factor F of the correlation C. That is to say F satisfies: C = F*F<sup>T<sup>.
+	 * @return correlationFactorMatrix A factor F of the correlation matrix C. That is to say F satisfies: C = F*F<sup>T<sup>.
 	 */
 	public double[][] getCorrelationFactorMatrix();
 	

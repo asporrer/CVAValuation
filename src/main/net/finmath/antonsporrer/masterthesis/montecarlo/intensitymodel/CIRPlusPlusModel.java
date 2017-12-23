@@ -13,8 +13,12 @@ import net.finmath.stochastic.RandomVariableInterface;
 //TODO: Update documentation
 /**
  * 
- * This class implements a CIR model. 
- * It is assumed that &nu;<sup>2</sup> < &kappa; &mu;. 
+ * This class implements a CIR++ model. In comparison to the CIR model this model provides the intensity &lambda;*.
+ * <br> &lambda;*<sub>t</sub> := &lambda;<sub>t</sub> + &psi;<sub>t</sub>.
+ * 
+ * Where &psi; is a deterministic function in t. &lambda; is defined as in the CIR model {@link main.net.finmath.antonsporrer.masterthesis.montecarlo.intensitymodel.CIRModel}.
+ * 
+ * <br> It is assumed that &nu;<sup>2</sup> < &kappa; &mu;. 
  * This implies that &lambda;<sub>t</sub> > 0, for all t in the simulation horizon. Where &lambda;<sub>t</sub> is the simulated process
  * specified by this model.
  * <br> Basically an Euler scheme is used to approximate this process. Although after

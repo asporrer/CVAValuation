@@ -4,7 +4,6 @@
 
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.cva.NPVAndDefaultsimulation;
 
-import main.net.finmath.antonsporrer.masterthesis.integration.Integration;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalFairValue_ModelInterface;
 import main.net.finmath.antonsporrer.masterthesis.montecarlo.product.ProductConditionalFairValueProcessInterface;
 import net.finmath.exception.CalculationException;
@@ -30,9 +29,8 @@ import net.finmath.stochastic.RandomVariableInterface;
  */
 public abstract class AbstractNPVAndDefaultIntensitySimulation<T extends ProductConditionalFairValue_ModelInterface> extends AbstractNPVAndDefaultSimulation<T> implements NPVAndDefaultIntensitySimulationInterface<T> {
 	
-	// TODO: Change to ConcurrentHashMap and implement tests in function / correlated intensity sub-classes.
-	// These tests should secure that the underlying determining the expOfIntegratedIntensity did not change
-	// This array contains at index i is the pathwise approximation of exp(int_0^t_i intensity(s) ds).
+	
+	// This array contains at index i the path-wise approximation of exp(int_0^t_i intensity(s) ds).
 	private RandomVariableInterface[] expOfIntegratedIntensity;
 	
 	public AbstractNPVAndDefaultIntensitySimulation(
@@ -40,7 +38,7 @@ public abstract class AbstractNPVAndDefaultIntensitySimulation<T extends Product
 			ProductConditionalFairValueProcessInterface<T> productProcess) {
 		super(underlyingModel, productProcess);
 	}
-
+	
 	
 	public double getDefaultProbability( int timeIndex ) throws CalculationException {
 		
@@ -92,12 +90,6 @@ public abstract class AbstractNPVAndDefaultIntensitySimulation<T extends Product
 	 */
 	private void doGenerateExpOfIntegratedIntensity() throws CalculationException {
 		
-		// TODO: Write general integration scheme and use it here and in the CVA calculation.
-		// 		 Maybe first fetch the intensity array and store it in an auxiliary intensityArray 
-		// 		 which can be passed to an integral approximation function.
-		
-		// TODO: Trapezoidal formula could be used here. -> Is in use now.
-		
 		// The number of time discretization points of the underlying model with respect to the product.
 		int numberOfTimes = this.getTimeDiscretization().getNumberOfTimes();
 		
@@ -122,7 +114,6 @@ public abstract class AbstractNPVAndDefaultIntensitySimulation<T extends Product
 		RandomVariableInterface currentExponentialFunctionOfIntensityIntegral = new RandomVariable(1.0);
 		
 		
-		// TODO: Improve integral approximation scheme. Common distribution of delta lambda  and delta exp( int lambda ).
 		for(int timeIndex = 0; timeIndex < numberOfTimes - 1; timeIndex++) {
 			
 			currentTime = this.getTimeDiscretization().getTime(timeIndex);
@@ -145,5 +136,20 @@ public abstract class AbstractNPVAndDefaultIntensitySimulation<T extends Product
 	
 	}
 
+	
+	/**
+	 *
+	 * This method enables us to reset the expOfIntegrated intensity. 
+	 * For instance this is useful in the following case. Let us assume the 
+	 * underlying intensity has changed in this case the expOfIntegratedIntensity
+	 * should be recalculated. This can be done by first implementing test which 
+	 * test whether the underlying intensity has changed. And second in case there 
+	 * was a change then the expOfIntegratedIntensity is reset. 
+	 * 
+	 */
+	public void resetExpOfIntegratedIntensity() {
+		expOfIntegratedIntensity = null;
+	}
+	
 	
 }

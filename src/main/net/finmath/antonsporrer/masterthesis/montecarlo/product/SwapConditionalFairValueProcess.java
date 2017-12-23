@@ -15,12 +15,12 @@ import net.finmath.stochastic.RandomVariableInterface;
  * This class implements the valuation of a swap.
  * It provides at each time the fair value of the 
  * swap conditioned on the value of the underlying 
- * on the current path. E.g. if the underlying model is a short rate model:
- * <br> E[  DiscountedCashflows(t) | r<sub>t</sub> = r<sup>*</sup><sub>t</sub>( &omega; ) ] 
+ * on the current path at the specified past time. E.g. if the underlying model is a short rate model:
+ * <br> E[  DiscountedCashflows(t,T) | r<sub>t</sub> = r<sup>*</sup><sub>t</sub>( &omega; ) ] 
  * <br> is provided. 
  * <br> - Where t is the evaluation time.
  * <br> - r<sub>t</sub> is the short rate and r<sup>*</sup><sub>t</sub>( &omega; ) is the simulation of the short rate at time t and path &omega; .
- * <br> - DiscountedCashflows(t) are the discounted cashflows of the swap made at t or later. 
+ * <br> - DiscountedCashflows(t,T) are the discounted cashflows of the swap made between t and T. Where T is the time horizon. 
  * <br>
  * <br> This class implements a swap on the defaultable ("defaultable" is only relevant in the multi-curve setting) Libor rate L<sup>d</sup>. In case the discounting curve 
  * of the underlying model is equal to the forward curve then L<sup>d</sup> = L and the swap can be seen as a swap on the non-defaultable Libor L. It has the following payoff profile.
@@ -73,7 +73,7 @@ public class SwapConditionalFairValueProcess<T extends ZCBond_ProductConditional
 
 	/**
 	 * 
-	 * @return swapRate The swap rate assigned to the model. Not necessarily the par swap rate.
+	 * @return swapRate The swap rate of the model. Not necessarily the par swap rate.
 	 */
 	public double getSwapRate() {
 		return swapRate;
@@ -82,7 +82,7 @@ public class SwapConditionalFairValueProcess<T extends ZCBond_ProductConditional
 	
 	// Proofreading Notes: Master Thesis, Block 3, p.13)
 	/**
-	 * This method returns the fair value of a swap with respect to the defaultable ("defaultable" is only relevant in multi-curve setting) Libor L^d evaluated at the time with index timeIndex.
+	 * This method returns the fair value of a swap with respect to the defaultable ("defaultable" is only relevant in multi-curve setting) LIBOR L^d evaluated at the time with index timeIndex.
 	 * ( In formulas: sum_{i= k_timeIndex}^{n-1} ( L<sup>d</sup>(T_i, T_i+1; t_timeIndex) - C ) (T_{i+1} - T_i) )
 	 * Where k_timeIndex is the smallest i such that t_timeIndex <= T_i and C is the coupon payment.
 	 * 
@@ -129,7 +129,7 @@ public class SwapConditionalFairValueProcess<T extends ZCBond_ProductConditional
 		
 		// If the evaluation time t is not smaller or equal to the first fixing date T_1
 		// then the fair value of the defaultable floating rate payment L^d(S,T;S)*(T-S) in T {S<t<=T} 
-		// in the current period has to be calculated different from the later defaultable floating rates. 
+		// in the current period has to be calculated different from the subsequent defaultable floating rates. 
 		// Let L^d respectively P^d denote the defaultable forward rate respectively the defaultable bond 
 		// then the fair value of L^d(S,T;S)*(T-S) payed in T is calculated as follows.
 		// L^d(T_{nextDatesIndex - 1}, T_{nextDatesIndex}; T_{ nextDateIndex - 1 }) * (T_{nextDateIndex}) - T_{nextDateIndex - 1} ) * P(T_{nextDateIndex}; evaluationDate). 
@@ -294,7 +294,7 @@ public class SwapConditionalFairValueProcess<T extends ZCBond_ProductConditional
 	/**
 	 *
 	 * The par swap rate of a swap with respect to the 
-	 * defaultable ("defaultable" is only relevant in multi-curve setting) Libor L<sup>d</sup> at time 0.0 is calculated. 
+	 * defaultable ("defaultable" is only relevant in multi-curve setting) LIBOR L<sup>d</sup> at time 0.0 is calculated. 
 	 * And the swap rate is set to par swap rate.
 	 * More precisely the swap rate that satisfies the next 
 	 * equation is returned. 

@@ -1,3 +1,7 @@
+/* 
+ * Contact: anton.sporrer@yahoo.com
+ */
+
 package main.net.finmath.antonsporrer.masterthesis.montecarlo.intensitymodel;
 
 import net.finmath.montecarlo.model.AbstractModel;

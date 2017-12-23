@@ -15,6 +15,15 @@ import net.finmath.montecarlo.process.ProcessEulerScheme;
 import net.finmath.time.TimeDiscretization;
 import net.finmath.time.TimeDiscretizationInterface;
 
+/**
+ * 
+ * This class provides static methods to build a HullWhiteModel. The advantage of using these methods is that 
+ * one does not have to built the HullWhiteModel from scratch but different methods allow to just specify some 
+ * parameters of the HullWhiteModel the remaining parameters and objects are set by the method. 
+ * 
+ * @author Anton Sporrer
+ *
+ */
 public class HullWhiteCreationHelper {
 
 	
