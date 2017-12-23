@@ -18,7 +18,7 @@ import net.finmath.time.TimeDiscretizationInterface;
  * 
  * @author Anton Sporrer
  * 
- * @param <T> This interface is parameterized such that some methods return or get T type variables which have certain methods. Further {@link main.net.finmath.antonsporrer.masterthesis.montecarlo.product.AbstractProductConditionalFairValueProcess} implements this interface
+ * @param <T> This interface is parameterized such that some methods return or get T type variables which provide certain methods. Further {@link main.net.finmath.antonsporrer.masterthesis.montecarlo.product.AbstractProductConditionalFairValueProcess} implements this interface
  * and has an instance variable of type T.
  * 
  */
@@ -34,11 +34,24 @@ public interface ProductConditionalFairValueProcessInterface<T extends ProductCo
 	
 	/**
 	 * 
+	 * getFairValue version in the non-MultiCurve setting.
+	 * 
+	 * @param timeIndex
+	 * @return The fair values of the product conditioned at the current time with respect to the path-wise current states of the underlying (e.g. in case of a short rate model: for each path &omega;, E[V|r(t<sub>timeIndex</sub>)=r(<sub>timeIndex</sub>,&omega;)]) is returned. Where V is the discounted payoff of the product).
+	 * @throws CalculationException 
+	 */
+	@Deprecated
+	public RandomVariableInterface getFairValueNonMultiCurve(int timeIndex) throws CalculationException;
+	
+	
+	/**
+	 * 
 	 * @param timeIndex
 	 * @return The fair values of the product conditioned at the current time with respect to the path-wise current states of the underlying (e.g. in case of a short rate model: for each path &omega;, E[V|r(t<sub>timeIndex</sub>)=r(<sub>timeIndex</sub>,&omega;)]) is returned. Where V is the discounted payoff of the product).
 	 * @throws CalculationException 
 	 */
 	public RandomVariableInterface getFairValue(int timeIndex) throws CalculationException;
+	
 	
 	/**
 	 * 
@@ -51,17 +64,16 @@ public interface ProductConditionalFairValueProcessInterface<T extends ProductCo
 
 	/**
 	 * 
-	 * It should be pointed out that not a clone but the 
-	 * referenced model is assigned to the product.
-	 * 
-	 * TODO: Assign clone of the parameter underlying model.
-	 * 
+	 * It should be pointed out that in most implementations of this method 
+	 * referenced model is not cloned. Therefore the provided model itself 
+	 * is assigned to the product.
+	 *
 	 * @param underlyingModel The underlying model which will be assigned to the product.
 	 */
 	public void setUnderlyingModel(T underlyingModel);
 	
 	/**
-	 * TODO: Return a copy.
+	 * Not a copy but the model itself is returned.
 	 * 
 	 * @return The underlying model which respect to which the fair price of the product is calculated.
 	 */

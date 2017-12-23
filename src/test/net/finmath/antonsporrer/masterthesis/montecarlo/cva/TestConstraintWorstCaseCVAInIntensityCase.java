@@ -35,7 +35,7 @@ public class TestConstraintWorstCaseCVAInIntensityCase {
 		
 		IntensityModelInterface intensityModel = new CIRModel(0.03, 0.7 , 0.03, 0.07);
 		
-	
+		
 		CorrelationInterface correlation = new Correlation(new double[][]{{-0.9},{0.0}});
 		
 		
@@ -43,17 +43,14 @@ public class TestConstraintWorstCaseCVAInIntensityCase {
 		
 		System.out.println( "The CVA with LGD of " + lossGivenDefault + " is: "  + intensityBasedCVA.getCVA( npvAndDefaultIntensitySimulation, IntegrationMethod.LeftPoints ).getAverage() );
 		
-		System.out.println("The Product Value is: " + productProcess.getFairValue(0).getAverage());
-		
+		System.out.println("The Product Value is: " + productProcess.getFairValueNonMultiCurve(0).getAverage());
 		
 		
 		ConstrainedWorstCaseCVA worstCaseCVA = new ConstrainedWorstCaseCVA(1.0, 0.00000001, 0.000000001, 0.00000000000001);
-
 		
 		
-
 		double startTime = System.currentTimeMillis();
-	
+		
 		double result = worstCaseCVA.getConstrainedWorstCaseCVA( npvAndDefaultIntensitySimulation, 0.0001);
 		
 		double endTime = System.currentTimeMillis();

@@ -12,8 +12,9 @@ import net.finmath.stochastic.RandomVariableInterface;
 
 /**
  * 
- * This class implements the valuation of a coupon bond.
- * It provides at each time the fair value of the 
+ * This class implements the valuation of a non-defaultable coupon bond. Whereas "non-defaultable" is only relevant in a multi-curve setting, 
+ * in other words if the discounting curve of the underlying model is not equal to the forward curve.
+ * It provides at each time the fair value of the non-defaultable
  * coupon bond conditioned on the value of the underlying 
  * at the current path. E.g. if the underlying model is a short rate model:
  * <br> E[  DiscountedCashflows(t) | r<sub>t</sub> = r<sup>*</sup><sub>t</sub>( &omega; ) ] 
@@ -38,7 +39,6 @@ public class CouponBondConditionalFairValueProcess<T extends ZCBond_ProductCondi
 	// T_2 - T_1, ... , T_n - T_{n-1}
 	private double[] periodFactors;
 	
-	
 	/**
 	 * 
 	 * @param underlyingModel The underlying model with respect to which the fair value of the coupon bond is evaluated.
@@ -50,7 +50,7 @@ public class CouponBondConditionalFairValueProcess<T extends ZCBond_ProductCondi
 			T underlyingModel, double[] paymentDates, double[] periodFactors, double[] coupons) {
 		super(underlyingModel);
 		
-		// Small check if the arrays have at least the correct length.
+		// Small check if the arrays have the correct length.
 		if (!(paymentDates.length == periodFactors.length && paymentDates.length == coupons.length) ) {
 			throw new IllegalArgumentException("The length of the payment date, period factors and coupons array has to be equal.");
 		}
@@ -58,11 +58,94 @@ public class CouponBondConditionalFairValueProcess<T extends ZCBond_ProductCondi
 		this.paymentDates = paymentDates; 
 		this.periodFactors = periodFactors;
 		this.coupons = coupons;
-		
+
 	}
 
-
+	
+	/**
+	 * 
+	 * This method returns the fair value of a non-defaultable coupon bond. Whereas "non-defaultable" is only relevant in 
+	 * a multi-curve setting.
+	 * 
+	 * @param timeIndex The index (with respect to the time discretization of the underlying model) of the time at which the coupon bond is evaluated.
+	 * @return The fair value of the non-defaultable coupon bond associated to the time index.
+	 * @throws CalculationException
+	 */
 	public RandomVariableInterface getFairValue(int timeIndex)
+			throws CalculationException {
+		
+
+		////
+		// The first payment date greater or equal to the 
+		// evaluation time is determined.
+		////
+		
+		int firstOutstandingPaymentIndex = 0;
+		
+		double evaluationTime = underlyingModel.getTimeDiscretization().getTime(timeIndex);
+		
+		while(evaluationTime > paymentDates[firstOutstandingPaymentIndex]) {
+			
+			++firstOutstandingPaymentIndex;
+			
+			// In case the evaluation time is strictly after the last payment date the value
+			// of the product is 0.0.
+			if(firstOutstandingPaymentIndex == paymentDates.length) {
+				return new RandomVariable(0.0);
+			}
+		}
+		
+
+		////
+		// The fair values of the coupon and the zero coupon bond payments are summed up.
+		////
+		
+		RandomVariableInterface outstandingPayments = new RandomVariable(0.0);
+		RandomVariableInterface currentNonDefaultableBondFairValue = null;
+		
+		
+		// Holding in each iteration the discounting adjustment.
+		double currentDiscountingAdjustment = 1.0;
+		
+		// Holding in each iteration the current payment date.
+		double currentPaymentDate = 0.0;
+		
+		// Calculating and summing the fair value at evaluation time of all outstanding payments.
+		for(int index = firstOutstandingPaymentIndex; index < paymentDates.length; index++) {
+			
+			currentPaymentDate = paymentDates[index];
+			
+			// Assigning this auxiliary random variable.
+			// The fair value of a zero coupon bond maturing at paymentDates[index] at evaluation time is fetched.
+			if( evaluationTime != currentPaymentDate) {
+				
+				// Fetching the current deterministic discounting adjustment.
+				currentDiscountingAdjustment = underlyingModel.getDiscountingAdjustment(evaluationTime, currentPaymentDate);
+				
+				// Multiplying the deterministic discounting adjustment to the zero coupon bond. Thereby calculating the non-defaultable zero coupon bond.
+				currentNonDefaultableBondFairValue = underlyingModel.getZeroCouponBond(evaluationTime, currentPaymentDate).mult(currentDiscountingAdjustment);
+				
+			}
+			else {
+				currentNonDefaultableBondFairValue = new RandomVariable(1.0);
+			}
+			
+
+			// Summing the fair values of all outstanding payments.
+			outstandingPayments = outstandingPayments.add( currentNonDefaultableBondFairValue.mult( coupons[index] * periodFactors[index] ) );
+			
+		}
+		
+		// The fair value at evaluation time of the payment of 1 at maturity.
+		outstandingPayments = outstandingPayments.add(currentNonDefaultableBondFairValue); 
+		
+		return outstandingPayments;
+	}
+	
+	
+	// TODO: Could be used to implement a defaultable coupon bond. But at the moment the payoff at maturity is the same as for a non-defaultable bond this among other things has to be changed.
+	@Deprecated
+	public RandomVariableInterface getFairValueNonMultiCurve(int timeIndex)
 			throws CalculationException {
 		
 		////
@@ -75,9 +158,17 @@ public class CouponBondConditionalFairValueProcess<T extends ZCBond_ProductCondi
 		double evaluationTime = underlyingModel.getTimeDiscretization().getTime(timeIndex);
 		
 		while(evaluationTime > paymentDates[firstOutstandingPaymentIndex]) {
+			
 			++firstOutstandingPaymentIndex;
+			
+			// In case the evaluation time is strictly after the last payment date the value
+			// of the product is 0.0.
+			if(firstOutstandingPaymentIndex == paymentDates.length) {
+				return new RandomVariable(0.0);
+			}
 		}
 		
+
 		
 		////
 		// The fair values of the coupon and the zero coupon bond payments are summed up.
@@ -108,61 +199,6 @@ public class CouponBondConditionalFairValueProcess<T extends ZCBond_ProductCondi
 		
 		return outstandingPayments;
 	}
-
-	
-	/**
-	 * 
-	 * Not implemented yet!
-	 * 
-	 * TODO: Implement deterministic discounting.
-	 * 
-	 * @param timeIndex
-	 * @return
-	 * @throws CalculationException
-	 */
-	public RandomVariableInterface getFairValueWithDiscounting(int timeIndex)
-			throws CalculationException {
-		
-		throw new UnsupportedOperationException("Is yet to be implemented.");
-		
-//		
-//		// The first payment date greater or equal to the 
-//		// evaluation time is determined.
-//		int firstOutstandingPaymentIndex = 0;
-//		
-//		double evaluationTime = underlyingModel.getTimeDiscretization().getTime(timeIndex);
-//		
-//		while(evaluationTime > paymentDates[firstOutstandingPaymentIndex]) {
-//			++firstOutstandingPaymentIndex;
-//		}
-//		
-//		RandomVariableInterface outstandingPayments = new RandomVariable(0.0);
-//		RandomVariableInterface currentBondFairValue = null;
-//		
-//		// Calculating and summing the fair value at evaluation time of all outstanding payments.
-//		for(int index = firstOutstandingPaymentIndex; index < paymentDates.length; index++) {
-//			
-//			// Assigning this auxiliary random variable.
-//			// The fair value of a zero coupon bond maturing at paymentDates[index] at evaluation time is fetched.
-//			if( evaluationTime != paymentDates[index]) {
-//				currentBondFairValue = underlyingModel.getZeroCouponBond(evaluationTime, paymentDates[index]);
-//			}
-//			else {
-//				currentBondFairValue = new RandomVariable(1.0);
-//			}
-//			// Summing the fair values of all outstanding payments.
-//			outstandingPayments = outstandingPayments.add( currentBondFairValue.mult( coupons[index] * periodFactors[index]) );
-//			// The fair value at evaluation time of the payment of 1 at maturity.
-//			if(index == paymentDates.length-1) { 
-//				outstandingPayments = outstandingPayments.add(currentBondFairValue);  
-//			}
-//		}
-//		
-//		return outstandingPayments;
-	}
-	
-	
-	
 	
 	
 }

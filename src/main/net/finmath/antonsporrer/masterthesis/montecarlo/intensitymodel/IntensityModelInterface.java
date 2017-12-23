@@ -6,7 +6,7 @@ import net.finmath.stochastic.RandomVariableInterface;
 
 /**
  * 
- * All a small subinterface for default intensity models.
+ * All a small sub-interface for default intensity models.
  * 
  * 
  * 

@@ -44,16 +44,13 @@ public class SimpleCVACostumHWTestDrive {
 		
 		IntensityModelInterface intensityModel = new CIRModel(0.01, 0.05 , 0.01, 0.03);
 		
-		
 		CorrelationInterface correlation = new Correlation(new double[][]{{0.9},{0.0}});
-		
-		
 		
 		NPVAndDefaultIntensitySimulationInterface<HullWhiteModel> npvAndDefaultIntensitySimulation = new NPVAndCorrelatedDefaultIntensitySimulation<HullWhiteModel>(underlyingModel, productProcess, intensityModel , correlation , 3142);
 		
 		System.out.println( "The CVA with LGD of " + lossGivenDefault + " is: "  + intensityBasedCVA.getCVA( npvAndDefaultIntensitySimulation, IntegrationMethod.Trapezoidal ).getAverage() );
 		
-		System.out.println("The Product Value is: " + productProcess.getFairValue(0).getAverage());
+		System.out.println("The Product Value is: " + productProcess.getFairValueNonMultiCurve(0).getAverage());
 		
 	}
 

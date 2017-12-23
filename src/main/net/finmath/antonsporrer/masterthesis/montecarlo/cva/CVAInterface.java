@@ -9,7 +9,6 @@ package main.net.finmath.antonsporrer.masterthesis.montecarlo.cva;
  * 
  * Interface for the implementation of a CVA.
  * 
- * TODO: Add getCVA, parameters?
  * 
  * @author Anton Sporrer
  *

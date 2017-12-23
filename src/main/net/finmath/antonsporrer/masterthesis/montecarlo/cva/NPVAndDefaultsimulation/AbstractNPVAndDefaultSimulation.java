@@ -23,7 +23,7 @@ import net.finmath.time.TimeDiscretizationInterface;
 public abstract class AbstractNPVAndDefaultSimulation<T extends ProductConditionalFairValue_ModelInterface> implements NPVAndDefaultSimulationInterface<T>{
 		
 		private ProductConditionalFairValueProcessInterface<T> productProcess;
-	
+		
 		// This hash map contains the default probabilities. More precisely the value associated with with key i 
 		// is the probability of default in the interval (0, t_{i}].
 		final protected ConcurrentHashMap<Integer, Double> defaultProbabilities;
@@ -37,7 +37,6 @@ public abstract class AbstractNPVAndDefaultSimulation<T extends ProductCondition
 			productProcess.setUnderlyingModel(underlyingModel);
 			this.productProcess = productProcess;
 			defaultProbabilities = new ConcurrentHashMap<Integer, Double>();
-			
 		}
 		
 		public RandomVariableInterface getNumeraire(int timeIndex) throws CalculationException {
@@ -45,7 +44,7 @@ public abstract class AbstractNPVAndDefaultSimulation<T extends ProductCondition
 		}
 		
 		public RandomVariableInterface getDiscountedNPV(int timeIndex, int discountBackToIndex) throws CalculationException {
-			return productProcess.getFairValue(timeIndex).div(productProcess.getNumeraire(timeIndex).mult(productProcess.getNumeraire(discountBackToIndex))).floor(0.0);
+			return productProcess.getFairValue(timeIndex).div(productProcess.getNumeraire(timeIndex).mult(productProcess.getNumeraire(discountBackToIndex)));
 		}
 		
 		/**
@@ -58,7 +57,6 @@ public abstract class AbstractNPVAndDefaultSimulation<T extends ProductCondition
 			return new Double( defaultProbabilities.get(timeIndex) );
 		}
 		
-		
 		public TimeDiscretizationInterface getTimeDiscretization() {
 			return this.productProcess.getTimeDiscretization();
 		}
@@ -67,12 +65,16 @@ public abstract class AbstractNPVAndDefaultSimulation<T extends ProductCondition
 			return this.productProcess.getNumberOfPaths();
 		}
 		
+		public void plugInProductProcess(ProductConditionalFairValueProcessInterface<T> productProcessParameter) {
+			productProcessParameter.setUnderlyingModel(this.productProcess.getUnderlyingModel());
+			this.productProcess = productProcessParameter;
+		}
 		
 		public void setProductProcess(ProductConditionalFairValueProcessInterface<T> productProcess) {
 			this.productProcess = productProcess;
 		}
 		
-		public ProductConditionalFairValueProcessInterface<T> getProductProcess() {
+		public ProductConditionalFairValueProcessInterface<T>/*ConditionalProductInterface*/ getProductProcess() {
 			return this.productProcess;
 		}
 		

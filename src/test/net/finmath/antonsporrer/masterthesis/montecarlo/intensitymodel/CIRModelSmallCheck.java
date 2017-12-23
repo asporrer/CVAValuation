@@ -8,8 +8,6 @@ import net.finmath.montecarlo.process.ProcessEulerScheme;
 import net.finmath.time.TimeDiscretization;
 import net.finmath.time.TimeDiscretizationInterface;
 
-import org.junit.Before;
-
 public class CIRModelSmallCheck {
 
 	public static void main(String[] args) throws CalculationException {

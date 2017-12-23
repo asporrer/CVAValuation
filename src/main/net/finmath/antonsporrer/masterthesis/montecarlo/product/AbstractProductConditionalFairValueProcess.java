@@ -13,7 +13,7 @@ import main.net.finmath.antonsporrer.masterthesis.montecarlo.ProductConditionalF
 /**
  * This abstract class implements some methods common to all products. 
  * These methods are needed independent of whether a bond, cap, swaption etc. 
- * are implemented. And they are independent of whether there is an analytic
+ * is implemented. And they are independent of whether there is an analytic
  * bond formula or an analytic formula for another payoff implemented in the
  * underlying model of type T. They are also independent of whether an American 
  * Monte Carlo simulation is used in the underlying model of type T to get 
@@ -48,13 +48,13 @@ public abstract class AbstractProductConditionalFairValueProcess<T extends  Prod
 		return underlyingModel.getNumeraire(timeIndex);
 	}
 	
-	
 	public void setUnderlyingModel(T underlyingModel) {
-		// TODO: Assign clone of the underlying model?
+		// The model is not cloned. This could be improved.
 		this.underlyingModel = underlyingModel;
 	}
 	
 	public T getUnderlyingModel() {
+		// The model is not cloned. This could be improved.
 		return underlyingModel;
 	}
 	

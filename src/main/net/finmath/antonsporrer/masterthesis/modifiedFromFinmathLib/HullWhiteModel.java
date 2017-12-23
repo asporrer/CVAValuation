@@ -213,7 +213,10 @@ public class HullWhiteModel extends AbstractModel implements ZCBond_ProductCondi
 			if(discountCurve != null) {
 				// This includes a control for zero bonds
 				double deterministicNumeraireAdjustment = numeraire.invert().getAverage() / discountCurve.getDiscountFactor(curveModel, time);
-				numeraire = numeraire.mult(deterministicNumeraireAdjustment);
+				
+				// Has been changed.
+				// numeraire = numeraire.mult(deterministicNumeraireAdjustment);
+				numeraire = numeraire.div(getDiscountingAdjustment(0.0, time));
 			}
 			
 			return numeraire;
@@ -232,7 +235,9 @@ public class HullWhiteModel extends AbstractModel implements ZCBond_ProductCondi
 		if(discountCurve != null) {
 			// This includes a control for zero bonds
 			double deterministicNumeraireAdjustment = numeraire.invert().getAverage() / discountCurve.getDiscountFactor(curveModel, time);
-			numeraire = numeraire.mult(deterministicNumeraireAdjustment);
+			// Has been changed.
+			// numeraire = numeraire.mult(deterministicNumeraireAdjustment);
+			numeraire = numeraire.div(getDiscountingAdjustment(0.0, time));
 		}
 
 		return numeraire;
@@ -603,6 +608,30 @@ public class HullWhiteModel extends AbstractModel implements ZCBond_ProductCondi
 		
 		return this.getProcessValue(timeIndex, 0);
 	}
+	
+	
+	public double getDiscountingAdjustment(double initialTime, double finaltime) {
+		
+		double discountingAdjustment = 1.0;
+		
+		// If a discounting curve exists 
+		if(this.getDiscountCurve() != null) {
+			AnalyticModelInterface analyticModel = this.getAnalyticModel();
+			DiscountCurveInterface discountCurve = this.getDiscountCurve();
+			ForwardCurveInterface forwardCurve = this.getForwardRateCurve();
+			DiscountCurveInterface discountCurveFromForwardCurve = new DiscountCurveFromForwardCurve(forwardCurve);
+
+			double forwardBondOnForwardCurve = discountCurveFromForwardCurve.getDiscountFactor(analyticModel, initialTime) / discountCurveFromForwardCurve.getDiscountFactor(analyticModel, finaltime);
+			double forwardBondOnDiscountCurve = discountCurve.getDiscountFactor(analyticModel, initialTime) / discountCurve.getDiscountFactor(analyticModel, finaltime);
+			discountingAdjustment = forwardBondOnForwardCurve / forwardBondOnDiscountCurve;
+		}
+		
+		return discountingAdjustment;
+		
+	}
+	
+		
+	
 }
 
 
