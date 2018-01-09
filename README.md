@@ -1,4 +1,4 @@
-## Implementation of a CVA valuation based on finmath-lib. 
+## Implementation of a CVA valuation based on [finmath-lib](https://github.com/finmath/finmath-lib). 
 
 This project implements a CVA valuation dropping the assumption of independence between default and payoff. Thus right way and wrong way risk can be introduced.
 Two approaches are implemented. First the intensity based approach and second a constrained worst case approach.
