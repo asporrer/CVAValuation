@@ -9,8 +9,7 @@
 	<classpathentry kind="lib" path="C:/Users/anton/git/MA/lib/joda-time-2.9.jar"/>
 	<classpathentry kind="lib" path="C:/Users/anton/git/MA/lib/junit-4.10.jar"/>
 	<classpathentry kind="lib" path="C:/Users/anton/git/MA/lib/jblas-1.2.4.jar"/>
-	<classpathentry kind="lib" path="C:/Users/anton/git/MA/Ice.jar"/>
-	<classpathentry kind="lib" path="C:/Users/anton/git/MA/jgraphx.jar"/>
 	<classpathentry kind="lib" path="C:/Users/anton/git/MA/Obba.jar"/>
+	<classpathentry kind="lib" path="C:/Users/anton/git/MA/Ice.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
