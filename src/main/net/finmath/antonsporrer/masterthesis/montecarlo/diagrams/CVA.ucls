@@ -6,8 +6,8 @@
     project="MasterthesisAntonSporrer2017" 
     file="/MasterthesisAntonSporrer2017/src/main/net/finmath/antonsporrer/masterthesis/montecarlo/cva/ConstrainedWorstCaseCVA.java" 
     binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="937" y="535"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    <position height="214" width="566" x="509" y="350"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
@@ -17,8 +17,8 @@
     project="MasterthesisAntonSporrer2017" 
     file="/MasterthesisAntonSporrer2017/src/main/net/finmath/antonsporrer/masterthesis/montecarlo/cva/IntensityBasedCVA.java" 
     binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="201" y="490"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    <position height="106" width="432" x="59" y="350"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
@@ -28,7 +28,7 @@
     project="MasterthesisAntonSporrer2017" 
     file="/MasterthesisAntonSporrer2017/src/main/net/finmath/antonsporrer/masterthesis/montecarlo/cva/AbstractCVA.java" 
     binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="452" y="314"/>    
+    <position height="-1" width="-1" x="516" y="196"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -39,7 +39,7 @@
     project="MasterthesisAntonSporrer2017" 
     file="/MasterthesisAntonSporrer2017/src/main/net/finmath/antonsporrer/masterthesis/montecarlo/cva/CVAInterface.java" 
     binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="452" y="156"/>    
+    <position height="-1" width="-1" x="517" y="21"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -47,11 +47,11 @@
     </display>  
   </interface>  
   <generalization id="5">    
-    <end type="SOURCE" refId="1"/>    
+    <end type="SOURCE" refId="2"/>    
     <end type="TARGET" refId="3"/>  
   </generalization>  
   <generalization id="6">    
-    <end type="SOURCE" refId="2"/>    
+    <end type="SOURCE" refId="1"/>    
     <end type="TARGET" refId="3"/>  
   </generalization>  
   <realization id="7">    
