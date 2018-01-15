@@ -273,8 +273,8 @@ System.out.println("CWC CVA Bond value : " + results[0][1][indexLandoFunction]);
 					results[1][1][indexLandoFunction] = constrainedWorstCaseCVA.getConstrainedWorstCaseCVA(npvAndLandoDefaultIntensitySimulation, penaltyFactor);
 					
 // TODO: Remove debug code
-System.out.println("intensity CVA Bond value : " + results[1][0][indexLandoFunction]);
-System.out.println("CWC CVA Bond value : " + results[1][1][indexLandoFunction]);		
+System.out.println("intensity CVA Swap value : " + results[1][0][indexLandoFunction]);
+System.out.println("CWC CVA Swap value : " + results[1][1][indexLandoFunction]);		
 					
 				} catch (CalculationException e1) {
 					// TODO Auto-generated catch block

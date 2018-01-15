@@ -15,7 +15,7 @@ import main.net.finmath.antonsporrer.masterthesis.montecarlo.product.ProductCond
 import net.finmath.exception.CalculationException;
 import test.net.finmath.antonsporrer.masterthesis.montecarlo.HullWhiteCreationHelper;
 
-public class SimpleCVACostumHWTestDrive {
+public class SimpleCVACustomHWTestDrive {
 
 	@SuppressWarnings("rawtypes")
 	public static void main(String[] args) throws CalculationException {
